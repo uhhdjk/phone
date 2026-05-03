@@ -292,8 +292,8 @@
     <div class="top-bar">知识付费平台</div>
     <div class="banner">
         <div class="logo-box">
-            <!-- 🔴 LOGO 位置：用了 GitHub 稳定示例图片 -->
-            https://s41.ax1x.com/2026/05/04/pe7jCfe.png
+            <!-- ✅ 正确的 LOGO 写法 -->
+            <img src="https://s41.ax1x.com/2026/05/04/pe7jCfe.png" alt="LOGO">
         </div>
         <div class="banner-info">
             <div class="banner-title">发财树优质资料</div>
@@ -365,16 +365,15 @@
         <div class="pay-title">请扫码支付 1699 元</div>
         <div class="pay-tip">截图保存 → 打开微信扫码付款</div>
         <div class="pay-img">
-            <!-- 🔴 收款码位置：用了稳定的示例图片 -->
-            <img id="payImg" src="hhttps://s41.ax1x.com/2026/05/04/pe7jCfe.png">
+            <img id="payImg" src="">
         </div>
         <button class="close-btn" onclick="closePay()">关闭</button>
     </div>
 </div>
 
 <script>
-// 🔴 这里是 微信收款码 图片位置，替换下面的链接
-https://s41.ax1x.com/2026/05/04/pe7jCfe.png
+// ✅ 正确写法：必须写 var wxQrcode = "你的链接"
+var wxQrcode = "https://s41.ax1x.com/2026/05/04/pe7jCfe.png";
 
 function isMobile() {
     return /Android|iPhone|iPad/i.test(navigator.userAgent);
