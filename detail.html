@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>课程详情</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Microsoft YaHei", sans-serif;
+        }
+        body {
+            background: #fff;
+            padding-bottom: 20px;
+        }
+        .header {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            position: sticky;
+            top: 0;
+            background: white;
+            z-index: 99;
+        }
+        .back-btn {
+            font-size: 20px;
+            margin-right: 15px;
+            cursor: pointer;
+        }
+        .header h1 {
+            font-size: 20px;
+            font-weight: bold;
+            text-align: center;
+            flex: 1;
+        }
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid #eee;
+        }
+        .tab-item {
+            flex: 1;
+            text-align: center;
+            padding: 15px 0;
+            font-size: 18px;
+            color: #666;
+        }
+        .tab-item.active {
+            color: #7a67ee;
+            border-bottom: 2px solid #7a67ee;
+        }
+        .course-info {
+            padding: 20px;
+        }
+        .course-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .course-meta {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 20px;
+        }
+        .statement {
+            background: #e02e45;
+            color: white;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+        .content-lock {
+            background: #f3e9e0;
+            padding: 40px 20px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .lock-icon {
+            font-size: 60px;
+            color: #a67c52;
+            margin-bottom: 15px;
+        }
+        .lock-text {
+            font-size: 20px;
+            color: #a67c52;
+        }
+        .history-section {
+            padding: 0 20px;
+            margin-bottom: 30px;
+        }
+        .history-title {
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        .history-item {
+            margin-bottom: 10px;
+            font-size: 16px;
+            color: #333;
+        }
+        .pay-section {
+            padding: 0 20px;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            padding-bottom: 20px;
+            padding-top: 10px;
+            border-top: 1px solid #eee;
+        }
+        .pay-note {
+            color: red;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+        .pay-bar {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .price {
+            font-size: 28px;
+            color: red;
+            font-weight: bold;
+        }
+        .pay-btn {
+            flex: 1;
+            background: #0095ff;
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 5px;
+            font-size: 18px;
+        }
+        .float-back {
+            position: fixed;
+            right: 20px;
+            bottom: 150px;
+            width: 60px;
+            height: 60px;
+            background: rgba(255,255,255,0.8);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+        .float-back span {
+            font-size: 14px;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <div class="back-btn" onclick="history.back()">←</div>
+    <h1>详情</h1>
+</div>
+
+<div class="tabs">
+    <div class="tab-item active">今日更新</div>
+    <div class="tab-item">往期更新</div>
+</div>
+
+<div class="course-info">
+    <div class="course-title">123期 课程名称</div>
+    <div class="course-meta">发布于：2026-05-03 17:09:40 &nbsp;|&nbsp; 201人已购买</div>
+</div>
+
+<div class="statement">
+声明:该文章由作者发布，内容属于知识付费文章，用户购买成功即视为认可作者推荐，并属于个人自愿购买行为，该文章不作任何售后处理，双方产生的交易纠纷与平台无关。
+</div>
+
+<div class="content-lock">
+    <div class="lock-icon">🔒</div>
+    <div class="lock-text">付费即可解锁查看内容</div>
+</div>
+
+<div class="history-section">
+    <div class="history-title">往期记录：</div>
+    <div class="history-item">122期 往期课程名称</div>
+    <div class="history-item">马【37】</div>
+</div>
+
+<div class="pay-section">
+    <div class="pay-note">打赏后重新进来就可以查看内容</div>
+    <div class="pay-bar">
+        <div class="price">¥1699</div>
+        <button class="pay-btn">支付宝打赏</button>
+    </div>
+</div>
+
+<div class="float-back" onclick="history.back()">
+    <span>返回</span>
+</div>
+
+</body>
+</html>
