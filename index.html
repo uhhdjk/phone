@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <!-- 关键：设置和图1一致的移动端视口，控制缩放比例 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>知识付费平台</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Microsoft YaHei", sans-serif;
+        }
+        body {
+            background: #f5f5f5;
+            padding-bottom: 70px;
+            /* 控制整体缩放，和图1保持一致 */
+            max-width: 480px;
+            margin: 0 auto;
+        }
+        /* 顶部导航 */
+        .header {
+            background: white;
+            padding: 12px;
+            text-align: center;
+            border-bottom: 1px solid #eee;
+            position: sticky;
+            top: 0;
+            z-index: 99;
+        }
+        .header h1 {
+            font-size: 20px; /* 缩小标题字体 */
+            font-weight: bold;
+            color: #333;
+        }
+        /* 顶部banner */
+        .banner {
+            background: #e02e45;
+            color: white;
+            padding: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .banner-icon {
+            width: 70px;
+            height: 70px;
+            background: #fff;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #e02e45;
+            font-size: 13px;
+            font-weight: bold;
+        }
+        .banner-info {
+            flex: 1;
+            margin-left: 12px;
+        }
+        .banner-title {
+            font-size: 16px; /* 缩小平台名称字体 */
+            font-weight: bold;
+            margin-bottom: 3px;
+        }
+        .banner-online {
+            font-size: 14px; /* 缩小在线人数字体 */
+            opacity: 0.9;
+        }
+        /* 搜索框 */
+        .search-bar {
+            background: #fff;
+            padding: 10px;
+            display: flex;
+            gap: 8px;
+        }
+        .search-input {
+            flex: 1;
+            padding: 10px 12px;
+            border: 1px solid #eee;
+            border-radius: 20px;
+            font-size: 14px; /* 缩小搜索框字体 */
+        }
+        .search-btn {
+            background: #e02e45;
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 20px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        /* 分类栏 */
+        .category-bar {
+            background: white;
+            display: flex;
+            overflow-x: auto;
+            padding: 8px 0;
+            gap: 12px;
+            border-bottom: 1px solid #eee;
+        }
+        .category-item {
+            flex-shrink: 0;
+            padding: 6px 16px;
+            background: #fff;
+            border-radius: 18px;
+            font-size: 13px; /* 缩小分类字体 */
+            color: #666;
+        }
+        .category-item.active {
+            background: #e02e45;
+            color: white;
+        }
+        /* 课程列表 - 点击跳转样式 */
+        .course-list {
+            padding: 8px;
+        }
+        .course-item {
+            background: white;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer; /* 点击手势 */
+            transition: all 0.2s;
+        }
+        .course-item:active {
+            background: #f8f8f8; /* 点击反馈 */
+        }
+        .course-cover {
+            width: 70px;
+            height: 70px;
+            background: #eee;
+            border-radius: 6px;
+            flex-shrink: 0;
+        }
+        .course-info {
+            flex: 1;
+        }
+        .course-title {
+            font-size: 15px; /* 缩小课程标题字体 */
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #333;
+        }
+        .course-meta {
+            font-size: 13px; /* 缩小发布时间字体 */
+            color: #999;
+            margin-bottom: 5px;
+        }
+        .course-footer {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .course-price {
+            color: #e02e45;
+            font-size: 18px; /* 缩小价格字体 */
+            font-weight: bold;
+        }
+        .course-sales {
+            color: #666;
+            font-size: 13px; /* 缩小销量字体 */
+        }
+        /* 底部导航 */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 8px 0;
+            border-top: 1px solid #eee;
+            max-width: 480px;
+            margin: 0 auto;
+        }
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #666;
+            font-size: 13px; /* 缩小底部导航字体 */
+        }
+        .nav-item.active {
+            color: #e02e45;
+        }
+        .nav-icon {
+            font-size: 20px; /* 缩小底部图标 */
+            margin-bottom: 3px;
+        }
+        /* 电脑端禁止访问 */
+        .forbidden {
+            display: none;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: #f0f0f0;
+            text-align: center;
+            padding: 20px;
+        }
+        .forbidden h1 {
+            color: #ff4444;
+            font-size: 22px;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <!-- 手机端内容 -->
+    <div id="mobile-content">
+        <!-- 顶部标题 -->
+        <div class="header">
+            <h1>知识付费平台</h1>
+        </div>
+
+        <!-- 顶部banner（含在线人数） -->
+        <div class="banner">
+            <div class="banner-icon">发财树</div>
+            <div class="banner-info">
+                <div class="banner-title">平台名称（发财树）</div>
+                <div class="banner-online">在线人数:2286</div>
+            </div>
+        </div>
+
+        <!-- 搜索框 -->
+        <div class="search-bar">
+            <input type="text" class="search-input" placeholder="请输入关键字">
+            <button class="search-btn">搜索</button>
+        </div>
+
+        <!-- 分类栏 -->
+        <div class="category-bar">
+            <div class="category-item active">推荐课程</div>
+            <div class="category-item">热门课程</div>
+            <div class="category-item">新课上线</div>
+            <div class="category-item">限时优惠</div>
+        </div>
+
+        <!-- 课程列表（点击可跳转） -->
+        <div class="course-list">
+            <!-- 课程1：点击跳转示例链接 -->
+            <div class="course-item" onclick="location.href='https://你的课程1详情页链接.com'">
+                <div class="course-cover" style="background: url('你的课程封面图地址') center/cover no-repeat;"></div>
+                <div class="course-info">
+                    <div class="course-title">第1期课程名称（写你的课程名）</div>
+                    <div class="course-meta">发布时间：05-02 14:38</div>
+                    <div class="course-footer">
+                        <span class="course-price">¥1680</span>
+                        <span class="course-sales">已售176份</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 课程2：点击跳转示例链接 -->
+            <div class="course-item" onclick="location.href='https://你的课程2详情页链接.com'">
+                <div class="course-cover" style="background: url('你的课程封面图地址') center/cover no-repeat;"></div>
+                <div class="course-info">
+                    <div class="course-title">第2期课程名称（写你的课程名）</div>
+                    <div class="course-meta">发布时间：05-02 14:31</div>
+                    <div class="course-footer">
+                        <span class="course-price">¥1298</span>
+                        <span class="course-sales">已售188份</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 课程3：点击跳转示例链接 -->
+            <div class="course-item" onclick="location.href='https://你的课程3详情页链接.com'">
+                <div class="course-cover" style="background: url('你的课程封面图地址') center/cover no-repeat;"></div>
+                <div class="course-info">
+                    <div class="course-title">第3期课程名称（写你的课程名）</div>
+                    <div class="course-meta">发布时间：05-01 10:20</div>
+                    <div class="course-footer">
+                        <span class="course-price">¥998</span>
+                        <span class="course-sales">已售256份</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 底部导航 -->
+        <div class="bottom-nav">
+            <div class="nav-item active">
+                <div class="nav-icon">🏠</div>
+                <span>首页</span>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">📋</div>
+                <span>已购物料</span>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">👤</div>
+                <span>我的</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 电脑端禁止访问 -->
+    <div class="forbidden" id="forbidden-content">
+        <div>
+            <h1>❌ 禁止访问</h1>
+            <p>请使用手机扫描二维码访问本页面</p>
+            <p>本平台仅对手机用户开放</p>
+        </div>
+    </div>
+
+    <script>
+        function isMobile() {
+            return /Android|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent);
+        }
+
+        if (isMobile()) {
+            document.getElementById('mobile-content').style.display = 'block';
+            document.getElementById('forbidden-content').style.display = 'none';
+        } else {
+            document.getElementById('mobile-content').style.display = 'none';
+            document.getElementById('forbidden-content').style.display = 'flex';
+        }
+    </script>
+</body>
+</html>
