@@ -3,211 +3,477 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>发财树优质资料</title>
+    <title>知识付费平台</title>
     <style>
         * {
-            margin:0;
-            padding:0;
-            box-sizing:border-box;
-            font-family:"Microsoft YaHei",sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Microsoft YaHei", sans-serif;
         }
         body {
-            background:#f5f5f5;
-            max-width:480px;
-            margin:0 auto;
-        }
-        /* 首页样式 */
-        .header {
-            background:white;
-            padding:12px;
-            text-align:center;
-            border-bottom:1px solid #eee;
-            position:sticky;
-            top:0;
-            z-index:10;
-        }
-        .banner {
-            background:#e02e45;
-            color:white;
-            padding:12px;
-            display:flex;
-            align-items:center;
-        }
-        .banner-icon {
-            width:70px;height:70px;background:white;border-radius:8px;
-            display:flex;align-items:center;justify-content:center;
-            color:#e02e45;font-weight:bold;
-        }
-        .search-bar {
-            background:white;padding:10px;display:flex;gap:8px;
-        }
-        .search-input {
-            flex:1;padding:10px 12px;border:1px solid #eee;border-radius:20px;
-        }
-        .search-btn {
-            background:#e02e45;color:white;border:none;padding:10px 18px;border-radius:20px;
-        }
-        .category-bar {
-            background:white;display:flex;gap:12px;padding:8px 0;
-            border-bottom:1px solid #eee;overflow-x:auto;
-        }
-        .category-item {
-            padding:6px 16px;background:white;border-radius:18px;color:#666;
-            flex-shrink:0;
-        }
-        .category-item.active {
-            background:#e02e45;color:white;
-        }
-        .course-list {
-            padding:8px;
-        }
-        .course-item {
-            background:white;border-radius:8px;padding:12px;margin-bottom:8px;
-            display:flex;align-items:center;gap:12px;cursor:pointer;
-        }
-        .course-cover {
-            width:70px;height:70px;background:#eee;border-radius:6px;
-        }
-        .bottom-nav {
-            position:fixed;bottom:0;left:0;right:0;background:white;
-            display:flex;justify-content:space-around;padding:10px 0;
-            border-top:1px solid #eee;
-        }
-        .nav-item {
-            display:flex;flex-direction:column;align-items:center;color:#666;
-        }
-        .nav-item.active {
-            color:#e02e45;
+            background: #f5f5f5;
+            max-width: 480px;
+            margin: 0 auto;
         }
 
-        /* 详情页样式 */
+        /* 电脑禁止访问 */
+        .forbidden {
+            display: none;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: #f0f0f0;
+            text-align: center;
+        }
+        .forbidden h1 {
+            color: #ff4444;
+            font-size: 22px;
+            margin-bottom: 15px;
+        }
+
+        /* ========== 首页样式 ========== */
+        .home-page {
+            display: block;
+        }
+        .page-title {
+            background: white;
+            padding: 15px;
+            text-align: center;
+            font-size: 22px;
+            font-weight: bold;
+        }
+        .banner {
+            background: #e62b4a;
+            color: white;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .banner-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 8px;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        .banner-icon div {
+            width: 100%;
+            height: 100%;
+            background: #e62b4a;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        .banner-info {
+            flex: 1;
+            margin-left: 12px;
+        }
+        .banner-title {
+            font-size: 22px;
+            font-weight: bold;
+            color: #e62b4a;
+            margin-bottom: 3px;
+        }
+        .banner-online {
+            font-size: 16px;
+            color: #ccc;
+            text-align: right;
+        }
+        .banner-tabs {
+            background: #e62b4a;
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+        }
+        .banner-tab {
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .banner-tab-divider {
+            color: white;
+            font-size: 20px;
+        }
+        .search-bar {
+            background: #e62b4a;
+            padding: 10px;
+            display: flex;
+            gap: 8px;
+        }
+        .search-input {
+            flex: 1;
+            padding: 12px 15px;
+            border: none;
+            border-radius: 25px;
+            font-size: 18px;
+        }
+        .search-btn {
+            background: white;
+            color: #e62b4a;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: bold;
+        }
+        .category-bar {
+            background: white;
+            display: flex;
+            border-bottom: 1px solid #eee;
+        }
+        .tab-item {
+            flex: 1;
+            text-align: center;
+            padding: 15px 0;
+            font-size: 20px;
+            color: #666;
+        }
+        .tab-item.active {
+            color: #e62b4a;
+            border-bottom: 3px solid #e62b4a;
+            font-weight: bold;
+        }
+        .course-list {
+            padding: 10px;
+        }
+        .course-item {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+        .course-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        .course-time {
+            font-size: 16px;
+            color: #999;
+            margin-bottom: 10px;
+        }
+        .course-footer {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .course-price {
+            color: #e62b4a;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .course-sales {
+            color: #666;
+            font-size: 20px;
+        }
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            border-top: 1px solid #eee;
+            max-width: 480px;
+            margin: 0 auto;
+        }
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #666;
+            font-size: 14px;
+        }
+        .nav-item.active {
+            color: #e62b4a;
+        }
+        .nav-icon {
+            font-size: 24px;
+            margin-bottom: 3px;
+        }
+
+        /* ========== 详情页样式 ========== */
         .detail-page {
-            display:none;background:white;min-height:100vh;
+            display: none;
+            background: #fff;
+            min-height: 100vh;
+            padding-bottom: 120px;
         }
         .detail-header {
-            display:flex;align-items:center;padding:15px;
-            border-bottom:1px solid #eee;
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            position: sticky;
+            top: 0;
+            background: white;
+            z-index: 99;
         }
-        .back-btn {
-            font-size:20px;margin-right:15px;cursor:pointer;
+        .detail-back-btn {
+            font-size: 24px;
+            margin-right: 15px;
+            cursor: pointer;
         }
-        .detail-title {
-            padding:20px;font-size:24px;font-weight:bold;
+        .detail-header h1 {
+            flex: 1;
+            text-align: center;
+            font-size: 22px;
+            font-weight: bold;
         }
-        .statement {
-            background:#e02e45;color:white;padding:15px;margin:15px;border-radius:5px;
+        .detail-tabs {
+            display: flex;
+            border-bottom: 1px solid #eee;
         }
-        .lock-box {
-            background:#f3e9e0;padding:40px;text-align:center;margin:15px;
+        .detail-tab {
+            flex: 1;
+            text-align: center;
+            padding: 15px 0;
+            font-size: 20px;
+            color: #666;
         }
-        .float-back {
-            position:fixed;right:20px;bottom:150px;
-            width:60px;height:60px;background:white;border-radius:50%;
-            display:flex;align-items:center;justify-content:center;
-            box-shadow:0 0 10px rgba(0,0,0,0.2);cursor:pointer;
+        .detail-tab.active {
+            color: #7a67ee;
+            border-bottom: 3px solid #7a67ee;
+            font-weight: bold;
         }
-        .forbidden {
-            display:none;justify-content:center;align-items:center;
-            height:100vh;background:#f0f0f0;flex-direction:column;
+        .detail-course-list {
+            padding: 10px;
+        }
+        .detail-course-item {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+        }
+        .detail-course-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        .detail-course-time {
+            font-size: 16px;
+            color: #999;
+        }
+        .float-return-btn {
+            position: fixed;
+            right: 20px;
+            bottom: 180px;
+            font-size: 16px;
+            color: #666;
+            text-align: center;
+            cursor: pointer;
+        }
+        .float-return-btn span {
+            display: block;
+            font-size: 30px;
+        }
+        .promote-btn {
+            position: fixed;
+            right: 20px;
+            bottom: 100px;
+            width: 60px;
+            height: 60px;
+            background: red;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            text-align: center;
+        }
+        .pay-section {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            padding: 15px;
+            border-top: 1px solid #eee;
+            max-width: 480px;
+            margin: 0 auto;
+        }
+        .pay-note {
+            color: red;
+            font-size: 18px;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        .pay-bar {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .price {
+            font-size: 32px;
+            color: red;
+            font-weight: bold;
+        }
+        .pay-btn {
+            flex: 1;
+            background: #0095ff;
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 5px;
+            font-size: 20px;
         }
     </style>
 </head>
-
 <body>
-
-<!-- 电脑禁止访问 -->
-<div class="forbidden" id="pcTip">
-    <h1>❌ 禁止访问</h1>
-    <p>请用手机访问</p>
-</div>
-
-<!-- 首页 -->
-<div id="homePage">
-    <div class="header">
-        <h1>知识付费平台</h1>
-    </div>
-    <div class="banner">
-        <div class="banner-icon">发财树</div>
-        <div style="margin-left:12px;">
-            <div style="font-size:16px;font-weight:bold;">发财树优质资料</div>
-            <div style="font-size:14px;">在线人数:2386</div>
+    <!-- 电脑端禁止访问 -->
+    <div class="forbidden" id="forbidden-content">
+        <div>
+            <h1>❌ 禁止访问</h1>
+            <p>请使用手机扫描二维码访问本页面</p>
+            <p>本平台仅对手机用户开放</p>
         </div>
     </div>
-    <div class="search-bar">
-        <input class="search-input" placeholder="搜索">
-        <button class="search-btn">搜索</button>
-    </div>
-    <div class="category-bar">
-        <div class="category-item active">今日更新</div>
-        <div class="category-item">往期</div>
-    </div>
-    <div class="course-list">
-        <div class="course-item" onclick="showDetail()">
-            <div class="course-cover"></div>
-            <div>
-                <div style="font-weight:bold;">第1期课程</div>
-                <div style="color:#999;margin:5px 0;">发布时间</div>
-                <div style="color:red;font-weight:bold;">¥1680</div>
+
+    <!-- ========== 首页 ========== -->
+    <div class="home-page" id="homePage">
+        <div class="page-title">知识付费平台</div>
+        <div class="banner">
+            <div class="banner-icon">
+                <div>摇钱树</div>
+            </div>
+            <div class="banner-info">
+                <div class="banner-title">摇钱树优质料</div>
+            </div>
+            <div class="banner-online">在线人数:2286</div>
+        </div>
+        <div class="banner-tabs">
+            <div class="banner-tab">主页码</div>
+            <div class="banner-tab-divider">|</div>
+            <div class="banner-tab">联系客服</div>
+        </div>
+        <div class="search-bar">
+            <input type="text" class="search-input" placeholder="请输入关键字">
+            <button class="search-btn">搜索</button>
+        </div>
+        <div class="category-bar">
+            <div class="tab-item active">今日更新</div>
+            <div class="tab-item">专家</div>
+        </div>
+        <div class="course-list">
+            <div class="course-item" onclick="showDetail()">
+                <div class="course-title">122期 新xxx一xxx特</div>
+                <div class="course-time">05-02 14:38</div>
+                <div class="course-footer">
+                    <span class="course-price">¥1699</span>
+                    <span class="course-sales">🛒 194</span>
+                </div>
+            </div>
+            <div class="course-item" onclick="showDetail()">
+                <div class="course-title">122期 新xxx原xxx巧</div>
+                <div class="course-time">05-02 14:34</div>
+                <div class="course-footer">
+                    <span class="course-price">¥1680</span>
+                    <span class="course-sales">🛒 176</span>
+                </div>
+            </div>
+            <div class="course-item" onclick="showDetail()">
+                <div class="course-title">122期 家xxx中xxx要xxx门</div>
+                <div class="course-time">05-02 14:31</div>
+                <div class="course-footer">
+                    <span class="course-price">¥1298</span>
+                    <span class="course-sales">🛒 188</span>
+                </div>
+            </div>
+        </div>
+        <div class="bottom-nav">
+            <div class="nav-item active">
+                <div class="nav-icon">🏠</div>
+                <span>首页</span>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">📋</div>
+                <span>已购物料</span>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">👤</div>
+                <span>我的</span>
             </div>
         </div>
     </div>
-    <div class="bottom-nav">
-        <div class="nav-item active">🏠 首页</div>
-        <div class="nav-item">📋 已购</div>
-        <div class="nav-item">👤 我的</div>
-    </div>
-</div>
 
-<!-- 详情页 -->
-<div id="detailPage" class="detail-page">
-    <div class="detail-header">
-        <div class="back-btn" onclick="goBack()">←</div>
-        <h1>详情</h1>
-    </div>
-    <div class="detail-title">123期 课程名称</div>
-    <div class="statement">
-        声明:内容为知识付费，自愿购买，无售后，与平台无关。
-    </div>
-    <div class="lock-box">
-        <div style="font-size:60px;">🔒</div>
-        <div style="font-size:20px;color:#a67c52;">付费解锁内容</div>
-    </div>
-    <div style="padding:20px;">
-        <div style="font-weight:bold;font-size:20px;margin-bottom:10px;">往期记录</div>
-        <div>122期 课程</div>
-    </div>
-    <div style="position:fixed;bottom:0;left:0;right:0;background:white;padding:15px;border-top:1px solid #eee;">
-        <div style="color:red;margin-bottom:10px;">打赏后可查看</div>
-        <div style="display:flex;align-items:center;gap:15px;">
-            <div style="font-size:28px;color:red;font-weight:bold;">¥1699</div>
-            <button style="flex:1;background:#0095ff;color:white;padding:15px;border:none;border-radius:5px;">支付宝打赏</button>
+    <!-- ========== 详情页 ========== -->
+    <div class="detail-page" id="detailPage">
+        <div class="detail-header">
+            <div class="detail-back-btn" onclick="goBack()">←</div>
+            <h1>详情</h1>
+        </div>
+        <div class="detail-tabs">
+            <div class="detail-tab">今日更新</div>
+            <div class="detail-tab active">往期更新</div>
+        </div>
+        <div class="detail-course-list">
+            <div class="detail-course-item">
+                <div class="detail-course-title">123期 新xxx一xxx</div>
+                <div class="detail-course-time">发布于：05-03 17:09</div>
+            </div>
+            <div class="detail-course-item">
+                <div class="detail-course-title">122期 新xxx原xxx巧</div>
+                <div class="detail-course-time">发布于：05-02 14:38</div>
+            </div>
+            <div class="detail-course-item">
+                <div class="detail-course-title">121期 新xxx直xxx</div>
+                <div class="detail-course-time">发布于：05-01 19:40</div>
+            </div>
+            <div class="detail-course-item">
+                <div class="detail-course-title">120期 新xxx古xxx一xxx</div>
+                <div class="detail-course-time">发布于：04-30 15:45</div>
+            </div>
+            <div class="detail-course-item">
+                <div class="detail-course-title">119期 新xxx特</div>
+                <div class="detail-course-time">发布于：04-29 15:56</div>
+            </div>
+        </div>
+        <div class="float-return-btn" onclick="goBack()">
+            <span>↩️</span>
+            返回
+        </div>
+        <div class="promote-btn">推广</div>
+        <div class="pay-section">
+            <div class="pay-note">打赏后重新进来就可以查看内容</div>
+            <div class="pay-bar">
+                <div class="price">¥1699</div>
+                <button class="pay-btn">支付宝打赏</button>
+            </div>
         </div>
     </div>
-    <div class="float-back" onclick="goBack()">返回</div>
-</div>
 
-<script>
-    // 判断手机/电脑
-    function isMobile(){
-        return /Android|iPhone|iPad/i.test(navigator.userAgent);
-    }
-    if(!isMobile()){
-        document.getElementById("pcTip").style.display="flex";
-        document.getElementById("homePage").style.display="none";
-    }
+    <script>
+        // 判断手机/电脑
+        function isMobile() {
+            return /Android|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent);
+        }
+        if (!isMobile()) {
+            document.getElementById('forbidden-content').style.display = 'flex';
+            document.getElementById('homePage').style.display = 'none';
+        }
 
-    // 显示详情
-    function showDetail(){
-        document.getElementById("homePage").style.display="none";
-        document.getElementById("detailPage").style.display="block";
-    }
+        // 切换到详情页
+        function showDetail() {
+            document.getElementById('homePage').style.display = 'none';
+            document.getElementById('detailPage').style.display = 'block';
+        }
 
-    // 返回首页
-    function goBack(){
-        document.getElementById("detailPage").style.display="none";
-        document.getElementById("homePage").style.display="block";
-    }
-</script>
-
+        // 返回首页
+        function goBack() {
+            document.getElementById('detailPage').style.display = 'none';
+            document.getElementById('homePage').style.display = 'block';
+        }
+    </script>
 </body>
 </html>
