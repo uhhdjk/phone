@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>发财树优质资料</title>
+    <style>
+        * {
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+            font-family:"Microsoft YaHei",sans-serif;
+        }
+        body {
+            background:#f5f5f5;
+            max-width:480px;
+            margin:0 auto;
+        }
+        /* 首页样式 */
+        .header {
+            background:white;
+            padding:12px;
+            text-align:center;
+            border-bottom:1px solid #eee;
+            position:sticky;
+            top:0;
+            z-index:10;
+        }
+        .banner {
+            background:#e02e45;
+            color:white;
+            padding:12px;
+            display:flex;
+            align-items:center;
+        }
+        .banner-icon {
+            width:70px;height:70px;background:white;border-radius:8px;
+            display:flex;align-items:center;justify-content:center;
+            color:#e02e45;font-weight:bold;
+        }
+        .search-bar {
+            background:white;padding:10px;display:flex;gap:8px;
+        }
+        .search-input {
+            flex:1;padding:10px 12px;border:1px solid #eee;border-radius:20px;
+        }
+        .search-btn {
+            background:#e02e45;color:white;border:none;padding:10px 18px;border-radius:20px;
+        }
+        .category-bar {
+            background:white;display:flex;gap:12px;padding:8px 0;
+            border-bottom:1px solid #eee;overflow-x:auto;
+        }
+        .category-item {
+            padding:6px 16px;background:white;border-radius:18px;color:#666;
+            flex-shrink:0;
+        }
+        .category-item.active {
+            background:#e02e45;color:white;
+        }
+        .course-list {
+            padding:8px;
+        }
+        .course-item {
+            background:white;border-radius:8px;padding:12px;margin-bottom:8px;
+            display:flex;align-items:center;gap:12px;cursor:pointer;
+        }
+        .course-cover {
+            width:70px;height:70px;background:#eee;border-radius:6px;
+        }
+        .bottom-nav {
+            position:fixed;bottom:0;left:0;right:0;background:white;
+            display:flex;justify-content:space-around;padding:10px 0;
+            border-top:1px solid #eee;
+        }
+        .nav-item {
+            display:flex;flex-direction:column;align-items:center;color:#666;
+        }
+        .nav-item.active {
+            color:#e02e45;
+        }
+
+        /* 详情页样式 */
+        .detail-page {
+            display:none;background:white;min-height:100vh;
+        }
+        .detail-header {
+            display:flex;align-items:center;padding:15px;
+            border-bottom:1px solid #eee;
+        }
+        .back-btn {
+            font-size:20px;margin-right:15px;cursor:pointer;
+        }
+        .detail-title {
+            padding:20px;font-size:24px;font-weight:bold;
+        }
+        .statement {
+            background:#e02e45;color:white;padding:15px;margin:15px;border-radius:5px;
+        }
+        .lock-box {
+            background:#f3e9e0;padding:40px;text-align:center;margin:15px;
+        }
+        .float-back {
+            position:fixed;right:20px;bottom:150px;
+            width:60px;height:60px;background:white;border-radius:50%;
+            display:flex;align-items:center;justify-content:center;
+            box-shadow:0 0 10px rgba(0,0,0,0.2);cursor:pointer;
+        }
+        .forbidden {
+            display:none;justify-content:center;align-items:center;
+            height:100vh;background:#f0f0f0;flex-direction:column;
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- 电脑禁止访问 -->
+<div class="forbidden" id="pcTip">
+    <h1>❌ 禁止访问</h1>
+    <p>请用手机访问</p>
+</div>
+
+<!-- 首页 -->
+<div id="homePage">
+    <div class="header">
+        <h1>知识付费平台</h1>
+    </div>
+    <div class="banner">
+        <div class="banner-icon">发财树</div>
+        <div style="margin-left:12px;">
+            <div style="font-size:16px;font-weight:bold;">发财树优质资料</div>
+            <div style="font-size:14px;">在线人数:2386</div>
+        </div>
+    </div>
+    <div class="search-bar">
+        <input class="search-input" placeholder="搜索">
+        <button class="search-btn">搜索</button>
+    </div>
+    <div class="category-bar">
+        <div class="category-item active">今日更新</div>
+        <div class="category-item">往期</div>
+    </div>
+    <div class="course-list">
+        <div class="course-item" onclick="showDetail()">
+            <div class="course-cover"></div>
+            <div>
+                <div style="font-weight:bold;">第1期课程</div>
+                <div style="color:#999;margin:5px 0;">发布时间</div>
+                <div style="color:red;font-weight:bold;">¥1680</div>
+            </div>
+        </div>
+    </div>
+    <div class="bottom-nav">
+        <div class="nav-item active">🏠 首页</div>
+        <div class="nav-item">📋 已购</div>
+        <div class="nav-item">👤 我的</div>
+    </div>
+</div>
+
+<!-- 详情页 -->
+<div id="detailPage" class="detail-page">
+    <div class="detail-header">
+        <div class="back-btn" onclick="goBack()">←</div>
+        <h1>详情</h1>
+    </div>
+    <div class="detail-title">123期 课程名称</div>
+    <div class="statement">
+        声明:内容为知识付费，自愿购买，无售后，与平台无关。
+    </div>
+    <div class="lock-box">
+        <div style="font-size:60px;">🔒</div>
+        <div style="font-size:20px;color:#a67c52;">付费解锁内容</div>
+    </div>
+    <div style="padding:20px;">
+        <div style="font-weight:bold;font-size:20px;margin-bottom:10px;">往期记录</div>
+        <div>122期 课程</div>
+    </div>
+    <div style="position:fixed;bottom:0;left:0;right:0;background:white;padding:15px;border-top:1px solid #eee;">
+        <div style="color:red;margin-bottom:10px;">打赏后可查看</div>
+        <div style="display:flex;align-items:center;gap:15px;">
+            <div style="font-size:28px;color:red;font-weight:bold;">¥1699</div>
+            <button style="flex:1;background:#0095ff;color:white;padding:15px;border:none;border-radius:5px;">支付宝打赏</button>
+        </div>
+    </div>
+    <div class="float-back" onclick="goBack()">返回</div>
+</div>
+
+<script>
+    // 判断手机/电脑
+    function isMobile(){
+        return /Android|iPhone|iPad/i.test(navigator.userAgent);
+    }
+    if(!isMobile()){
+        document.getElementById("pcTip").style.display="flex";
+        document.getElementById("homePage").style.display="none";
+    }
+
+    // 显示详情
+    function showDetail(){
+        document.getElementById("homePage").style.display="none";
+        document.getElementById("detailPage").style.display="block";
+    }
+
+    // 返回首页
+    function goBack(){
+        document.getElementById("detailPage").style.display="none";
+        document.getElementById("homePage").style.display="block";
+    }
+</script>
+
+</body>
+</html>
