@@ -26,427 +26,83 @@
             flex-direction: column;
         }
 
-        .home {
-            display: block;
-        }
-        .top-bar {
-            background: #fff;
-            padding: 14px;
-            text-align: center;
-            font-size: 18px;
-            font-weight: bold;
-        }
-        .banner {
-            background: #e02b47;
-            padding: 16px;
-            display: flex;
-            align-items: center;
-            color: #fff;
-        }
-        .logo-box {
-            width: 70px;
-            height: 70px;
-            border-radius: 6px;
-            background: #fff;
-            overflow: hidden;
-        }
-        .logo-box img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        .banner-info {
-            flex: 1;
-            margin-left: 12px;
-        }
-        .banner-title {
-            font-size: 18px;
-            font-weight: bold;
-            color: #fff;
-        }
-        .online-count {
-            font-size: 14px;
-            color: #eee;
-            text-align: right;
-        }
-        .banner-menu {
-            background: #e02b47;
-            display: flex;
-            justify-content: space-around;
-            padding: 10px 0;
-            color: #fff;
-            font-weight: bold;
-        }
-        .search-area {
-            background: #e02b47;
-            padding: 10px;
-            display: flex;
-            gap: 8px;
-        }
-        .search-input {
-            flex: 1;
-            padding: 10px 14px;
-            border-radius: 30px;
-            border: none;
-            outline: none;
-        }
-        .search-btn {
-            background: #fff;
-            color: #e02b47;
-            border: none;
-            border-radius: 30px;
-            padding: 0 16px;
-            font-weight: bold;
-        }
-        .tab-bar {
-            display: flex;
-            background: #fff;
-        }
-        .tab-item {
-            flex: 1;
-            text-align: center;
-            padding: 14px 0;
-            font-size: 16px;
-            color: #666;
-            cursor:pointer;
-        }
-        .tab-item.active {
-            color: #e02b47;
-            font-weight: bold;
-            border-bottom: 3px solid #e02b47;
-        }
-        .course-list {
-            padding: 10px;
-        }
-        .course-item {
-            background: #fff;
-            padding: 16px;
-            border-radius: 10px;
-            margin-bottom: 8px;
-            cursor: pointer;
-        }
-        .course-title {
-            font-size: 18px;
-            font-weight: bold;
-            margin-bottom: 6px;
-        }
-        .course-time {
-            font-size: 14px;
-            color: #999;
-            margin-bottom: 8px;
-        }
-        .course-price {
-            color: #e02b47;
-            font-weight: bold;
-            font-size: 18px;
-        }
-        .footer-nav {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: #fff;
-            display: flex;
-            justify-content: space-around;
-            padding: 10px 0;
-            border-top: 1px solid #eee;
-            max-width: 480px;
-            margin: auto;
-        }
-        .nav-item {
-            text-align: center;
-            font-size: 12px;
-            color: #666;
-        }
+        .home { display: block; }
+        .top-bar { background: #fff; padding: 14px; text-align: center; font-size: 18px; font-weight: bold; }
+        .banner { background: #e02b47; padding: 16px; display: flex; align-items: center; color: #fff; }
+        .logo-box { width: 70px; height: 70px; border-radius: 6px; background: #fff; overflow: hidden; }
+        .logo-box img { width: 100%; height: 100%; object-fit: cover; }
+        .banner-info { flex: 1; margin-left: 12px; }
+        .banner-title { font-size: 18px; font-weight: bold; color: #fff; }
+        .online-count { font-size: 14px; color: #eee; text-align: right; }
+        .banner-menu { background: #e02b47; display: flex; justify-content: space-around; padding: 10px 0; color: #fff; font-weight: bold; }
+        .search-area { background: #e02b47; padding: 10px; display: flex; gap: 8px; }
+        .search-input { flex: 1; padding: 10px 14px; border-radius: 30px; border: none; outline: none; }
+        .search-btn { background: #fff; color: #e02b47; border: none; border-radius: 30px; padding: 0 16px; font-weight: bold; }
+        .tab-bar { display: flex; background: #fff; }
+        .tab-item { flex: 1; text-align: center; padding: 14px 0; font-size: 16px; color: #666; cursor:pointer; }
+        .tab-item.active { color: #e02b47; font-weight: bold; border-bottom: 3px solid #e02b47; }
+        .course-list { padding: 10px; }
+        .course-item { background: #fff; padding: 16px; border-radius: 10px; margin-bottom: 8px; cursor: pointer; }
+        .course-title { font-size: 18px; font-weight: bold; margin-bottom: 6px; }
+        .course-time { font-size: 14px; color: #999; margin-bottom: 8px; }
+        .course-price { color: #e02b47; font-weight: bold; font-size: 18px; }
+        .footer-nav { position: fixed; bottom: 0; left: 0; right: 0; background: #fff; display: flex; justify-content: space-around; padding: 10px 0; border-top: 1px solid #eee; max-width: 480px; margin: auto; }
+        .nav-item { text-align: center; font-size: 12px; color: #666; }
 
-        .detail {
-            display: none;
-            background: #fff;
-            min-height: 100vh;
-            padding-bottom: 120px;
-        }
-        .detail-header {
-            display: flex;
-            align-items: center;
-            padding: 16px;
-            border-bottom: 1px solid #eee;
-            position: sticky;
-            top: 0;
-            background: #fff;
-        }
-        .back-btn {
-            font-size: 20px;
-            margin-right: 16px;
-            cursor: pointer;
-        }
-        .detail-title {
-            flex: 1;
-            text-align: center;
-            font-weight: bold;
-            font-size: 18px;
-        }
-        .detail-tab-bar {
-            display: flex;
-            border-bottom: 1px solid #eee;
-        }
-        .detail-tab {
-            flex: 1;
-            text-align: center;
-            padding: 14px 0;
-            color: #666;
-        }
-        .detail-tab.active {
-            color: #7a67ee;
-            font-weight: bold;
-            border-bottom: 3px solid #7a67ee;
-        }
-        .detail-course-list {
-            padding: 10px;
-        }
-        .detail-course-item {
-            padding: 16px;
-            border-bottom: 1px solid #f0f0f0;
-        }
-        .detail-course-title {
-            font-weight: bold;
-            font-size: 17px;
-            margin-bottom: 6px;
-        }
-        .detail-course-time {
-            font-size: 14px;
-            color: #999;
-        }
-        .float-back {
-            position: fixed;
-            right: 20px;
-            bottom: 170px;
-            width: 50px;
-            height: 50px;
-            background: #fff;
-            border-radius: 50%;
-            box-shadow: 0 0 6px rgba(0,0,0,0.2);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            font-size: 20px;
-        }
+        .detail { display: none; background: #fff; min-height: 100vh; padding-bottom: 120px; }
+        .detail-header { display: flex; align-items: center; padding: 16px; border-bottom: 1px solid #eee; position: sticky; top: 0; background: #fff; }
+        .back-btn { font-size: 20px; margin-right: 16px; cursor: pointer; }
+        .detail-title { flex: 1; text-align: center; font-weight: bold; font-size: 18px; }
+        .detail-tab-bar { display: flex; border-bottom: 1px solid #eee; }
+        .detail-tab { flex: 1; text-align: center; padding: 14px 0; color: #666; }
+        .detail-tab.active { color: #7a67ee; font-weight: bold; border-bottom: 3px solid #7a67ee; }
+        .detail-course-list { padding: 10px; }
+        .detail-course-item { padding: 16px; border-bottom: 1px solid #f0f0f0; }
+        .detail-course-title { font-weight: bold; font-size: 17px; margin-bottom: 6px; }
+        .detail-course-time { font-size: 14px; color: #999; }
+        .float-back { position: fixed; right: 20px; bottom: 170px; width: 50px; height: 50px; background: #fff; border-radius: 50%; box-shadow: 0 0 6px rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 20px; }
 
-        .pay-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.7);
-            z-index: 999;
-            justify-content: center;
-            align-items: center;
-        }
-        .pay-box {
-            background: #fff;
-            width: 80%;
-            border-radius: 10px;
-            padding: 20px;
-            text-align: center;
-        }
-        .pay-title {
-            font-size: 18px;
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
-        .pay-tip {
-            color: red;
-            margin-bottom: 15px;
-            font-size: 15px;
-            line-height: 1.6;
-        }
-        .pay-img {
-            width: 220px;
-            height: 220px;
-            margin: 0 auto;
-        }
-        .pay-img img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-        }
-        .save-btn {
-            background: #07c160;
-            color: #fff;
-            border: none;
-            padding: 11px;
-            border-radius: 6px;
-            margin-top: 12px;
-            width: 100%;
-            font-size: 16px;
-            font-weight: bold;
-        }
-        .close-btn {
-            background: #ccc;
-            margin-top: 8px;
-            padding: 10px;
-            border: none;
-            border-radius: 6px;
-            color: #fff;
-            width: 100%;
-        }
+        .pay-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 999; justify-content: center; align-items: center; }
+        .pay-box { background: #fff; width: 80%; border-radius: 10px; padding: 20px; text-align: center; }
+        .pay-title { font-size: 18px; font-weight: bold; margin-bottom: 10px; }
+        .pay-tip { color: red; margin-bottom: 15px; font-size: 15px; line-height: 1.6; }
+        .pay-img { width: 220px; height: 220px; margin: 0 auto; }
+        .pay-img img { width: 100%; height: 100%; object-fit: contain; }
+        .save-btn { background: #07c160; color: #fff; border: none; padding: 11px; border-radius: 6px; margin-top: 12px; width: 100%; font-size: 16px; font-weight: bold; }
+        .close-btn { background: #ccc; margin-top: 8px; padding: 10px; border: none; border-radius: 6px; color: #fff; width: 100%; }
 
-        /* 👇 这里是我新增的专家页面样式，不影响你原有代码 */
-        .expert-page {
-            display:none;
-            background:#fff;
-            min-height:100vh;
-            padding-bottom:70px;
-        }
-        .expert-header {
-            background:#e02b47;
-            color:#fff;
-            padding:16px;
-            display:flex;
-            align-items:center;
-        }
-        .expert-back {
-            font-size:20px;
-            margin-right:15px;
-            cursor:pointer;
-        }
-        .expert-title {
-            font-size:18px;
-            font-weight:bold;
-        }
-        .expert-item {
-            display:flex;
-            align-items:center;
-            padding:15px;
-            border-bottom:1px solid #eee;
-            cursor:pointer;
-        }
-        .expert-rank {
-            width:35px;
-            height:35px;
-            border-radius:50%;
-            background:#ff6b6b;
-            color:#fff;
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            margin-right:12px;
-            font-weight:bold;
-        }
+        /* 专家页面样式 */
+        .expert-page { display:none; background:#fff; min-height:100vh; padding-bottom:70px; }
+        .expert-header { background:#e02b47; color:#fff; padding:16px; display:flex; align-items:center; }
+        .expert-back { font-size:20px; margin-right:15px; cursor:pointer; }
+        .expert-title { font-size:18px; font-weight:bold; }
+        .expert-item { display:flex; align-items:center; padding:15px; border-bottom:1px solid #eee; cursor:pointer; }
+        .expert-rank { width:35px; height:35px; border-radius:50%; background:#ff6b6b; color:#fff; display:flex; align-items:center; justify-content:center; margin-right:12px; font-weight:bold; }
         .rank1 { background:#ff9c41; }
         .rank2 { background:#a0a0a0; }
         .rank3 { background:#d4af37; }
-        .expert-avatar {
-            width:60px;
-            height:60px;
-            border-radius:50%;
-            overflow:hidden;
-            margin-right:12px;
-        }
-        .expert-avatar img {
-            width:100%;
-            height:100%;
-            object-fit:cover;
-        }
-        .expert-info {
-            flex:1;
-        }
-        .expert-name {
-            font-size:17px;
-            font-weight:bold;
-            margin-bottom:4px;
-        }
-        .expert-desc {
-            font-size:13px;
-            color:#999;
-        }
-        .expert-data {
-            font-size:16px;
-            color:#e02b47;
-            font-weight:bold;
-        }
+        .expert-avatar { width:60px; height:60px; border-radius:50%; overflow:hidden; margin-right:12px; }
+        .expert-avatar img { width:100%; height:100%; object-fit:cover; }
+        .expert-info { flex:1; }
+        .expert-name { font-size:17px; font-weight:bold; margin-bottom:4px; }
+        .expert-desc { font-size:13px; color:#999; }
+        .expert-data { font-size:16px; color:#e02b47; font-weight:bold; }
 
-        /* 👇 专家记录列表页面样式 */
-        .record-page {
-            display:none;
-            background:#fff;
-            min-height:100vh;
-            padding-bottom:20px;
-        }
-        .record-header {
-            display:flex;
-            align-items:center;
-            padding:16px;
-            border-bottom:1px solid #eee;
-        }
-        .record-back {
-            font-size:20px;
-            margin-right:15px;
-            cursor:pointer;
-        }
-        .record-title {
-            font-size:18px;
-            font-weight:bold;
-            flex:1;
-            text-align:center;
-        }
-        .record-user {
-            display:flex;
-            align-items:center;
-            padding:15px;
-            border-bottom:1px solid #eee;
-        }
-        .record-user-avatar {
-            width:60px;
-            height:60px;
-            border-radius:50%;
-            overflow:hidden;
-            margin-right:12px;
-        }
-        .record-user-avatar img {
-            width:100%;
-            height:100%;
-            object-fit:cover;
-        }
-        .record-user-name {
-            font-size:18px;
-            font-weight:bold;
-        }
-        .record-user-tag {
-            font-size:14px;
-            color:#999;
-        }
-        .record-item {
-            display:flex;
-            align-items:center;
-            padding:15px;
-            border-bottom:1px solid #eee;
-        }
-        .record-info {
-            flex:1;
-        }
-        .record-text {
-            font-size:16px;
-            font-weight:bold;
-            margin-bottom:4px;
-        }
-        .record-time {
-            font-size:14px;
-            color:#999;
-        }
-        .record-red {
-            width:50px;
-            height:50px;
-            border-radius:50%;
-            border:2px solid #e02b47;
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            color:#e02b47;
-            font-weight:bold;
-        }
+        /* 记录列表样式 */
+        .record-page { display:none; background:#fff; min-height:100vh; padding-bottom:20px; }
+        .record-header { display:flex; align-items:center; padding:16px; border-bottom:1px solid #eee; }
+        .record-back { font-size:20px; margin-right:15px; cursor:pointer; }
+        .record-title { font-size:18px; font-weight:bold; flex:1; text-align:center; }
+        .record-user { display:flex; align-items:center; padding:15px; border-bottom:1px solid #eee; }
+        .record-user-avatar { width:60px; height:60px; border-radius:50%; overflow:hidden; margin-right:12px; }
+        .record-user-avatar img { width:100%; height:100%; object-fit:cover; }
+        .record-user-name { font-size:18px; font-weight:bold; }
+        .record-user-tag { font-size:14px; color:#999; }
+        .record-item { display:flex; align-items:center; padding:15px; border-bottom:1px solid #eee; }
+        .record-info { flex:1; }
+        .record-text { font-size:16px; font-weight:bold; margin-bottom:4px; }
+        .record-time { font-size:14px; color:#999; }
+        .record-red { width:50px; height:50px; border-radius:50%; border:2px solid #e02b47; display:flex; align-items:center; justify-content:center; color:#e02b47; font-weight:bold; }
     </style>
 </head>
 
@@ -469,9 +125,7 @@
         </div>
     </div>
     <div class="banner-menu">
-        <div>主页码</div>
-        <div>|</div>
-        <div>联系客服</div>
+        <div>主页码</div><div>|</div><div>联系客服</div>
     </div>
     <div class="search-area">
         <input type="text" class="search-input" placeholder="请输入关键字">
@@ -483,21 +137,9 @@
     </div>
 
     <div class="course-list">
-        <div class="course-item" onclick="goDetail()"><div class="course-title">第01期 精品课件</div><div class="course-time">05-01 10:00</div><div class="course-price">¥1699</div></div>
-        <div class="course-item" onclick="goDetail()"><div class="course-title">第02期 精品课件</div><div class="course-time">05-02 11:00</div><div class="course-price">¥1699</div></div>
-        <div class="course-item" onclick="goDetail()"><div class="course-title">第03期 精品课件</div><div class="course-time">05-03 12:00</div><div class="course-price">¥1699</div></div>
-        <div class="course-item" onclick="goDetail()"><div class="course-title">第04期 精品课件</div><div class="course-time">05-04 13:00</div><div class="course-price">¥1699</div></div>
-        <div class="course-item" onclick="goDetail()"><div class="course-title">第05期 精品课件</div><div class="course-time">05-05 14:00</div><div class="course-price">¥1699</div></div>
-        <div class="course-item" onclick="goDetail()"><div class="course-title">第06期 精品课件</div><div class="course-time">05-06 15:00</div><div class="course-price">¥1699</div></div>
-        <div class="course-item" onclick="goDetail()"><div class="course-title">第07期 精品课件</div><div class="course-time">05-07 16:00</div><div class="course-price">¥1699</div></div>
-        <div class="course-item" onclick="goDetail()"><div class="course-title">第08期 精品课件</div><div class="course-time">05-08 09:00</div><div class="course-price">¥1699</div></div>
-        <div class="course-item" onclick="goDetail()"><div class="course-title">第09期 精品课件</div><div class="course-time">05-09 10:00</div><div class="course-price">¥1699</div></div>
-        <div class="course-item" onclick="goDetail()"><div class="course-title">第10期 精品课件</div><div class="course-time">05-10 11:00</div><div class="course-price">¥1699</div></div>
-        <div class="course-item" onclick="goDetail()"><div class="course-title">第11期 精品课件</div><div class="course-time">05-11 14:00</div><div class="course-price">¥1699</div></div>
-        <div class="course-item" onclick="goDetail()"><div class="course-title">第12期 精品课件</div><div class="course-time">05-12 15:00</div><div class="course-price">¥1699</div></div>
-        <div class="course-item" onclick="goDetail()"><div class="course-title">第13期 精品课件</div><div class="course-time">05-13 16:00</div><div class="course-price">¥1699</div></div>
-        <div class="course-item" onclick="goDetail()"><div class="course-title">第14期 精品课件</div><div class="course-time">05-14 09:30</div><div class="course-price">¥1699</div></div>
-        <div class="course-item" onclick="goDetail()"><div class="course-title">第15期 精品课件</div><div class="course-time">05-15 10:30</div><div class="course-price">¥1699</div></div>
+        <div class="course-item" onclick="goDetail()"><div class="course-title">第01期 精品课件</div><div class="course-time">2026-05-20 10:00</div><div class="course-price">¥1699</div></div>
+        <div class="course-item" onclick="goDetail()"><div class="course-title">第02期 精品课件</div><div class="course-time">2026-05-19 11:00</div><div class="course-price">¥1699</div></div>
+        <div class="course-item" onclick="goDetail()"><div class="course-title">第03期 精品课件</div><div class="course-time auto-time"></div><div class="course-price">¥1699</div></div>
     </div>
 
     <div class="footer-nav">
@@ -507,145 +149,35 @@
     </div>
 </div>
 
-<!-- 👇 专家页面 -->
+<!-- 专家页面 -->
 <div class="expert-page" id="expertPage">
     <div class="expert-header">
         <div class="expert-back" onclick="goHome()">←</div>
         <div class="expert-title">专家列表</div>
     </div>
-
     <div class="expert-item" onclick="goRecord()">
         <div class="expert-rank rank1">1</div>
-        <div class="expert-avatar">
-            <img src="https://s41.ax1x.com/2026/05/04/pe7jCfe.png">
-        </div>
-        <div class="expert-info">
-            <div class="expert-name">天天爆富</div>
-            <div class="expert-desc">认证专家</div>
-        </div>
+        <div class="expert-avatar"><img src="https://s41.ax1x.com/2026/05/04/pe7jCfe.png"></div>
+        <div class="expert-info"><div class="expert-name">天天爆富</div><div class="expert-desc">认证专家</div></div>
         <div class="expert-data">16连红</div>
-    </div>
-    <div class="expert-item" onclick="goRecord()">
-        <div class="expert-rank rank2">2</div>
-        <div class="expert-avatar">
-            <img src="https://s41.ax1x.com/2026/05/04/pe7jCfe.png">
-        </div>
-        <div class="expert-info">
-            <div class="expert-name">澳财神</div>
-            <div class="expert-desc">认证专家</div>
-        </div>
-        <div class="expert-data">16连红</div>
-    </div>
-    <div class="expert-item" onclick="goRecord()">
-        <div class="expert-rank rank3">3</div>
-        <div class="expert-avatar">
-            <img src="https://s41.ax1x.com/2026/05/04/pe7jCfe.png">
-        </div>
-        <div class="expert-info">
-            <div class="expert-name">吉祥鸟</div>
-            <div class="expert-desc">认证专家</div>
-        </div>
-        <div class="expert-data">16连红</div>
-    </div>
-    <div class="expert-item" onclick="goRecord()">
-        <div class="expert-rank">4</div>
-        <div class="expert-avatar">
-            <img src="https://s41.ax1x.com/2026/05/04/pe7jCfe.png">
-        </div>
-        <div class="expert-info">
-            <div class="expert-name">好运来</div>
-            <div class="expert-desc">认证专家</div>
-        </div>
-        <div class="expert-data">13连红</div>
-    </div>
-    <div class="expert-item" onclick="goRecord()">
-        <div class="expert-rank rank1">5</div>
-        <div class="expert-avatar">
-            <img src="https://s41.ax1x.com/2026/05/04/pe7jCfe.png">
-        </div>
-        <div class="expert-info">
-            <div class="expert-name">吉祥虎</div>
-            <div class="expert-desc">认证专家</div>
-        </div>
-        <div class="expert-data">15连红</div>
-    </div>
-    <div class="expert-item" onclick="goRecord()">
-        <div class="expert-rank rank1">6</div>
-        <div class="expert-avatar">
-            <img src="https://s41.ax1x.com/2026/05/04/pe7jCfe.png">
-        </div>
-        <div class="expert-info">
-            <div class="expert-name">三太仙</div>
-            <div class="expert-desc">认证专家</div>
-        </div>
-        <div class="expert-data">12连红</div>
-    </div>
-    <div class="expert-item" onclick="goRecord()">
-        <div class="expert-rank rank1">7</div>
-        <div class="expert-avatar">
-            <img src="https://s41.ax1x.com/2026/05/04/pe7jCfe.png">
-        </div>
-        <div class="expert-info">
-            <div class="expert-name">招财宝</div>
-            <div class="expert-desc">认证专家</div>
-        </div>
-        <div class="expert-data">12连红</div>
-    </div>
-    <div class="expert-item" onclick="goRecord()">
-        <div class="expert-rank rank1">8</div>
-        <div class="expert-avatar">
-            <img src="https://s41.ax1x.com/2026/05/04/pe7jCfe.png">
-        </div>
-        <div class="expert-info">
-            <div class="expert-name">星爷</div>
-            <div class="expert-desc">认证专家</div>
-        </div>
-        <div class="expert-data">10连红</div>
-    </div>
-    <div class="expert-item" onclick="goRecord()">
-        <div class="expert-rank rank1">9</div>
-        <div class="expert-avatar">
-            <img src="https://s41.ax1x.com/2026/05/04/pe7jCfe.png">
-        </div>
-        <div class="expert-info">
-            <div class="expert-name">鸿运当头</div>
-            <div class="expert-desc">认证专家</div>
-        </div>
-        <div class="expert-data">10连红</div>
-    </div>
-    <div class="expert-item" onclick="goRecord()">
-        <div class="expert-rank rank1">10</div>
-        <div class="expert-avatar">
-            <img src="https://s41.ax1x.com/2026/05/04/pe7jCfe.png">
-        </div>
-        <div class="expert-info">
-            <div class="expert-name">王朝暴君</div>
-            <div class="expert-desc">认证专家</div>
-        </div>
-        <div class="expert-data">8连红</div>
     </div>
 </div>
 
-<!-- 👇 专家记录列表页面 -->
+<!-- 记录列表页面 -->
 <div class="record-page" id="recordPage">
     <div class="record-header">
         <div class="record-back" onclick="goExpert()">←</div>
         <div class="record-title">记录列表</div>
     </div>
     <div class="record-user">
-        <div class="record-user-avatar">
-            <img src="https://s41.ax1x.com/2026/05/04/pe7jCfe.png">
-        </div>
-        <div>
-            <div class="record-user-name">天天爆富</div>
-            <div class="record-user-tag">认证专家</div>
-        </div>
+        <div class="record-user-avatar"><img src="https://s41.ax1x.com/2026/05/04/pe7jCfe.png"></div>
+        <div><div class="record-user-name">天天爆富</div><div class="record-user-tag">认证专家</div></div>
     </div>
 
     <div class="record-item">
         <div class="record-info">
             <div class="record-text">122期 【天天爆富】八码中特</div>
-            <div class="record-time" id="time1"></div>
+            <div class="record-time auto-time"></div>
         </div>
         <div class="record-red">红</div>
     </div>
@@ -653,25 +185,6 @@
         <div class="record-info">
             <div class="record-text">116期 【天天爆富】八码中特</div>
             <div class="record-time">2026-04-26 15:51:15</div>
-        </div>
-        <div class="record-red">红</div>
-    </div>
-    <div class="record-item">
-        <div class="record-info">
-            <div class="record-text">114期 【天天爆富】八码中特</div>
-            <div class="record-time">2026-04-24 16:27:22</div>
-        </div>
-    </div>
-    <div class="record-item">
-        <div class="record-info">
-            <div class="record-text">098期 【天天爆富】八码中特</div>
-            <div class="record-time">2026-04-08 16:28:56</div>
-        </div>
-    </div>
-    <div class="record-item">
-        <div class="record-info">
-            <div class="record-text">093期 【天天爆富】八码中特</div>
-            <div class="record-time">2026-04-03 16:48:55</div>
         </div>
         <div class="record-red">红</div>
     </div>
@@ -687,21 +200,8 @@
         <div class="detail-tab active">往期更新</div>
     </div>
     <div class="detail-course-list">
-        <div class="detail-course-item"><div class="detail-course-title">123期 新课资料</div><div class="detail-course-time">发布于：05-03 17:09</div></div>
-        <div class="detail-course-item"><div class="detail-course-title">122期 原创技巧</div><div class="detail-course-time">发布于：05-02 14:38</div></div>
-        <div class="detail-course-item"><div class="detail-course-title">121期 原创技巧</div><div class="detail-course-time">发布于：05-02 14:38</div></div>
-        <div class="detail-course-item"><div class="detail-course-title">120期 新课资料</div><div class="detail-course-time">发布于：05-03 17:09</div></div>
-        <div class="detail-course-item"><div class="detail-course-title">119期 原创技巧</div><div class="detail-course-time">发布于：05-02 14:38</div></div>
-        <div class="detail-course-item"><div class="detail-course-title">118期 原创技巧</div><div class="detail-course-time">发布于：05-02 14:38</div></div>
-        <div class="detail-course-item"><div class="detail-course-title">117期 新课资料</div><div class="detail-course-time">发布于：05-03 17:09</div></div>
-        <div class="detail-course-item"><div class="detail-course-title">116期 原创技巧</div><div class="detail-course-time">发布于：05-02 14:38</div></div>
-        <div class="detail-course-item"><div class="detail-course-title">115期 原创技巧</div><div class="detail-course-time">发布于：05-02 14:38</div></div>
-        <div class="detail-course-item"><div class="detail-course-title">114期 新课资料</div><div class="detail-course-time">发布于：05-03 17:09</div></div>
-        <div class="detail-course-item"><div class="detail-course-title">113期 原创技巧</div><div class="detail-course-time">发布于：05-02 14:38</div></div>
-        <div class="detail-course-item"><div class="detail-course-title">112期 原创技巧</div><div class="detail-course-time">发布于：05-02 14:38</div></div>
-        <div class="detail-course-item"><div class="detail-course-title">111期 新课资料</div><div class="detail-course-time">发布于：05-03 17:09</div></div>
-        <div class="detail-course-item"><div class="detail-course-title">110期 原创技巧</div><div class="detail-course-time">发布于：05-02 14:38</div></div>
-        <div class="detail-course-item"><div class="detail-course-title">109期 原创技巧</div><div class="detail-course-time">发布于：05-02 14:38</div></div>
+        <div class="detail-course-item"><div class="detail-course-title">123期 新课资料</div><div class="detail-course-time auto-time"></div></div>
+        <div class="detail-course-item"><div class="detail-course-title">122期 原创技巧</div><div class="detail-course-time">2026-05-02 14:38</div></div>
     </div>
     <div class="float-back" onclick="goHome()">↩️</div>
 
@@ -714,14 +214,8 @@
 <div class="pay-modal" id="payModal">
     <div class="pay-box">
         <div class="pay-title">请扫码支付 1699 元</div>
-        <div class="pay-tip">
-            1. 【平台限制】点击【保存收款码】<br>
-            2. 打开微信 → 扫一扫 → 相册<br>
-            3. 选择图片完成付款
-        </div>
-        <div class="pay-img">
-            <img id="payImg" src="">
-        </div>
+        <div class="pay-tip">1. 【平台限制】点击【保存收款码】<br>2. 打开微信 → 扫一扫 → 相册<br>3. 选择图片完成付款</div>
+        <div class="pay-img"><img id="payImg" src=""></div>
         <button class="save-btn" onclick="saveQrcode()">💾 保存收款码到手机</button>
         <button class="close-btn" onclick="closePay()">关闭</button>
     </div>
@@ -730,34 +224,43 @@
 <script>
 var wxQrcode = "https://s41.ax1x.com/2026/05/04/pe7j01J.png";
 
-// 北京时间格式化函数
-function getBeijingTime() {
-    const now = new Date();
-    const year = now.getFullYear();
-    const month = String(now.getMonth() + 1).padStart(2, '0');
-    const day = String(now.getDate()).padStart(2, '0');
-    const hours = String(now.getHours()).padStart(2, '0');
-    const minutes = String(now.getMinutes()).padStart(2, '0');
-    const seconds = String(now.getSeconds()).padStart(2, '0');
-    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+// 获取北京时间
+function getNow() {
+    const d = new Date();
+    const y = d.getFullYear();
+    const m = String(d.getMonth()+1).padStart(2,'0');
+    const day = String(d.getDate()).padStart(2,'0');
+    const h = String(d.getHours()).padStart(2,'0');
+    const i = String(d.getMinutes()).padStart(2,'0');
+    const s = String(d.getSeconds()).padStart(2,'0');
+    return `${y}-${m}-${day} ${h}:${i}:${s}`;
+}
+
+// 自动给所有 class="auto-time" 的元素填充北京时间
+function syncAutoTime() {
+    document.querySelectorAll('.auto-time').forEach(el => {
+        el.innerText = getNow();
+    });
 }
 
 function isMobile() {
     return /Android|iPhone|iPad/i.test(navigator.userAgent);
 }
+
 window.onload = function() {
     if (!isMobile()) {
         document.getElementById("pcTip").style.display = "flex";
         document.getElementById("home").style.display = "none";
     }
-    // 页面加载时自动设置最新时间
-    document.getElementById("time1").innerText = getBeijingTime();
-}
+    syncAutoTime(); // 页面加载自动同步
+};
+
 function goDetail() {
     document.getElementById("home").style.display = "none";
     document.getElementById("detail").style.display = "block";
     document.getElementById("expertPage").style.display = "none";
     document.getElementById("recordPage").style.display = "none";
+    syncAutoTime();
 }
 function goHome() {
     document.getElementById("detail").style.display = "none";
@@ -766,6 +269,7 @@ function goHome() {
     document.getElementById("home").style.display = "block";
     document.querySelectorAll(".tab-item")[0].classList.add("active");
     document.querySelectorAll(".tab-item")[1].classList.remove("active");
+    syncAutoTime();
 }
 function showPay() {
     document.getElementById("payImg").src = wxQrcode;
@@ -782,8 +286,6 @@ function saveQrcode() {
     a.click();
     alert("已保存！请去微信扫一扫付款");
 }
-
-// 👇 专家页切换
 function showExpert(){
     document.getElementById("home").style.display = "none";
     document.getElementById("detail").style.display = "none";
@@ -791,19 +293,15 @@ function showExpert(){
     document.getElementById("expertPage").style.display = "block";
     document.querySelectorAll(".tab-item")[0].classList.remove("active");
     document.querySelectorAll(".tab-item")[1].classList.add("active");
+    syncAutoTime();
 }
-function showHome(){
-    goHome();
-}
-
-// 👇 跳转到记录列表
+function showHome(){ goHome(); }
 function goRecord(){
     document.getElementById("home").style.display = "none";
     document.getElementById("detail").style.display = "none";
     document.getElementById("expertPage").style.display = "none";
     document.getElementById("recordPage").style.display = "block";
-    // 进入记录页时自动刷新最新时间
-    document.getElementById("time1").innerText = getBeijingTime();
+    syncAutoTime();
 }
 function goExpert(){
     document.getElementById("home").style.display = "none";
@@ -812,6 +310,5 @@ function goExpert(){
     document.getElementById("expertPage").style.display = "block";
 }
 </script>
-
 </body>
 </html>
