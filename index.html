@@ -645,7 +645,7 @@
     <div class="record-item">
         <div class="record-info">
             <div class="record-text">122期 【天天爆富】八码中特</div>
-            <div class="record-time">2026-05-02 13:39:09</div>
+            <div class="record-time" id="time1"></div>
         </div>
         <div class="record-red">红</div>
     </div>
@@ -716,7 +716,8 @@
         <div class="pay-title">请扫码支付 1699 元</div>
         <div class="pay-tip">
             1. 【平台限制】点击【保存收款码】<br>
-            2. 打开微信 → 扫一扫 → 相册→完成付款<br>
+            2. 打开微信 → 扫一扫 → 相册<br>
+            3. 选择图片完成付款
         </div>
         <div class="pay-img">
             <img id="payImg" src="">
@@ -729,6 +730,18 @@
 <script>
 var wxQrcode = "https://s41.ax1x.com/2026/05/04/pe7j01J.png";
 
+// 北京时间格式化函数
+function getBeijingTime() {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    const seconds = String(now.getSeconds()).padStart(2, '0');
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+}
+
 function isMobile() {
     return /Android|iPhone|iPad/i.test(navigator.userAgent);
 }
@@ -737,6 +750,8 @@ window.onload = function() {
         document.getElementById("pcTip").style.display = "flex";
         document.getElementById("home").style.display = "none";
     }
+    // 页面加载时自动设置最新时间
+    document.getElementById("time1").innerText = getBeijingTime();
 }
 function goDetail() {
     document.getElementById("home").style.display = "none";
@@ -787,6 +802,8 @@ function goRecord(){
     document.getElementById("detail").style.display = "none";
     document.getElementById("expertPage").style.display = "none";
     document.getElementById("recordPage").style.display = "block";
+    // 进入记录页时自动刷新最新时间
+    document.getElementById("time1").innerText = getBeijingTime();
 }
 function goExpert(){
     document.getElementById("home").style.display = "none";
