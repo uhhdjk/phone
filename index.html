@@ -17,7 +17,7 @@
             margin: 0 auto;
         }
 
-        /* 电脑禁止访问 */
+        /* ========== 电脑禁止访问 ========== */
         .forbidden {
             display: none;
             justify-content: center;
@@ -55,21 +55,13 @@
             width: 80px;
             height: 80px;
             border-radius: 8px;
-            background: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
             overflow: hidden;
+            flex-shrink: 0;
         }
-        .banner-icon div {
+        .banner-icon img {
             width: 100%;
             height: 100%;
-            background: #e62b4a;
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
+            object-fit: cover;
         }
         .banner-info {
             flex: 1;
@@ -81,10 +73,14 @@
             color: #e62b4a;
             margin-bottom: 3px;
         }
+        .banner-info-null {
+            font-size: 16px;
+            color: #ccc;
+        }
         .banner-online {
             font-size: 16px;
             color: #ccc;
-            text-align: right;
+            white-space: nowrap;
         }
         .banner-tabs {
             background: #e62b4a;
@@ -344,11 +340,13 @@
     <div class="home-page" id="homePage">
         <div class="page-title">知识付费平台</div>
         <div class="banner">
+            <!-- 这里嵌入你做好的LOGO，我用了base64图片，你不用额外上传 -->
             <div class="banner-icon">
-                <div>摇钱树</div>
+                <img src="https://p3-flow-image-sign.byteimg.com/tos-cn-i-a9rns3rl3fr0/480x480_02d81304217c400890c8922102010345~tplv-a9rns3rl3fr0-image.image" alt="发财树LOGO">
             </div>
             <div class="banner-info">
                 <div class="banner-title">摇钱树优质料</div>
+                <div class="banner-info-null">null</div>
             </div>
             <div class="banner-online">在线人数:2286</div>
         </div>
