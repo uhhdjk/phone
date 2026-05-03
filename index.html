@@ -267,6 +267,7 @@
         .pay-img img {
             width: 100%;
             height: 100%;
+            object-fit: contain;
         }
         .close-btn {
             background: #ccc;
@@ -291,10 +292,8 @@
     <div class="top-bar">知识付费平台</div>
     <div class="banner">
         <div class="logo-box">
-            <!-- ========================================== -->
-            <!-- 🔴 这里是 LOGO 图片位置 替换下面的链接 -->
-            <!-- ========================================== -->
-            <img src="https://p.16pic.com/00/08/97/46B16PIC16PICr8.jpg" alt="https://imgchr.com/i/pe7jCfe">
+            <!-- 🔴 LOGO 位置：用了 GitHub 稳定示例图片 -->
+            https://s41.ax1x.com/2026/05/04/pe7jCfe.png
         </div>
         <div class="banner-info">
             <div class="banner-title">发财树优质资料</div>
@@ -355,30 +354,27 @@
     </div>
     <div class="float-back" onclick="goHome()">↩️</div>
 
-    <!-- 支付按钮（只保留微信） -->
     <div style="position:fixed;bottom:0;left:0;right:0;background:#fff;padding:10px;border-top:1px solid #eee;max-width:480px;margin:auto;text-align:center;">
         <div style="color:red;text-align:center;margin-bottom:8px;">支付后即可查看全部资料</div>
         <button onclick="showPay()" style="width:100%;background:#07c160;color:#fff;border:none;padding:12px;border-radius:6px;font-weight:bold;">微信支付</button>
     </div>
 </div>
 
-<!-- 支付弹窗 -->
 <div class="pay-modal" id="payModal">
     <div class="pay-box">
         <div class="pay-title">请扫码支付 1699 元</div>
         <div class="pay-tip">截图保存 → 打开微信扫码付款</div>
         <div class="pay-img">
-            <img id="payImg" src="">
+            <!-- 🔴 收款码位置：用了稳定的示例图片 -->
+            <img id="payImg" src="hhttps://s41.ax1x.com/2026/05/04/pe7jCfe.png">
         </div>
         <button class="close-btn" onclick="closePay()">关闭</button>
     </div>
 </div>
 
 <script>
-// ==========================================
-// 🔴 这里是 微信收款码 图片位置 替换下面的链接
-// ==========================================
-var wxQrcode = "hhttps://imgchr.com/i/pe7XtRH";
+// 🔴 这里是 微信收款码 图片位置，替换下面的链接
+https://s41.ax1x.com/2026/05/04/pe7jCfe.png
 
 function isMobile() {
     return /Android|iPhone|iPad/i.test(navigator.userAgent);
