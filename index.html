@@ -258,10 +258,12 @@
         .pay-tip {
             color: red;
             margin-bottom: 15px;
+            font-size: 15px;
+            line-height: 1.6;
         }
         .pay-img {
-            width: 200px;
-            height: 200px;
+            width: 220px;
+            height: 220px;
             margin: 0 auto;
         }
         .pay-img img {
@@ -269,10 +271,21 @@
             height: 100%;
             object-fit: contain;
         }
+        .save-btn {
+            background: #07c160;
+            color: #fff;
+            border: none;
+            padding: 11px;
+            border-radius: 6px;
+            margin-top: 12px;
+            width: 100%;
+            font-size: 16px;
+            font-weight: bold;
+        }
         .close-btn {
             background: #ccc;
-            margin-top: 10px;
-            padding: 8px;
+            margin-top: 8px;
+            padding: 10px;
             border: none;
             border-radius: 6px;
             color: #fff;
@@ -292,7 +305,6 @@
     <div class="top-bar">知识付费平台</div>
     <div class="banner">
         <div class="logo-box">
-            <!-- ✅ 正确的 LOGO 写法 -->
             <img src="https://s41.ax1x.com/2026/05/04/pe7jCfe.png" alt="LOGO">
         </div>
         <div class="banner-info">
@@ -351,29 +363,46 @@
     <div class="detail-course-list">
         <div class="detail-course-item"><div class="detail-course-title">123期 新课资料</div><div class="detail-course-time">发布于：05-03 17:09</div></div>
         <div class="detail-course-item"><div class="detail-course-title">122期 原创技巧</div><div class="detail-course-time">发布于：05-02 14:38</div></div>
+        <div class="detail-course-item"><div class="detail-course-title">121期 原创技巧</div><div class="detail-course-time">发布于：05-02 14:38</div></div>
+        <div class="detail-course-item"><div class="detail-course-title">120期 新课资料</div><div class="detail-course-time">发布于：05-03 17:09</div></div>
+        <div class="detail-course-item"><div class="detail-course-title">1219期 原创技巧</div><div class="detail-course-time">发布于：05-02 14:38</div></div>
+        <div class="detail-course-item"><div class="detail-course-title">118期 原创技巧</div><div class="detail-course-time">发布于：05-02 14:38</div></div>
+        <div class="detail-course-item"><div class="detail-course-title">117期 新课资料</div><div class="detail-course-time">发布于：05-03 17:09</div></div>
+        <div class="detail-course-item"><div class="detail-course-title">116期 原创技巧</div><div class="detail-course-time">发布于：05-02 14:38</div></div>
+        <div class="detail-course-item"><div class="detail-course-title">115期 原创技巧</div><div class="detail-course-time">发布于：05-02 14:38</div></div>
+        <div class="detail-course-item"><div class="detail-course-title">114期 新课资料</div><div class="detail-course-time">发布于：05-03 17:09</div></div>
+        <div class="detail-course-item"><div class="detail-course-title">113期 原创技巧</div><div class="detail-course-time">发布于：05-02 14:38</div></div>
+        <div class="detail-course-item"><div class="detail-course-title">112期 原创技巧</div><div class="detail-course-time">发布于：05-02 14:38</div></div>
+        <div class="detail-course-item"><div class="detail-course-title">111期 新课资料</div><div class="detail-course-time">发布于：05-03 17:09</div></div>
+        <div class="detail-course-item"><div class="detail-course-title">110期 原创技巧</div><div class="detail-course-time">发布于：05-02 14:38</div></div>
+        <div class="detail-course-item"><div class="detail-course-title">109期 原创技巧</div><div class="detail-course-time">发布于：05-02 14:38</div></div>
     </div>
     <div class="float-back" onclick="goHome()">↩️</div>
 
     <div style="position:fixed;bottom:0;left:0;right:0;background:#fff;padding:10px;border-top:1px solid #eee;max-width:480px;margin:auto;text-align:center;">
         <div style="color:red;text-align:center;margin-bottom:8px;">支付后即可查看全部资料</div>
-        <button onclick="showPay()" style="width:100%;background:#07c160;color:#fff;border:none;padding:12px;border-radius:6px;font-weight:bold;">微信支付</button>
+        <button onclick="showPay()" style="width:100%;background:#07c160;color:#fff;border:none;padding:12px;border-radius:6px;font-weight:bold;font-size:16px;">微信支付</button>
     </div>
 </div>
 
 <div class="pay-modal" id="payModal">
     <div class="pay-box">
         <div class="pay-title">请扫码支付 1699 元</div>
-        <div class="pay-tip">截图保存 → 打开微信扫码付款</div>
+        <div class="pay-tip">
+            1. 【平台限制】点击【保存收款码】<br>
+            2. 打开微信 → 扫一扫 → 相册<br>
+            3. 选择图片完成付款
+        </div>
         <div class="pay-img">
             <img id="payImg" src="">
         </div>
+        <button class="save-btn" onclick="saveQrcode()">💾 保存收款码到手机</button>
         <button class="close-btn" onclick="closePay()">关闭</button>
     </div>
 </div>
 
 <script>
-// ✅ 正确写法：必须写 var wxQrcode = "你的链接"
-var wxQrcode = "https://s41.ax1x.com/2026/05/04/pe7j01J.png";
+var wxQrcode = "https://s41.ax1x.com/2026/05/04/pe7jCfe.png";
 
 function isMobile() {
     return /Android|iPhone|iPad/i.test(navigator.userAgent);
@@ -398,6 +427,14 @@ function showPay() {
 }
 function closePay() {
     document.getElementById("payModal").style.display = "none";
+}
+function saveQrcode() {
+    let img = document.getElementById("payImg");
+    let a = document.createElement("a");
+    a.href = img.src;
+    a.download = "收款码.png";
+    a.click();
+    alert("已保存！请去微信扫一扫付款");
 }
 </script>
 
