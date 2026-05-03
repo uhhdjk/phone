@@ -17,7 +17,6 @@
             margin: 0 auto;
         }
 
-        /* 电脑禁止访问 */
         .forbidden {
             display: none;
             justify-content: center;
@@ -26,13 +25,7 @@
             background: #f0f0f0;
             flex-direction: column;
         }
-        .forbidden h1 {
-            color: #ff4444;
-            font-size: 22px;
-            margin-bottom: 15px;
-        }
 
-        /* 首页样式 */
         .home {
             display: block;
         }
@@ -40,7 +33,7 @@
             background: #fff;
             padding: 14px;
             text-align: center;
-            font-size: 20px;
+            font-size: 18px;
             font-weight: bold;
         }
         .banner {
@@ -56,7 +49,6 @@
             border-radius: 6px;
             background: #fff;
             overflow: hidden;
-            flex-shrink: 0;
         }
         .logo-box img {
             width: 100%;
@@ -71,7 +63,6 @@
             font-size: 18px;
             font-weight: bold;
             color: #fff;
-            margin-bottom: 4px;
         }
         .online-count {
             font-size: 14px;
@@ -85,7 +76,6 @@
             padding: 10px 0;
             color: #fff;
             font-weight: bold;
-            font-size: 16px;
         }
         .search-area {
             background: #e02b47;
@@ -99,7 +89,6 @@
             border-radius: 30px;
             border: none;
             outline: none;
-            font-size: 16px;
         }
         .search-btn {
             background: #fff;
@@ -108,8 +97,6 @@
             border-radius: 30px;
             padding: 0 16px;
             font-weight: bold;
-            font-size: 16px;
-            cursor: pointer;
         }
         .tab-bar {
             display: flex;
@@ -171,7 +158,6 @@
             color: #666;
         }
 
-        /* 详情页样式 */
         .detail {
             display: none;
             background: #fff;
@@ -279,25 +265,22 @@
             padding: 14px;
             border-radius: 6px;
             font-size: 16px;
-            cursor: pointer;
         }
     </style>
 </head>
+
 <body>
 
-<!-- 电脑访问提示 -->
 <div class="forbidden" id="pcTip">
     <h1>❌ 禁止访问</h1>
     <p>请使用手机访问</p>
 </div>
 
-<!-- 首页 -->
 <div class="home" id="home">
     <div class="top-bar">知识付费平台</div>
     <div class="banner">
         <div class="logo-box">
-            <!-- 发财树LOGO Base64内嵌（核心修改点） -->
-            <img src="data:image/png;base64,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" alt="发财树LOGO">
+            <img src="https://p.16pic.com/00/08/97/46B16PIC16PICr8.jpg" alt="发财树LOGO">
         </div>
         <div class="banner-info">
             <div class="banner-title">发财树优质资料</div>
@@ -317,18 +300,26 @@
         <div class="tab-item active">今日更新</div>
         <div class="tab-item">专家</div>
     </div>
+
+    <!-- 👇 这里是 15 个课件 -->
     <div class="course-list">
-        <div class="course-item" onclick="goDetail()">
-            <div class="course-title">122期 新课资料</div>
-            <div class="course-time">05-02 14:38</div>
-            <div class="course-price">¥1699</div>
-        </div>
-        <div class="course-item" onclick="goDetail()">
-            <div class="course-title">122期 原创技巧</div>
-            <div class="course-time">05-02 14:34</div>
-            <div class="course-price">¥1680</div>
-        </div>
+        <div class="course-item" onclick="goDetail()"><div class="course-title">第01期 精品课件</div><div class="course-time">05-01 10:00</div><div class="course-price">¥1699</div></div>
+        <div class="course-item" onclick="goDetail()"><div class="course-title">第02期 精品课件</div><div class="course-time">05-02 11:00</div><div class="course-price">¥1699</div></div>
+        <div class="course-item" onclick="goDetail()"><div class="course-title">第03期 精品课件</div><div class="course-time">05-03 12:00</div><div class="course-price">¥1699</div></div>
+        <div class="course-item" onclick="goDetail()"><div class="course-title">第04期 精品课件</div><div class="course-time">05-04 13:00</div><div class="course-price">¥1699</div></div>
+        <div class="course-item" onclick="goDetail()"><div class="course-title">第05期 精品课件</div><div class="course-time">05-05 14:00</div><div class="course-price">¥1699</div></div>
+        <div class="course-item" onclick="goDetail()"><div class="course-title">第06期 精品课件</div><div class="course-time">05-06 15:00</div><div class="course-price">¥1699</div></div>
+        <div class="course-item" onclick="goDetail()"><div class="course-title">第07期 精品课件</div><div class="course-time">05-07 16:00</div><div class="course-price">¥1699</div></div>
+        <div class="course-item" onclick="goDetail()"><div class="course-title">第08期 精品课件</div><div class="course-time">05-08 09:00</div><div class="course-price">¥1699</div></div>
+        <div class="course-item" onclick="goDetail()"><div class="course-title">第09期 精品课件</div><div class="course-time">05-09 10:00</div><div class="course-price">¥1699</div></div>
+        <div class="course-item" onclick="goDetail()"><div class="course-title">第10期 精品课件</div><div class="course-time">05-10 11:00</div><div class="course-price">¥1699</div></div>
+        <div class="course-item" onclick="goDetail()"><div class="course-title">第11期 精品课件</div><div class="course-time">05-11 14:00</div><div class="course-price">¥1699</div></div>
+        <div class="course-item" onclick="goDetail()"><div class="course-title">第12期 精品课件</div><div class="course-time">05-12 15:00</div><div class="course-price">¥1699</div></div>
+        <div class="course-item" onclick="goDetail()"><div class="course-title">第13期 精品课件</div><div class="course-time">05-13 16:00</div><div class="course-price">¥1699</div></div>
+        <div class="course-item" onclick="goDetail()"><div class="course-title">第14期 精品课件</div><div class="course-time">05-14 09:30</div><div class="course-price">¥1699</div></div>
+        <div class="course-item" onclick="goDetail()"><div class="course-title">第15期 精品课件</div><div class="course-time">05-15 10:30</div><div class="course-price">¥1699</div></div>
     </div>
+
     <div class="footer-nav">
         <div class="nav-item">🏠 首页</div>
         <div class="nav-item">📋 已购</div>
@@ -336,7 +327,6 @@
     </div>
 </div>
 
-<!-- 详情页 -->
 <div class="detail" id="detail">
     <div class="detail-header">
         <div class="back-btn" onclick="goHome()">←</div>
@@ -347,14 +337,8 @@
         <div class="detail-tab active">往期更新</div>
     </div>
     <div class="detail-course-list">
-        <div class="detail-course-item">
-            <div class="detail-course-title">123期 新课资料</div>
-            <div class="detail-course-time">发布于：05-03 17:09</div>
-        </div>
-        <div class="detail-course-item">
-            <div class="detail-course-title">122期 原创技巧</div>
-            <div class="detail-course-time">发布于：05-02 14:38</div>
-        </div>
+        <div class="detail-course-item"><div class="detail-course-title">123期 新课资料</div><div class="detail-course-time">发布于：05-03 17:09</div></div>
+        <div class="detail-course-item"><div class="detail-course-title">122期 原创技巧</div><div class="detail-course-time">发布于：05-02 14:38</div></div>
     </div>
     <div class="float-back" onclick="goHome()">↩️</div>
     <div class="pay-bar">
@@ -367,30 +351,23 @@
 </div>
 
 <script>
-    // 判断设备：手机/电脑
-    function isMobile() {
-        return /Android|iPhone|iPad|iPod|BlackBerry|Windows Phone/i.test(navigator.userAgent);
-    }
-    
-    // 初始化页面
-    window.onload = function() {
-        if (!isMobile()) {
-            document.getElementById("pcTip").style.display = "flex";
-            document.getElementById("home").style.display = "none";
-        }
-    }
-
-    // 跳转到详情页
-    function goDetail() {
+function isMobile() {
+    return /Android|iPhone|iPad/i.test(navigator.userAgent);
+}
+window.onload = function() {
+    if (!isMobile()) {
+        document.getElementById("pcTip").style.display = "flex";
         document.getElementById("home").style.display = "none";
-        document.getElementById("detail").style.display = "block";
     }
-
-    // 返回首页
-    function goHome() {
-        document.getElementById("detail").style.display = "none";
-        document.getElementById("home").style.display = "block";
-    }
+}
+function goDetail() {
+    document.getElementById("home").style.display = "none";
+    document.getElementById("detail").style.display = "block";
+}
+function goHome() {
+    document.getElementById("detail").style.display = "none";
+    document.getElementById("home").style.display = "block";
+}
 </script>
 
 </body>
