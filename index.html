@@ -230,41 +230,52 @@
             cursor: pointer;
             font-size: 20px;
         }
-        .pay-bar {
+
+        .pay-modal {
+            display: none;
             position: fixed;
-            bottom: 0;
+            top: 0;
             left: 0;
-            right: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 999;
+            justify-content: center;
+            align-items: center;
+        }
+        .pay-box {
             background: #fff;
-            padding: 16px;
-            border-top: 1px solid #eee;
-            max-width: 480px;
-            margin: auto;
+            width: 80%;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+        }
+        .pay-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
         }
         .pay-tip {
             color: red;
-            font-size: 14px;
-            margin-bottom: 10px;
-            text-align: center;
+            margin-bottom: 15px;
         }
-        .pay-row {
-            display: flex;
-            align-items: center;
-            gap: 16px;
+        .pay-img {
+            width: 200px;
+            height: 200px;
+            margin: 0 auto;
         }
-        .pay-price {
-            color: red;
-            font-size: 24px;
-            font-weight: bold;
+        .pay-img img {
+            width: 100%;
+            height: 100%;
         }
-        .pay-btn {
-            flex: 1;
-            background: #0095ff;
-            color: #fff;
+        .close-btn {
+            background: #ccc;
+            margin-top: 10px;
+            padding: 8px;
             border: none;
-            padding: 14px;
             border-radius: 6px;
-            font-size: 16px;
+            color: #fff;
+            width: 100%;
         }
     </style>
 </head>
@@ -280,7 +291,10 @@
     <div class="top-bar">知识付费平台</div>
     <div class="banner">
         <div class="logo-box">
-            <img src="https://p.16pic.com/00/08/97/46B16PIC16PICr8.jpg" alt="发财树LOGO">
+            <!-- ========================================== -->
+            <!-- 🔴 这里是 LOGO 图片位置 替换下面的链接 -->
+            <!-- ========================================== -->
+            <img src="https://p.16pic.com/00/08/97/46B16PIC16PICr8.jpg" alt="https://imgchr.com/i/pe7jCfe">
         </div>
         <div class="banner-info">
             <div class="banner-title">发财树优质资料</div>
@@ -301,7 +315,6 @@
         <div class="tab-item">专家</div>
     </div>
 
-    <!-- 👇 这里是 15 个课件 -->
     <div class="course-list">
         <div class="course-item" onclick="goDetail()"><div class="course-title">第01期 精品课件</div><div class="course-time">05-01 10:00</div><div class="course-price">¥1699</div></div>
         <div class="course-item" onclick="goDetail()"><div class="course-title">第02期 精品课件</div><div class="course-time">05-02 11:00</div><div class="course-price">¥1699</div></div>
@@ -312,7 +325,12 @@
         <div class="course-item" onclick="goDetail()"><div class="course-title">第07期 精品课件</div><div class="course-time">05-07 16:00</div><div class="course-price">¥1699</div></div>
         <div class="course-item" onclick="goDetail()"><div class="course-title">第08期 精品课件</div><div class="course-time">05-08 09:00</div><div class="course-price">¥1699</div></div>
         <div class="course-item" onclick="goDetail()"><div class="course-title">第09期 精品课件</div><div class="course-time">05-09 10:00</div><div class="course-price">¥1699</div></div>
-
+        <div class="course-item" onclick="goDetail()"><div class="course-title">第10期 精品课件</div><div class="course-time">05-10 11:00</div><div class="course-price">¥1699</div></div>
+        <div class="course-item" onclick="goDetail()"><div class="course-title">第11期 精品课件</div><div class="course-time">05-11 14:00</div><div class="course-price">¥1699</div></div>
+        <div class="course-item" onclick="goDetail()"><div class="course-title">第12期 精品课件</div><div class="course-time">05-12 15:00</div><div class="course-price">¥1699</div></div>
+        <div class="course-item" onclick="goDetail()"><div class="course-title">第13期 精品课件</div><div class="course-time">05-13 16:00</div><div class="course-price">¥1699</div></div>
+        <div class="course-item" onclick="goDetail()"><div class="course-title">第14期 精品课件</div><div class="course-time">05-14 09:30</div><div class="course-price">¥1699</div></div>
+        <div class="course-item" onclick="goDetail()"><div class="course-title">第15期 精品课件</div><div class="course-time">05-15 10:30</div><div class="course-price">¥1699</div></div>
     </div>
 
     <div class="footer-nav">
@@ -336,16 +354,32 @@
         <div class="detail-course-item"><div class="detail-course-title">122期 原创技巧</div><div class="detail-course-time">发布于：05-02 14:38</div></div>
     </div>
     <div class="float-back" onclick="goHome()">↩️</div>
-    <div class="pay-bar">
-        <div class="pay-tip">打赏后重新进入即可查看内容</div>
-        <div class="pay-row">
-            <div class="pay-price">¥1699</div>
-            <button class="pay-btn">支付宝打赏</button>
+
+    <!-- 支付按钮（只保留微信） -->
+    <div style="position:fixed;bottom:0;left:0;right:0;background:#fff;padding:10px;border-top:1px solid #eee;max-width:480px;margin:auto;text-align:center;">
+        <div style="color:red;text-align:center;margin-bottom:8px;">支付后即可查看全部资料</div>
+        <button onclick="showPay()" style="width:100%;background:#07c160;color:#fff;border:none;padding:12px;border-radius:6px;font-weight:bold;">微信支付</button>
+    </div>
+</div>
+
+<!-- 支付弹窗 -->
+<div class="pay-modal" id="payModal">
+    <div class="pay-box">
+        <div class="pay-title">请扫码支付 1699 元</div>
+        <div class="pay-tip">截图保存 → 打开微信扫码付款</div>
+        <div class="pay-img">
+            <img id="payImg" src="">
         </div>
+        <button class="close-btn" onclick="closePay()">关闭</button>
     </div>
 </div>
 
 <script>
+// ==========================================
+// 🔴 这里是 微信收款码 图片位置 替换下面的链接
+// ==========================================
+var wxQrcode = "hhttps://imgchr.com/i/pe7XtRH";
+
 function isMobile() {
     return /Android|iPhone|iPad/i.test(navigator.userAgent);
 }
@@ -362,6 +396,13 @@ function goDetail() {
 function goHome() {
     document.getElementById("detail").style.display = "none";
     document.getElementById("home").style.display = "block";
+}
+function showPay() {
+    document.getElementById("payImg").src = wxQrcode;
+    document.getElementById("payModal").style.display = "flex";
+}
+function closePay() {
+    document.getElementById("payModal").style.display = "none";
 }
 </script>
 
