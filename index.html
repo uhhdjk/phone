@@ -466,48 +466,43 @@
             </div>
         </div>
         <div style="padding: 15px;">
-            <!-- Excel模板管理 -->
+            <!-- 在线课程编辑器 -->
             <div style="background: white; border-radius: 8px; padding: 15px; margin-bottom: 15px;">
-                <div style="font-size: 16px; font-weight: 600; margin-bottom: 15px; color: #ff3333;">📊 Excel批量管理</div>
+                <div style="font-size: 16px; font-weight: 600; margin-bottom: 15px; color: #ff3333;">📊 课程在线编辑器</div>
                 
                 <!-- 操作按钮 -->
                 <div style="display: flex; gap: 10px; margin-bottom: 15px;">
-                    <button onclick="downloadExcelTemplate()" style="flex: 1; height: 45px; background: #4caf50; color: white; border: none; border-radius: 8px; font-size: 14px;">📥 下载模板</button>
-                    <button onclick="showCourseTable()" style="flex: 1; height: 45px; background: #6a79f7; color: white; border: none; border-radius: 8px; font-size: 14px;">📋 查看数据</button>
+                    <button onclick="addCourseRow()" style="flex: 1; height: 45px; background: #4caf50; color: white; border: none; border-radius: 8px; font-size: 14px;">➕ 添加课程</button>
+                    <button onclick="saveAllCourses()" style="flex: 1; height: 45px; background: #ff3333; color: white; border: none; border-radius: 8px; font-size: 14px;">💾 保存全部</button>
                 </div>
                 
-                <!-- 上传文件 -->
-                <div style="border: 2px dashed #ddd; border-radius: 8px; padding: 20px; text-align: center;">
-                    <div style="font-size: 32px; margin-bottom: 10px;">📤</div>
-                    <div style="color: #666; font-size: 14px; margin-bottom: 10px;">点击或拖拽上传Excel/CSV文件</div>
-                    <input type="file" id="excelUpload" accept=".csv,.xlsx,.xls" onchange="handleExcelUpload(this)" style="display: none;">
-                    <button onclick="document.getElementById('excelUpload').click()" style="padding: 10px 20px; background: #ff9800; color: white; border: none; border-radius: 6px; font-size: 14px;">选择文件</button>
+                <!-- 在线编辑表格 -->
+                <div style="max-height: 400px; overflow-y: auto; border: 1px solid #eee; border-radius: 8px;">
+                    <table id="courseEditorTable" style="width: 100%; border-collapse: collapse; font-size: 12px;">
+                        <thead>
+                            <tr style="background: #f8f8f8; position: sticky; top: 0;">
+                                <th style="padding: 10px 5px; text-align: left; font-weight: bold; color: #666; border-bottom: 1px solid #eee; min-width: 40px;">ID</th>
+                                <th style="padding: 10px 5px; text-align: left; font-weight: bold; color: #666; border-bottom: 1px solid #eee; min-width: 120px;">课程标题</th>
+                                <th style="padding: 10px 5px; text-align: left; font-weight: bold; color: #666; border-bottom: 1px solid #eee; min-width: 60px;">价格</th>
+                                <th style="padding: 10px 5px; text-align: left; font-weight: bold; color: #666; border-bottom: 1px solid #eee; min-width: 50px;">印章</th>
+                                <th style="padding: 10px 5px; text-align: left; font-weight: bold; color: #666; border-bottom: 1px solid #eee; min-width: 100px;">内容详情</th>
+                                <th style="padding: 10px 5px; text-align: center; font-weight: bold; color: #666; border-bottom: 1px solid #eee; min-width: 50px;">操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="courseEditorBody">
+                            <!-- 动态生成课程行 -->
+                        </tbody>
+                    </table>
                 </div>
                 
-                <!-- 使用说明 -->
-                <div style="margin-top: 15px; padding: 15px; background: #fff3e0; border-radius: 8px;">
-                    <div style="font-size: 14px; font-weight: bold; color: #ff9800; margin-bottom: 10px;">💡 使用指南</div>
+                <!-- 操作提示 -->
+                <div style="margin-top: 15px; padding: 15px; background: #e3f2fd; border-radius: 8px;">
+                    <div style="font-size: 14px; font-weight: bold; color: #1976d2; margin-bottom: 10px;">💡 使用指南</div>
                     <div style="color: #666; font-size: 12px; line-height: 1.6;">
-                        <div>1️⃣ 点击「查看数据」查看所有课程数据</div>
-                        <div>2️⃣ 复制数据到Excel中编辑</div>
-                        <div>3️⃣ 编辑完成后点击「选择文件」上传</div>
-                        <div>4️⃣ 上传成功后课程内容自动更新</div>
-                    </div>
-                </div>
-                
-                <!-- 格式说明 -->
-                <div style="margin-top: 10px; padding: 12px; background: #fff3e0; border-radius: 8px; border: 1px solid #ffe0b2;">
-                    <div style="color: #e65100; font-size: 12px; line-height: 1.6;">
-                        <div style="font-weight: bold; margin-bottom: 5px;">📌 上传文件要求：</div>
-                        <div>• 文件格式：必须是CSV格式（.csv）</div>
-                        <div>• Excel另存为：文件 → 另存为 → CSV (逗号分隔)(*.csv)</div>
-                        <div>• 编码选择：UTF-8</div>
-                        <div style="margin-top: 8px; font-weight: bold;">📋 列格式：</div>
-                        <div>A列: 课程ID (数字)</div>
-                        <div>B列: 课程标题</div>
-                        <div>C列: 价格 (如 ¥958)</div>
-                        <div>D列: 印章 (红/黑)</div>
-                        <div>E列: 内容详情</div>
+                        <div>1️⃣ 直接在表格中修改课程信息</div>
+                        <div>2️⃣ 点击「➕ 添加课程」新增课程</div>
+                        <div>3️⃣ 点击「🗑️ 删除」移除不需要的课程</div>
+                        <div>4️⃣ 修改完成后点击「💾 保存全部」生效</div>
                     </div>
                 </div>
             </div>
@@ -1428,8 +1423,145 @@
                 localStorage.removeItem('courseContent_' + courseId);
                 alert('课程已删除！');
                 updateCourseSelect();
+                renderCourseEditor();
             }
         }
+
+        // 渲染在线课程编辑器表格
+        function renderCourseEditor() {
+            const tbody = document.getElementById('courseEditorBody');
+            if (!tbody) return;
+            
+            tbody.innerHTML = '';
+            
+            courses.forEach(course => {
+                const row = document.createElement('tr');
+                row.style.cssText = 'border-bottom: 1px solid #eee;';
+                
+                // ID
+                const idCell = document.createElement('td');
+                idCell.style.cssText = 'padding: 8px 5px;';
+                idCell.innerHTML = `<input type="number" value="${course.id}" readonly style="width: 40px; border: 1px solid #ddd; border-radius: 4px; padding: 4px; text-align: center; background: #f5f5f5;">`;
+                
+                // 标题
+                const titleCell = document.createElement('td');
+                titleCell.style.cssText = 'padding: 8px 5px;';
+                titleCell.innerHTML = `<input type="text" value="${course.title || ''}" style="width: 100%; border: 1px solid #ddd; border-radius: 4px; padding: 4px; font-size: 12px;">`;
+                
+                // 价格
+                const priceCell = document.createElement('td');
+                priceCell.style.cssText = 'padding: 8px 5px;';
+                priceCell.innerHTML = `<input type="text" value="${course.price || '¥1699'}" style="width: 60px; border: 1px solid #ddd; border-radius: 4px; padding: 4px; font-size: 12px;">`;
+                
+                // 印章
+                const sealCell = document.createElement('td');
+                sealCell.style.cssText = 'padding: 8px 5px;';
+                sealCell.innerHTML = `
+                    <select style="width: 50px; border: 1px solid #ddd; border-radius: 4px; padding: 4px; font-size: 12px;">
+                        <option value="红" ${course.seal === '红' ? 'selected' : ''}>红</option>
+                        <option value="黑" ${course.seal === '黑' ? 'selected' : ''}>黑</option>
+                    </select>
+                `;
+                
+                // 内容详情
+                const contentCell = document.createElement('td');
+                contentCell.style.cssText = 'padding: 8px 5px;';
+                contentCell.innerHTML = `<input type="text" value="${course.value || ''}" style="width: 100%; border: 1px solid #ddd; border-radius: 4px; padding: 4px; font-size: 12px;">`;
+                
+                // 操作
+                const actionCell = document.createElement('td');
+                actionCell.style.cssText = 'padding: 8px 5px; text-align: center;';
+                actionCell.innerHTML = `
+                    <button onclick="deleteCourse(${course.id})" style="padding: 4px 8px; border: none; background: #ff4444; color: white; border-radius: 4px; font-size: 11px;">🗑️ 删除</button>
+                `;
+                
+                row.appendChild(idCell);
+                row.appendChild(titleCell);
+                row.appendChild(priceCell);
+                row.appendChild(sealCell);
+                row.appendChild(contentCell);
+                row.appendChild(actionCell);
+                tbody.appendChild(row);
+            });
+        }
+
+        // 添加新课程行
+        function addCourseRow() {
+            const newId = courses.length > 0 ? Math.max(...courses.map(c => c.id)) + 1 : 1;
+            const newCourse = {
+                id: newId,
+                title: '新课程',
+                price: '¥1699',
+                seal: '红',
+                value: '',
+                time: getBeijingTime().short,
+                buyCount: 0,
+                result: '对'
+            };
+            
+            courses.push(newCourse);
+            renderCourseEditor();
+            
+            // 保存到localStorage
+            const courseContent = {
+                title: '新课程',
+                content: '',
+                updateTime: getBeijingTime().full
+            };
+            localStorage.setItem('courseContent_' + newId, JSON.stringify(courseContent));
+        }
+
+        // 保存所有课程
+        function saveAllCourses() {
+            const tbody = document.getElementById('courseEditorBody');
+            if (!tbody) return;
+            
+            const rows = tbody.querySelectorAll('tr');
+            let successCount = 0;
+            
+            rows.forEach((row, index) => {
+                const inputs = row.querySelectorAll('input, select');
+                const id = parseInt(inputs[0].value);
+                const title = inputs[1].value;
+                const price = inputs[2].value;
+                const seal = inputs[3].value;
+                const value = inputs[4].value;
+                
+                // 找到对应的课程并更新
+                const courseIndex = courses.findIndex(c => c.id === id);
+                if (courseIndex >= 0) {
+                    courses[courseIndex].title = title;
+                    courses[courseIndex].price = price;
+                    courses[courseIndex].seal = seal;
+                    courses[courseIndex].value = value;
+                    
+                    // 保存到localStorage
+                    const courseContent = {
+                        title: title,
+                        content: value,
+                        updateTime: getBeijingTime().full
+                    };
+                    localStorage.setItem('courseContent_' + id, JSON.stringify(courseContent));
+                    
+                    successCount++;
+                }
+            });
+            
+            // 更新下拉选择框
+            updateCourseSelect();
+            
+            // 更新课程列表显示
+            renderCourses();
+            
+            alert(`✅ 成功保存 ${successCount} 条课程数据！`);
+        }
+
+        // 页面加载时渲染编辑器
+        document.addEventListener('DOMContentLoaded', function() {
+            if (document.getElementById('courseEditorBody')) {
+                renderCourseEditor();
+            }
+        });
 
         // 处理Excel/CSV文件上传
         function handleExcelUpload(input) {
