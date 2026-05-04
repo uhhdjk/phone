@@ -345,6 +345,13 @@
         <!-- 会员中心页 -->
         <div id="memberPage" class="page-container">
             <div class="member-page-container">
+                <div class="record-page-header">
+                    <div class="header-row">
+                        <span class="back-btn" onclick="goHome()">×</span>
+                        <span class="page-title">会员中心</span>
+                        <span class="menu-btn">⋮</span>
+                    </div>
+                </div>
                 <div class="member-header">
                     <div class="user-profile">
                         <div class="user-avatar" id="userAvatar">天</div>
@@ -384,6 +391,11 @@
                 </div>
                 <button class="logout-btn" onclick="showLogoutModal()">退出重新登录</button>
             </div>
+            <footer>
+                <div class="footer-item" onclick="goHome()"><div class="icon-wrap">🏠</div><span>首页</span></div>
+                <div class="footer-item" onclick="goRecord()"><div class="icon-wrap">🛒</div><span>已购物料</span></div>
+                <div class="footer-item active" onclick="showMember()"><div class="icon-wrap">👤</div><span>我的</span></div>
+            </footer>
         </div>
     </div>
 
