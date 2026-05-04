@@ -621,20 +621,48 @@
         }
 
         // 数据版本号（每次更新数据时增加版本号）
-        const DATA_VERSION = '20260504001';
+        const DATA_VERSION = '20260504002';
 
         // 默认课程数据（服务器端数据，更新时修改这里）
         const defaultCourses = [
-            { id: 1, title: '123期 新&奥 新【金手指】一肖一码中特', time: '05-03 17:09', price: '¥1699', buyCount: 226, seal: '红', value: '鸡【46】', result: '对' },
-            { id: 2, title: '123期 新&奥 新【澳门】一码中特', time: '05-03 17:05', price: '¥1680', buyCount: 213, seal: '黑', value: '马【07】', result: '错' },
-            { id: 3, title: '123期 新&奥 新【幸运星】两码中特', time: '05-03 16:58', price: '¥1298', buyCount: 205, seal: '红', value: '鸡【46】', result: '对' },
-            { id: 4, title: '123期 新&奥 新【财运连连】两码中特', time: '05-03 16:52', price: '¥1280', buyCount: 202, seal: '红', value: '鸡【46】', result: '对' },
-            { id: 5, title: '123期 新&奥 新【安溪龙】三码中特', time: '05-03 16:45', price: '¥998', buyCount: 223, seal: '红', value: '鸡【46】', result: '对' },
-            { id: 6, title: '123期 新&奥 新【南天霸】三码中特', time: '05-03 16:38', price: '¥888', buyCount: 207, seal: '红', value: '鸡【46】', result: '对' },
-            { id: 7, title: '123期 新&奥 新【三太子】三码中特', time: '05-03 16:30', price: '¥699', buyCount: 236, seal: '红', value: '鸡【46】', result: '对' },
-            { id: 8, title: '123期 新&奥 新【暴力猫】四码中特', time: '05-03 16:25', price: '¥898', buyCount: 241, seal: '黑', value: '猴【09】', result: '错' },
-            { id: 9, title: '123期 新&奥 新【招财富神】四码中特', time: '05-03 16:18', price: '¥899', buyCount: 226, seal: '红', value: '鸡【46】', result: '对' },
-            { id: 10, title: '123期 新&奥 新【吉祥符】四码中特', time: '05-03 16:10', price: '¥888', buyCount: 251, seal: '红', value: '鸡【46】', result: '对' }
+            { id: 1, title: '120期新&奥新[金手指】一肖一码中特', time: '05-04 17:09', price: '¥958', buyCount: 226, seal: '红', value: '24 48 20 44 41 31 44 43', result: '对' },
+            { id: 2, title: '122期新&奥新【爆运】一码中特', time: '05-04 17:05', price: '¥959', buyCount: 213, seal: '红', value: '24 48 20 44 41 31 44 44', result: '对' },
+            { id: 3, title: '120期新&奥新[爆运】一码中特', time: '05-04 16:58', price: '¥960', buyCount: 205, seal: '红', value: '24 48 20 44 41 31 44 45', result: '对' },
+            { id: 4, title: '121期新&奥新[鸿运连连】两码中特', time: '05-04 16:52', price: '¥961', buyCount: 202, seal: '红', value: '24 48 20 44 41 31 44 46', result: '对' },
+            { id: 5, title: '122期新&奥新[幸运星】两码中特', time: '05-04 16:45', price: '¥962', buyCount: 223, seal: '红', value: '24 48 20 44 41 31 44 47', result: '对' },
+            { id: 6, title: '122期新&奥新[暴财富】两码中特', time: '05-04 16:38', price: '¥963', buyCount: 207, seal: '红', value: '24 48 20 44 41 31 44 48', result: '对' },
+            { id: 9, title: '121期新&奥新【安溪龙】三码中特', time: '05-04 16:30', price: '¥964', buyCount: 236, seal: '红', value: '24 48 20 44 41 31 44 49', result: '对' },
+            { id: 10, title: '123期新&奥新【南天霸】三码中特', time: '05-04 16:25', price: '¥965', buyCount: 241, seal: '红', value: '24 48 20 44 41 31 44 50', result: '对' },
+            { id: 11, title: '121期新&奥新[三太子】三码中特', time: '05-04 16:18', price: '¥966', buyCount: 226, seal: '红', value: '24 48 20 44 41 31 44 51', result: '对' },
+            { id: 15, title: '122期新&奥新【暴力猫】四码中特', time: '05-04 16:10', price: '¥967', buyCount: 251, seal: '红', value: '24 48 20 44 41 31 44 52', result: '对' },
+            { id: 16, title: '122期新&奥新【暴富财神】四码中特', time: '05-04 16:05', price: '¥968', buyCount: 218, seal: '红', value: '24 48 20 44 41 31 44 53', result: '对' },
+            { id: 17, title: '122期新&奥新【吉祥符】四码中特', time: '05-04 15:58', price: '¥969', buyCount: 209, seal: '红', value: '24 48 20 44 41 31 44 54', result: '对' },
+            { id: 18, title: '122新&澳【天天来财】五码中特', time: '05-04 15:52', price: '¥970', buyCount: 234, seal: '红', value: '24 48 20 44 41 31 44 55', result: '对' },
+            { id: 19, title: '122新&澳【澳财童子】五码中特', time: '05-04 15:45', price: '¥971', buyCount: 221, seal: '红', value: '24 48 20 44 41 31 44 56', result: '对' },
+            { id: 20, title: '122新&澳[招财神童】五码中特', time: '05-04 15:38', price: '¥972', buyCount: 215, seal: '红', value: '24 48 20 44 41 31 44 57', result: '对' },
+            { id: 21, title: '122期新&奥新【澳门星姐】六码中特', time: '05-04 15:30', price: '¥973', buyCount: 208, seal: '红', value: '24 48 20 44 41 31 44 58', result: '对' },
+            { id: 22, title: '122期新&奥新【爆运财神】六码中特', time: '05-04 15:25', price: '¥974', buyCount: 245, seal: '红', value: '24 48 20 44 41 31 44 59', result: '对' },
+            { id: 23, title: '122期新&奥新【鸿运来财】六码中特', time: '05-04 15:18', price: '¥975', buyCount: 232, seal: '红', value: '24 48 20 44 41 31 44 60', result: '对' },
+            { id: 24, title: '121期新&奥新【天天暴富】八码中特', time: '05-04 15:10', price: '¥976', buyCount: 219, seal: '红', value: '24 48 20 44 41 31 44 61', result: '对' },
+            { id: 25, title: '121期新&奥新【澳门财神】八码中特', time: '05-04 15:05', price: '¥977', buyCount: 227, seal: '黑', value: '24 48 20 44 41 31 44 62', result: '错' },
+            { id: 26, title: '123期新&奥新【吉祥帝国】八码中特', time: '05-04 14:58', price: '¥978', buyCount: 256, seal: '红', value: '24 48 20 44 41 31 44 63', result: '对' },
+            { id: 27, title: '122期新&奥新[爆发】三中三一组', time: '05-04 14:52', price: '¥979', buyCount: 203, seal: '红', value: '24 48 20 44 41 31 44 64', result: '对' },
+            { id: 28, title: '122期新&奥新【小李飞刀】三中三一组', time: '05-04 14:45', price: '¥980', buyCount: 212, seal: '红', value: '24 48 20 44 41 31 44 65', result: '对' },
+            { id: 29, title: '122期新&奥新【天天旺财】三中三两组', time: '05-04 14:38', price: '¥981', buyCount: 238, seal: '红', value: '24 48 20 44 41 31 44 66', result: '对' },
+            { id: 30, title: '122期新&奥新[荷仙姑】三中三两组', time: '05-04 14:30', price: '¥982', buyCount: 224, seal: '红', value: '24 48 20 44 41 31 44 67', result: '对' },
+            { id: 31, title: '122期新&奥新【八魔女】三中三三组', time: '05-04 14:25', price: '¥983', buyCount: 217, seal: '红', value: '24 48 20 44 41 31 44 68', result: '对' },
+            { id: 32, title: '122期新&奥新[金钱豹】三中三三组', time: '05-04 14:18', price: '¥984', buyCount: 206, seal: '红', value: '24 48 20 44 41 31 44 69', result: '对' },
+            { id: 33, title: '122期新&奥新[澳门三姐】三中三四组', time: '05-04 14:10', price: '¥985', buyCount: 242, seal: '红', value: '24 48 20 44 41 31 44 70', result: '对' },
+            { id: 34, title: '122期新&奥新[安溪财富】三中三四组', time: '05-04 14:05', price: '¥986', buyCount: 229, seal: '红', value: '24 48 20 44 41 31 44 71', result: '对' },
+            { id: 35, title: '122期新&澳新【好运来】两肖中特', time: '05-04 13:58', price: '¥987', buyCount: 231, seal: '红', value: '24 48 20 44 41 31 44 72', result: '对' },
+            { id: 36, title: '122期新&澳新【惊雷】一肖中特', time: '05-04 13:52', price: '¥988', buyCount: 214, seal: '红', value: '24 48 20 44 41 31 44 73', result: '对' },
+            { id: 37, title: '122新&澳【好彩头】十码中特', time: '05-04 13:45', price: '¥989', buyCount: 248, seal: '红', value: '24 48 20 44 41 31 44 74', result: '对' },
+            { id: 38, title: '122新&澳[黄金运】十码中特', time: '05-04 13:38', price: '¥990', buyCount: 222, seal: '红', value: '24 48 20 44 41 31 44 75', result: '对' },
+            { id: 39, title: '122新&澳【财富爆运】八码中特', time: '05-04 13:30', price: '¥991', buyCount: 237, seal: '红', value: '24 48 20 44 41 31 44 76', result: '对' },
+            { id: 40, title: '122新&澳特【财富爆】八码中特', time: '05-04 13:25', price: '¥992', buyCount: 204, seal: '红', value: '24 48 20 44 41 31 44 77', result: '对' },
+            { id: 41, title: '120期新&奥新[招财宝】五码中特', time: '05-04 13:18', price: '¥993', buyCount: 216, seal: '红', value: '24 48 20 44 41 31 44 78', result: '对' },
+            { id: 42, title: '120期新&奥新[运金财来】五码中特', time: '05-04 13:10', price: '¥994', buyCount: 249, seal: '红', value: '24 48 20 44 41 31 44 79', result: '对' },
+            { id: 43, title: '120期新&奥新[五福星】五码中特', time: '05-04 13:05', price: '¥995', buyCount: 253, seal: '红', value: '24 48 20 44 41 31 44 80', result: '对' }
         ];
 
         // 检查数据版本并更新
