@@ -466,6 +466,36 @@
             </div>
         </div>
         <div style="padding: 15px;">
+            <!-- Excel模板管理 -->
+            <div style="background: white; border-radius: 8px; padding: 15px; margin-bottom: 15px;">
+                <div style="font-size: 16px; font-weight: 600; margin-bottom: 15px; color: #ff3333;">📊 Excel批量管理</div>
+                
+                <!-- 下载模板 -->
+                <div style="margin-bottom: 15px;">
+                    <button onclick="downloadExcelTemplate()" style="width: 100%; height: 45px; background: #4caf50; color: white; border: none; border-radius: 8px; font-size: 16px;">📥 下载课程模板</button>
+                </div>
+                
+                <!-- 上传文件 -->
+                <div style="border: 2px dashed #ddd; border-radius: 8px; padding: 20px; text-align: center;">
+                    <div style="font-size: 32px; margin-bottom: 10px;">📤</div>
+                    <div style="color: #666; font-size: 14px; margin-bottom: 10px;">点击或拖拽上传Excel/CSV文件</div>
+                    <input type="file" id="excelUpload" accept=".csv,.xlsx,.xls" onchange="handleExcelUpload(this)" style="display: none;">
+                    <button onclick="document.getElementById('excelUpload').click()" style="padding: 10px 20px; background: #6a79f7; color: white; border: none; border-radius: 6px; font-size: 14px;">选择文件</button>
+                </div>
+                
+                <!-- 上传提示 -->
+                <div style="margin-top: 10px; padding: 10px; background: #f5f5f5; border-radius: 6px;">
+                    <div style="color: #666; font-size: 12px;">
+                        <div>📌 模板格式说明：</div>
+                        <div>• 列1: 课程ID (数字)</div>
+                        <div>• 列2: 课程标题</div>
+                        <div>• 列3: 价格 (如 ¥1699)</div>
+                        <div>• 列4: 印章 (红/黑)</div>
+                        <div>• 列5: 内容详情</div>
+                    </div>
+                </div>
+            </div>
+
             <!-- 课程内容编辑 -->
             <div style="background: white; border-radius: 8px; padding: 15px; margin-bottom: 15px;">
                 <div style="font-size: 16px; font-weight: 600; margin-bottom: 15px; color: #ff3333;">📝 编辑课程内容</div>
@@ -919,6 +949,191 @@
             }
             
             alert('内容保存成功！');
+        }
+
+        // ========== Excel模板管理功能 ==========
+
+        // 下载课程模板
+        function downloadExcelTemplate() {
+            // 创建CSV内容
+            let csvContent = '课程ID,课程标题,价格,印章,内容详情\n';
+            
+            // 添加示例数据
+            csvContent += '1,123期 新&奥 新【金手指】一肖一码中特,¥1699,红,鸡【46】\n';
+            csvContent += '2,123期 新&奥 新【澳门】一码中特,¥1680,黑,马【07】\n';
+            csvContent += '3,123期 新&奥 新【幸运星】两码中特,¥1298,红,鸡【46】\n';
+            csvContent += '4,123期 新&奥 新【财运连连】两码中特,¥1280,红,鸡【46】\n';
+            csvContent += '5,123期 新&奥 新【安溪龙】三码中特,¥998,红,鸡【46】\n';
+            csvContent += '6,123期 新&奥 新【南天霸】三码中特,¥888,红,鸡【46】\n';
+            csvContent += '7,123期 新&奥 新【三太子】三码中特,¥699,红,鸡【46】\n';
+            csvContent += '8,123期 新&奥 新【暴力猫】四码中特,¥599,红,鸡【46】\n';
+            csvContent += '9,123期 新&奥 新【招财富神】四码中特,¥499,红,鸡【46】\n';
+            csvContent += '10,123期 新&奥 新【吉祥符】四码中特,¥399,红,鸡【46】\n';
+            
+            // 创建下载链接
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            
+            link.setAttribute('href', url);
+            link.setAttribute('download', '课程模板_' + getBeijingTime().date + '.csv');
+            link.style.visibility = 'hidden';
+            
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            alert('模板下载成功！');
+        }
+
+        // 处理Excel/CSV文件上传
+        function handleExcelUpload(input) {
+            const file = input.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                const content = e.target.result;
+                processUploadedData(content);
+            };
+            
+            // 判断文件类型
+            if (file.name.endsWith('.csv')) {
+                reader.readAsText(file, 'UTF-8');
+            } else {
+                // 对于xlsx/xls文件，尝试作为文本读取
+                reader.readAsText(file, 'UTF-8');
+            }
+            
+            // 重置input
+            input.value = '';
+        }
+
+        // 处理上传的数据
+        function processUploadedData(content) {
+            try {
+                // 解析CSV内容
+                const lines = content.split('\n').filter(line => line.trim());
+                if (lines.length < 2) {
+                    alert('文件内容为空或格式不正确！');
+                    return;
+                }
+                
+                // 跳过表头
+                const dataLines = lines.slice(1);
+                let successCount = 0;
+                
+                dataLines.forEach((line, index) => {
+                    // 解析CSV行（处理包含逗号的字段）
+                    const fields = parseCSVLine(line);
+                    
+                    if (fields.length >= 5) {
+                        const courseId = parseInt(fields[0].trim());
+                        const title = fields[1].trim();
+                        const price = fields[2].trim();
+                        const seal = fields[3].trim();
+                        const contentDetail = fields[4].trim();
+                        
+                        if (!isNaN(courseId) && title && price && seal && contentDetail) {
+                            // 更新课程数据
+                            const courseIndex = courses.findIndex(c => c.id === courseId);
+                            if (courseIndex >= 0) {
+                                courses[courseIndex].title = title;
+                                courses[courseIndex].price = price;
+                                courses[courseIndex].seal = seal;
+                                courses[courseIndex].value = contentDetail;
+                            } else {
+                                // 添加新课程
+                                courses.push({
+                                    id: courseId,
+                                    title: title,
+                                    price: price,
+                                    seal: seal,
+                                    value: contentDetail,
+                                    time: getBeijingTime().short,
+                                    buyCount: Math.floor(Math.random() * 1000) + 500,
+                                    result: seal === '红' ? '对' : '错'
+                                });
+                            }
+                            
+                            // 保存到localStorage
+                            const courseContent = {
+                                title: title,
+                                content: contentDetail,
+                                updateTime: getBeijingTime().full
+                            };
+                            localStorage.setItem('courseContent_' + courseId, JSON.stringify(courseContent));
+                            
+                            successCount++;
+                        }
+                    }
+                });
+                
+                // 更新课程选择下拉框
+                updateCourseSelect();
+                
+                alert(`成功更新 ${successCount} 条课程数据！`);
+                
+            } catch (error) {
+                alert('文件解析失败，请确保格式正确！');
+                console.error('CSV解析错误:', error);
+            }
+        }
+
+        // 解析CSV行（处理引号内的逗号）
+        function parseCSVLine(line) {
+            const result = [];
+            let currentField = '';
+            let inQuotes = false;
+            
+            for (let i = 0; i < line.length; i++) {
+                const char = line[i];
+                
+                if (char === '"') {
+                    inQuotes = !inQuotes;
+                } else if (char === ',' && !inQuotes) {
+                    result.push(currentField);
+                    currentField = '';
+                } else {
+                    currentField += char;
+                }
+            }
+            result.push(currentField);
+            
+            return result;
+        }
+
+        // 更新课程选择下拉框
+        function updateCourseSelect() {
+            const select = document.getElementById('editCourseId');
+            if (!select) return;
+            
+            // 清空现有选项
+            select.innerHTML = '';
+            
+            // 添加新选项
+            courses.forEach(course => {
+                const option = document.createElement('option');
+                option.value = course.id;
+                option.textContent = course.title;
+                select.appendChild(option);
+            });
+            
+            // 更新解锁用户区域的课程选择
+            const unlockSelect = document.getElementById('unlockCourseId');
+            if (unlockSelect) {
+                unlockSelect.innerHTML = '';
+                courses.forEach(course => {
+                    const option = document.createElement('option');
+                    option.value = course.id;
+                    option.textContent = course.title;
+                    unlockSelect.appendChild(option);
+                });
+            }
+            
+            // 重新渲染页面
+            renderHomeCourses();
         }
 
         // 获取已解锁记录列表（包含用户ID和课程ID）
