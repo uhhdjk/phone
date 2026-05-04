@@ -496,10 +496,18 @@
                 </div>
                 
                 <!-- 格式说明 -->
-                <div style="margin-top: 10px; padding: 10px; background: #f5f5f5; border-radius: 6px;">
-                    <div style="color: #666; font-size: 12px;">
-                        <div>📌 上传格式：课程ID,课程标题,价格,印章,内容详情</div>
-                        <div>示例：1,课程名称,¥1699,红,鸡【46】</div>
+                <div style="margin-top: 10px; padding: 12px; background: #fff3e0; border-radius: 8px; border: 1px solid #ffe0b2;">
+                    <div style="color: #e65100; font-size: 12px; line-height: 1.6;">
+                        <div style="font-weight: bold; margin-bottom: 5px;">📌 上传文件要求：</div>
+                        <div>• 文件格式：必须是CSV格式（.csv）</div>
+                        <div>• Excel另存为：文件 → 另存为 → CSV (逗号分隔)(*.csv)</div>
+                        <div>• 编码选择：UTF-8</div>
+                        <div style="margin-top: 8px; font-weight: bold;">📋 列格式：</div>
+                        <div>A列: 课程ID (数字)</div>
+                        <div>B列: 课程标题</div>
+                        <div>C列: 价格 (如 ¥958)</div>
+                        <div>D列: 印章 (红/黑)</div>
+                        <div>E列: 内容详情</div>
                     </div>
                 </div>
             </div>
@@ -1428,6 +1436,16 @@
             const file = input.files[0];
             if (!file) return;
             
+            // 检查文件类型
+            const fileName = file.name.toLowerCase();
+            
+            // 只允许CSV文件
+            if (!fileName.endsWith('.csv')) {
+                showUploadError('请上传CSV格式文件！\n\n操作步骤：\n1. 在Excel中打开文件\n2. 点击「文件」→「另存为」\n3. 选择「CSV (逗号分隔)(*.csv)」格式\n4. 编码选择「UTF-8」');
+                input.value = '';
+                return;
+            }
+            
             const reader = new FileReader();
             
             reader.onload = function(e) {
@@ -1435,16 +1453,116 @@
                 processUploadedData(content);
             };
             
-            // 判断文件类型
-            if (file.name.endsWith('.csv')) {
-                reader.readAsText(file, 'UTF-8');
-            } else {
-                // 对于xlsx/xls文件，尝试作为文本读取
-                reader.readAsText(file, 'UTF-8');
-            }
+            // 尝试用多种编码读取
+            reader.onload = function(e) {
+                let content = e.target.result;
+                
+                // 检测是否是UTF-8 BOM
+                if (content.charCodeAt(0) === 0xFEFF) {
+                    content = content.slice(1);
+                }
+                
+                // 检测编码，如果包含乱码尝试转换
+                if (containsGarbledChars(content)) {
+                    // 如果有乱码，提示用户重新保存为UTF-8格式
+                    showUploadError('文件编码不正确！\n\n请按以下步骤操作：\n1. 在Excel中打开文件\n2. 点击「文件」→「另存为」\n3. 选择「CSV (逗号分隔)(*.csv)」\n4. 编码选择「UTF-8」');
+                    input.value = '';
+                    return;
+                }
+                
+                processUploadedData(content);
+            };
+            
+            reader.onerror = function() {
+                showUploadError('文件读取失败，请检查文件是否损坏！');
+                input.value = '';
+            };
+            
+            reader.readAsText(file, 'UTF-8');
             
             // 重置input
             input.value = '';
+        }
+
+        // 检测内容是否包含乱码字符
+        function containsGarbledChars(str) {
+            // 检测常见的乱码模式
+            const garbledPatterns = [
+                /[\uFFFD]/g,           // 替换字符
+                /[\x80-\xFF][\x80-\xFF]/g, // 双字节乱码
+                /Ã/g, /Â/g, /Ã¡/g, /Ã©/g, /Ã±/g, /Ã¼/g  // UTF-8错误解码的常见乱码
+            ];
+            
+            for (const pattern of garbledPatterns) {
+                if (pattern.test(str)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        // 显示上传错误提示
+        function showUploadError(message) {
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0,0,0,0.5);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 1000;
+            `;
+            
+            const content = document.createElement('div');
+            content.style.cssText = `
+                width: 90%;
+                max-width: 320px;
+                background: white;
+                border-radius: 12px;
+                overflow: hidden;
+            `;
+            
+            const header = document.createElement('div');
+            header.textContent = '⚠️ 上传失败';
+            header.style.cssText = `
+                padding: 15px;
+                background: #ff9800;
+                color: white;
+                font-weight: bold;
+            `;
+            
+            const body = document.createElement('div');
+            body.textContent = message;
+            body.style.cssText = `
+                padding: 15px;
+                font-size: 14px;
+                color: #333;
+                line-height: 1.6;
+            `;
+            
+            const closeBtn = document.createElement('button');
+            closeBtn.textContent = '知道了';
+            closeBtn.style.cssText = `
+                width: 100%;
+                height: 48px;
+                border: none;
+                background: #ff9800;
+                color: white;
+                font-size: 16px;
+            `;
+            closeBtn.onclick = function() {
+                modal.remove();
+            };
+            
+            content.appendChild(header);
+            content.appendChild(body);
+            content.appendChild(closeBtn);
+            modal.appendChild(content);
+            document.body.appendChild(modal);
         }
 
         // 处理上传的数据
