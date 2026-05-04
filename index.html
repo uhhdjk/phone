@@ -170,6 +170,12 @@
         footer .footer-item.active { color: #ff3333; }
         footer .footer-item .icon-wrap { width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; font-size: 20px; }
 
+        /* 首页导航标签 */
+        .nav-tabs { display: flex; background: white; border-bottom: 1px solid #eee; }
+        .nav-tabs .tab-item { flex: 1; padding: 12px 0; text-align: center; font-size: 14px; color: #666; position: relative; cursor: pointer; }
+        .nav-tabs .tab-item.active { color: #ff3333; font-weight: 600; }
+        .nav-tabs .tab-item.active::after { content: ''; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 50px; height: 3px; background: #ff3333; border-radius: 2px; }
+
         /* 详情页导航 */
         .detail-tabs { display: flex; background: white; }
         .detail-tabs .tab-item { flex: 1; padding: 12px 0; text-align: center; font-size: 14px; color: #666; position: relative; cursor: pointer; }
