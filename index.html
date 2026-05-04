@@ -958,32 +958,210 @@
             // 创建CSV内容
             let csvContent = '课程ID,课程标题,价格,印章,内容详情\n';
             
-            // 添加示例数据
-            csvContent += '1,123期 新&奥 新【金手指】一肖一码中特,¥1699,红,鸡【46】\n';
-            csvContent += '2,123期 新&奥 新【澳门】一码中特,¥1680,黑,马【07】\n';
-            csvContent += '3,123期 新&奥 新【幸运星】两码中特,¥1298,红,鸡【46】\n';
-            csvContent += '4,123期 新&奥 新【财运连连】两码中特,¥1280,红,鸡【46】\n';
-            csvContent += '5,123期 新&奥 新【安溪龙】三码中特,¥998,红,鸡【46】\n';
-            csvContent += '6,123期 新&奥 新【南天霸】三码中特,¥888,红,鸡【46】\n';
-            csvContent += '7,123期 新&奥 新【三太子】三码中特,¥699,红,鸡【46】\n';
-            csvContent += '8,123期 新&奥 新【暴力猫】四码中特,¥599,红,鸡【46】\n';
-            csvContent += '9,123期 新&奥 新【招财富神】四码中特,¥499,红,鸡【46】\n';
-            csvContent += '10,123期 新&奥 新【吉祥符】四码中特,¥399,红,鸡【46】\n';
+            // 添加现有课程数据
+            courses.forEach(course => {
+                csvContent += `${course.id},${course.title},${course.price || '¥1699'},${course.seal || '红'},${course.value || '请填写内容'}\n`;
+            });
             
             // 创建下载链接
-            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
             const link = document.createElement('a');
             const url = URL.createObjectURL(blob);
             
             link.setAttribute('href', url);
             link.setAttribute('download', '课程模板_' + getBeijingTime().date + '.csv');
-            link.style.visibility = 'hidden';
+            link.style.cssText = 'position: fixed; left: -9999px;';
             
             document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
             
-            alert('模板下载成功！');
+            // 尝试触发下载
+            link.click();
+            
+            // 清理
+            setTimeout(() => {
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url);
+            }, 100);
+            
+            // 显示提示信息，告诉用户在哪里找到下载的文件
+            showDownloadTips();
+        }
+
+        // 显示下载提示
+        function showDownloadTips() {
+            const tipsContent = `
+                <div style="padding: 15px;">
+                    <div style="font-size: 18px; font-weight: bold; color: #ff3333; margin-bottom: 15px;">📥 下载提示</div>
+                    <div style="font-size: 14px; color: #333; line-height: 1.8;">
+                        <div>• <strong>iPhone用户</strong>：请在「文件」App → 「下载」文件夹中查找</div>
+                        <div>• <strong>Android用户</strong>：请在「文件管理」→ 「下载」文件夹中查找</div>
+                        <div>• 文件名为：课程模板_日期.csv</div>
+                    </div>
+                    <div style="margin-top: 15px; padding: 10px; background: #fff3e0; border-radius: 6px;">
+                        <div style="font-size: 12px; color: #ff9800;">
+                            💡 如果下载失败，可以点击下方按钮复制模板内容到剪贴板
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // 创建弹窗
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0,0,0,0.5);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 1000;
+            `;
+            
+            const content = document.createElement('div');
+            content.style.cssText = `
+                width: 90%;
+                max-width: 320px;
+                background: white;
+                border-radius: 12px;
+                overflow: hidden;
+            `;
+            content.innerHTML = tipsContent;
+            
+            // 添加按钮
+            const buttonContainer = document.createElement('div');
+            buttonContainer.style.cssText = 'display: flex; border-top: 1px solid #eee;';
+            
+            const copyBtn = document.createElement('button');
+            copyBtn.textContent = '📋 复制模板内容';
+            copyBtn.style.cssText = `
+                flex: 1;
+                height: 48px;
+                border: none;
+                background: #4caf50;
+                color: white;
+                font-size: 16px;
+            `;
+            copyBtn.onclick = function() {
+                copyTemplateToClipboard();
+                modal.remove();
+            };
+            
+            const closeBtn = document.createElement('button');
+            closeBtn.textContent = '知道了';
+            closeBtn.style.cssText = `
+                flex: 1;
+                height: 48px;
+                border: none;
+                background: #f5f5f5;
+                color: #666;
+                font-size: 16px;
+                border-left: 1px solid #eee;
+            `;
+            closeBtn.onclick = function() {
+                modal.remove();
+            };
+            
+            buttonContainer.appendChild(copyBtn);
+            buttonContainer.appendChild(closeBtn);
+            content.appendChild(buttonContainer);
+            modal.appendChild(content);
+            document.body.appendChild(modal);
+            
+            // 点击背景关闭
+            modal.onclick = function(e) {
+                if (e.target === modal) {
+                    modal.remove();
+                }
+            };
+        }
+
+        // 复制模板内容到剪贴板
+        function copyTemplateToClipboard() {
+            let csvContent = '课程ID,课程标题,价格,印章,内容详情\n';
+            
+            courses.forEach(course => {
+                csvContent += `${course.id},${course.title},${course.price || '¥1699'},${course.seal || '红'},${course.value || '请填写内容'}\n`;
+            });
+            
+            navigator.clipboard.writeText(csvContent).then(() => {
+                alert('模板内容已复制到剪贴板！\n\n请打开Excel粘贴并编辑。');
+            }).catch(err => {
+                // 如果剪贴板API失败，显示内容让用户手动复制
+                showTemplateContent(csvContent);
+            });
+        }
+
+        // 显示模板内容（备用方案）
+        function showTemplateContent(content) {
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0,0,0,0.5);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 1000;
+            `;
+            
+            const contentDiv = document.createElement('div');
+            contentDiv.style.cssText = `
+                width: 90%;
+                max-width: 320px;
+                max-height: 70vh;
+                background: white;
+                border-radius: 12px;
+                overflow: hidden;
+            `;
+            
+            const header = document.createElement('div');
+            header.textContent = '📋 模板内容';
+            header.style.cssText = `
+                padding: 15px;
+                background: #ff3333;
+                color: white;
+                font-weight: bold;
+            `;
+            
+            const textarea = document.createElement('textarea');
+            textarea.value = content;
+            textarea.style.cssText = `
+                width: 100%;
+                height: 200px;
+                padding: 15px;
+                border: none;
+                resize: none;
+                font-family: monospace;
+                font-size: 12px;
+                line-height: 1.5;
+            `;
+            textarea.select();
+            
+            const closeBtn = document.createElement('button');
+            closeBtn.textContent = '关闭';
+            closeBtn.style.cssText = `
+                width: 100%;
+                height: 48px;
+                border: none;
+                background: #ff3333;
+                color: white;
+                font-size: 16px;
+            `;
+            closeBtn.onclick = function() {
+                modal.remove();
+            };
+            
+            contentDiv.appendChild(header);
+            contentDiv.appendChild(textarea);
+            contentDiv.appendChild(closeBtn);
+            modal.appendChild(contentDiv);
+            document.body.appendChild(modal);
         }
 
         // 处理Excel/CSV文件上传
