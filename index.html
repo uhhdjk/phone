@@ -1,146 +1,229 @@
-var wxQrcode = "https://s41.ax1x.com/2026/05/04/pe7j01J.png";
+/**
+ * 页面交互脚本
+ * 包含页面导航、支付功能、时间显示等核心功能
+ */
 
-// 获取北京时间
+'use strict';
+
+// 微信收款二维码地址
+var wxQrcode = 'https://s41.ax1x.com/2026/05/04/pe7j01J.png';
+
+/**
+ * 获取当前北京时间（YYYY-MM-DD HH:MM:SS格式）
+ * @returns {string} 格式化的当前时间字符串
+ */
 function getNow() {
     const d = new Date();
     const y = d.getFullYear();
-    const m = String(d.getMonth()+1).padStart(2,'0');
-    const day = String(d.getDate()).padStart(2,'0');
-    const h = String(d.getHours()).padStart(2,'0');
-    const i = String(d.getMinutes()).padStart(2,'0');
-    const s = String(d.getSeconds()).padStart(2,'0');
+    const m = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    const h = String(d.getHours()).padStart(2, '0');
+    const i = String(d.getMinutes()).padStart(2, '0');
+    const s = String(d.getSeconds()).padStart(2, '0');
     return `${y}-${m}-${day} ${h}:${i}:${s}`;
 }
 
-// 自动填充动态时间
+/**
+ * 自动填充动态时间（更新所有.auto-time元素）
+ */
 function syncAutoTime() {
     document.querySelectorAll('.auto-time').forEach(el => {
         el.innerText = getNow();
     });
 }
 
-// 判断手机访问
+/**
+ * 判断是否为移动设备访问
+ * @returns {boolean} true表示移动设备，false表示PC设备
+ */
 function isMobile() {
-    return /Android|iPhone|iPad/i.test(navigator.userAgent);
+    return /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 }
 
-window.onload = function() {
-    if (!isMobile()) {
-        document.getElementById("pcTip").style.display = "flex";
-        document.getElementById("home").style.display = "none";
-    }
-    syncAutoTime();
-};
-
-// 页面跳转原有方法 全部保留
+/**
+ * 页面跳转至详情页
+ */
 function goDetail() {
-    document.getElementById("home").style.display = "none";
-    document.getElementById("detail").style.display = "block";
-    document.getElementById("expertPage").style.display = "none";
-    document.getElementById("recordPage").style.display = "none";
-    document.getElementById("payDetailPage").style.display = "none";
+    hideAllPages();
+    document.getElementById('detail').style.display = 'block';
     syncAutoTime();
 }
+
+/**
+ * 页面跳转至首页
+ */
 function goHome() {
-    document.getElementById("detail").style.display = "none";
-    document.getElementById("expertPage").style.display = "none";
-    document.getElementById("recordPage").style.display = "none";
-    document.getElementById("payDetailPage").style.display = "none";
-    document.getElementById("home").style.display = "block";
-    document.querySelectorAll(".tab-item")[0].classList.add("active");
-    document.querySelectorAll(".tab-item")[1].classList.remove("active");
+    hideAllPages();
+    document.getElementById('home').style.display = 'block';
+    // 更新底部标签状态
+    document.querySelectorAll('.tab-item')[0].classList.add('active');
+    document.querySelectorAll('.tab-item')[1].classList.remove('active');
     syncAutoTime();
 }
+
+/**
+ * 显示支付弹窗（二维码）
+ */
 function showPay() {
-    document.getElementById("payImg").src = wxQrcode;
-    document.getElementById("payModal").style.display = "flex";
+    document.getElementById('payImg').src = wxQrcode;
+    document.getElementById('payModal').style.display = 'flex';
 }
+
+/**
+ * 关闭支付弹窗
+ */
 function closePay() {
-    document.getElementById("payModal").style.display = "none";
+    document.getElementById('payModal').style.display = 'none';
 }
+
+/**
+ * 保存收款码图片到本地
+ */
 function saveQrcode() {
-    let img = document.getElementById("payImg");
-    let a = document.createElement("a");
+    const img = document.getElementById('payImg');
+    const a = document.createElement('a');
     a.href = img.src;
-    a.download = "收款码.png";
+    a.download = '收款码.png';
     a.click();
-    alert("已保存收款码！\n⚠️仅扫码未付款无法解锁\n付款完成请联系客服人工解锁");
-}
-function showExpert(){
-    document.getElementById("home").style.display = "none";
-    document.getElementById("detail").style.display = "none";
-    document.getElementById("recordPage").style.display = "none";
-    document.getElementById("payDetailPage").style.display = "none";
-    document.getElementById("expertPage").style.display = "block";
-    document.querySelectorAll(".tab-item")[0].classList.remove("active");
-    document.querySelectorAll(".tab-item")[1].classList.add("active");
-    syncAutoTime();
-}
-function showHome(){ goHome(); }
-function goRecord(){
-    document.getElementById("home").style.display = "none";
-    document.getElementById("detail").style.display = "none";
-    document.getElementById("expertPage").style.display = "none";
-    document.getElementById("payDetailPage").style.display = "none";
-    document.getElementById("recordPage").style.display = "block";
-    syncAutoTime();
-}
-function goExpert(){
-    document.getElementById("home").style.display = "none";
-    document.getElementById("detail").style.display = "none";
-    document.getElementById("recordPage").style.display = "none";
-    document.getElementById("payDetailPage").style.display = "none";
-    document.getElementById("expertPage").style.display = "block";
+    alert('已保存收款码！\n⚠️仅扫码未付款无法解锁\n付款完成请联系客服人工解锁');
 }
 
-let currentCourseKey = "";
+/**
+ * 页面跳转至专家页
+ */
+function showExpert() {
+    hideAllPages();
+    document.getElementById('expertPage').style.display = 'block';
+    // 更新底部标签状态
+    document.querySelectorAll('.tab-item')[0].classList.remove('active');
+    document.querySelectorAll('.tab-item')[1].classList.add('active');
+    syncAutoTime();
+}
 
-// 进入付费详情页
+/**
+ * 页面跳转至记录页
+ */
+function goRecord() {
+    hideAllPages();
+    document.getElementById('recordPage').style.display = 'block';
+    syncAutoTime();
+}
+
+/**
+ * 页面跳转至专家页（备用方法）
+ */
+function goExpert() {
+    hideAllPages();
+    document.getElementById('expertPage').style.display = 'block';
+}
+
+/**
+ * 显示首页（别名方法）
+ */
+function showHome() {
+    goHome();
+}
+
+// 当前课程唯一标识（进入付费详情页时设置）
+let currentCourseKey = '';
+
+/**
+ * 进入付费详情页
+ * @param {string} title - 课程标题
+ * @param {string} time - 发布时间
+ */
 function goPayDetail(title, time) {
-    document.getElementById("payDetailTitle").innerText = title;
-    document.getElementById("payDetailMeta").innerText = `发布于: ${time} 228购买`;
+    // 设置课程信息
+    document.getElementById('payDetailTitle').innerText = title;
+    document.getElementById('payDetailMeta').innerText = `发布于: ${time} 228购买`;
+    
     // 生成当前课程唯一标识
-    currentCourseKey = "paid_course_" + title;
+    currentCourseKey = 'paid_course_' + title;
 
-    document.getElementById("home").style.display = "none";
-    document.getElementById("detail").style.display = "none";
-    document.getElementById("expertPage").style.display = "none";
-    document.getElementById("recordPage").style.display = "none";
-    document.getElementById("payDetailPage").style.display = "block";
+    // 切换到付费详情页
+    hideAllPages();
+    document.getElementById('payDetailPage').style.display = 'block';
 
     // 检查本课程是否已人工解锁
     checkCourseLock();
 }
 
-// 检查单课程锁定状态
+/**
+ * 检查单课程锁定状态
+ */
 function checkCourseLock() {
-    let isUnlock = localStorage.getItem(currentCourseKey) === "ok";
-    if(isUnlock){
-        document.getElementById("payDetailLockBox").style.display = "none";
-        document.getElementById("payDetailUnlockContent").style.display = "block";
-    }else{
-        document.getElementById("payDetailLockBox").style.display = "block";
-        document.getElementById("payDetailUnlockContent").style.display = "none";
+    const isUnlock = localStorage.getItem(currentCourseKey) === 'ok';
+    if (isUnlock) {
+        document.getElementById('payDetailLockBox').style.display = 'none';
+        document.getElementById('payDetailUnlockContent').style.display = 'block';
+    } else {
+        document.getElementById('payDetailLockBox').style.display = 'block';
+        document.getElementById('payDetailUnlockContent').style.display = 'none';
     }
 }
 
-// 【关键修改】点击支付只弹二维码，绝不自动解锁
+/**
+ * 点击支付按钮（只弹二维码，不自动解锁）
+ */
 function payNow() {
     showPay();
-    // 完全移除：自动付款成功、自动打标记、自动解锁逻辑
-    alert("请保存二维码，微信扫码完整付款！\n付款成功后联系客服核对到账，人工解锁内容");
+    alert('请保存二维码，微信扫码完整付款！\n付款成功后联系客服核对到账，人工解锁内容');
 }
 
-// ========== 客服专属解锁入口（只有你能用）==========
-// 用法：用户转账到账后，你在当前页面浏览器控制台输入：
-// unlockNow()  回车，即刻解锁当前这一期内容
-function unlockNow(){
-    if(!currentCourseKey){
-        alert("请先打开对应课程详情页再解锁");
+/**
+ * 隐藏所有页面容器（用于页面切换前的重置）
+ */
+function hideAllPages() {
+    const pages = [
+        'home',
+        'detail',
+        'expertPage',
+        'recordPage',
+        'payDetailPage'
+    ];
+    pages.forEach(pageId => {
+        const element = document.getElementById(pageId);
+        if (element) {
+            element.style.display = 'none';
+        }
+    });
+}
+
+/**
+ * ========== 客服专属解锁入口（只有你能用）==========
+ * 用法：用户转账到账后，在当前页面浏览器控制台输入：
+ * unlockNow()  回车，即刻解锁当前这一期内容
+ */
+function unlockNow() {
+    if (!currentCourseKey) {
+        alert('请先打开对应课程详情页再解锁');
         return;
     }
-    localStorage.setItem(currentCourseKey,"ok");
+    localStorage.setItem(currentCourseKey, 'ok');
     checkCourseLock();
-    alert("✅ 已为本用户解锁本期课程内容");
+    alert('✅ 已为本用户解锁本期课程内容');
 }
-</script>
+
+/**
+ * 页面初始化入口
+ */
+function initPage() {
+    // 判断设备类型并显示对应页面
+    if (!isMobile()) {
+        document.getElementById('pcTip').style.display = 'flex';
+        document.getElementById('home').style.display = 'none';
+    }
+    
+    // 同步动态时间
+    syncAutoTime();
+    
+    // 设置时间每秒更新
+    setInterval(syncAutoTime, 1000);
+}
+
+// 页面加载完成后初始化
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initPage);
+} else {
+    initPage();
+}
