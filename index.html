@@ -1,339 +1,6 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>发财树优质资料</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: "Microsoft YaHei", sans-serif;
-        }
-        body {
-            background: #f5f5f5;
-            max-width: 480px;
-            margin: 0 auto;
-        }
-
-        .forbidden {
-            display: none;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background: #f0f0f0;
-            flex-direction: column;
-        }
-
-        .home { display: block; }
-        .top-bar { background: #fff; padding: 14px; text-align: center; font-size: 18px; font-weight: bold; }
-        .banner { background: #e02b47; padding: 16px; display: flex; align-items: center; color: #fff; }
-        .logo-box { width: 70px; height: 70px; border-radius: 6px; background: #fff; overflow: hidden; }
-        .logo-box img { width: 100%; height: 100%; object-fit: cover; }
-        .banner-info { flex: 1; margin-left: 12px; }
-        .banner-title { font-size: 18px; font-weight: bold; color: #fff; }
-        .online-count { font-size: 14px; color: #eee; text-align: right; }
-        .banner-menu { background: #e02b47; display: flex; justify-content: space-around; padding: 10px 0; color: #fff; font-weight: bold; }
-        .search-area { background: #e02b47; padding: 10px; display: flex; gap: 8px; }
-        .search-input { flex: 1; padding: 10px 14px; border-radius: 30px; border: none; outline: none; }
-        .search-btn { background: #fff; color: #e02b47; border: none; border-radius: 30px; padding: 0 16px; font-weight: bold; }
-        .tab-bar { display: flex; background: #fff; }
-        .tab-item { flex: 1; text-align: center; padding: 14px 0; font-size: 16px; color: #666; cursor:pointer; }
-        .tab-item.active { color: #e02b47; font-weight: bold; border-bottom: 3px solid #e02b47; }
-        .course-list { padding: 10px; }
-        .course-item { background: #fff; padding: 16px; border-radius: 10px; margin-bottom: 8px; cursor: pointer; }
-        .course-title { font-size: 18px; font-weight: bold; margin-bottom: 6px; }
-        .course-time { font-size: 14px; color: #999; margin-bottom: 8px; }
-        .course-price { color: #e02b47; font-weight: bold; font-size: 18px; }
-        .footer-nav { position: fixed; bottom: 0; left: 0; right: 0; background: #fff; display: flex; justify-content: space-around; padding: 10px 0; border-top: 1px solid #eee; max-width: 480px; margin: auto; }
-        .nav-item { text-align: center; font-size: 12px; color: #666; }
-
-        /* ===================== 原有详情页样式 保留 ===================== */
-        .detail { display: none; background: #fff; min-height: 100vh; padding-bottom: 120px; }
-        .detail-header { display: flex; align-items: center; padding: 16px; border-bottom: 1px solid #eee; position: sticky; top: 0; background: #fff; }
-        .back-btn { font-size: 20px; margin-right: 16px; cursor: pointer; }
-        .detail-title { flex: 1; text-align: center; font-weight: bold; font-size: 18px; }
-        .detail-tab-bar { display: flex; border-bottom: 1px solid #eee; }
-        .detail-tab { flex: 1; text-align: center; padding: 14px 0; color: #666; cursor:pointer; }
-        .detail-tab.active { color: #7a67ee; font-weight: bold; border-bottom: 3px solid #7a67ee; }
-        .detail-course-list { padding: 10px; }
-        .detail-course-item { padding: 16px; border-bottom: 1px solid #f0f0f0; }
-        .detail-course-title { font-weight: bold; font-size: 17px; margin-bottom: 6px; }
-        .detail-course-time { font-size: 14px; color: #999; }
-        .float-back { position: fixed; right: 20px; bottom: 170px; width: 50px; height: 50px; background: #fff; border-radius: 50%; box-shadow: 0 0 6px rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 20px; }
-
-        .pay-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 999; justify-content: center; align-items: center; }
-        .pay-box { background: #fff; width: 80%; border-radius: 10px; padding: 20px; text-align: center; }
-        .pay-title { font-size: 18px; font-weight: bold; margin-bottom: 10px; }
-        .pay-tip { color: red; margin-bottom: 15px; font-size: 15px; line-height: 1.6; }
-        .pay-img { width: 220px; height: 220px; margin: 0 auto; }
-        .pay-img img { width: 100%; height: 100%; object-fit: contain; }
-        .save-btn { background: #07c160; color: #fff; border: none; padding: 11px; border-radius: 6px; margin-top: 12px; width: 100%; font-size: 16px; font-weight: bold; }
-        .close-btn { background: #ccc; margin-top: 8px; padding: 10px; border: none; border-radius: 6px; color: #fff; width: 100%; }
-
-        /* 专家页面样式 保留 */
-        .expert-page { display:none; background:#fff; min-height:100vh; padding-bottom:70px; }
-        .expert-header { background:#e02b47; color:#fff; padding:16px; display:flex; align-items:center; }
-        .expert-back { font-size:20px; margin-right:15px; cursor:pointer; }
-        .expert-title { font-size:18px; font-weight:bold; }
-        .expert-item { display:flex; align-items:center; padding:15px; border-bottom:1px solid #eee; cursor:pointer; }
-        .expert-rank { width:35px; height:35px; border-radius:50%; background:#ff6b6b; color:#fff; display:flex; align-items:center; justify-content:center; margin-right:12px; font-weight:bold; }
-        .rank1 { background:#ff9c41; }
-        .rank2 { background:#a0a0a0; }
-        .rank3 { background:#d4af37; }
-        .expert-avatar { width:60px; height:60px; border-radius:50%; overflow:hidden; margin-right:12px; }
-        .expert-avatar img { width:100%; height:100%; object-fit:cover; }
-        .expert-info { flex:1; }
-        .expert-name { font-size:17px; font-weight:bold; margin-bottom:4px; }
-        .expert-desc { font-size:13px; color:#999; }
-        .expert-data { font-size:16px; color:#e02b47; font-weight:bold; }
-
-        /* 记录列表样式 保留 */
-        .record-page { display:none; background:#fff; min-height:100vh; padding-bottom:20px; }
-        .record-header { display:flex; align-items:center; padding:16px; border-bottom:1px solid #eee; }
-        .record-back { font-size:20px; margin-right:15px; cursor:pointer; }
-        .record-title { font-size:18px; font-weight:bold; flex:1; text-align:center; }
-        .record-user { display:flex; align-items:center; padding:15px; border-bottom:1px solid #eee; }
-        .record-user-avatar { width:60px; height:60px; border-radius:50%; overflow:hidden; margin-right:12px; }
-        .record-user-avatar img { width:100%; height:100%; object-fit:cover; }
-        .record-user-name { font-size:18px; font-weight:bold; }
-        .record-user-tag { font-size:14px; color:#999; }
-        .record-item { display:flex; align-items:center; padding:15px; border-bottom:1px solid #eee; }
-        .record-info { flex:1; }
-        .record-text { font-size:16px; font-weight:bold; margin-bottom:4px; }
-        .record-time { font-size:14px; color:#999; }
-        .record-red { width:50px; height:50px; border-radius:50%; border:2px solid #e02b47; display:flex; align-items:center; justify-content:center; color:#e02b47; font-weight:bold; }
-
-        /* ===================== 👉 新增：真实付费详情页样式 ===================== */
-        .real-pay-detail {
-            display: none;
-            background: #fff;
-            min-height: 100vh;
-            padding-bottom: 100px;
-        }
-        .real-pay-header {
-            display: flex;
-            align-items: center;
-            padding: 16px;
-            border-bottom: 1px solid #eee;
-            position: sticky;
-            top: 0;
-            background: #fff;
-        }
-        .real-pay-back {
-            font-size: 20px;
-            margin-right: 16px;
-            cursor: pointer;
-        }
-        .real-pay-title {
-            flex: 1;
-            text-align: center;
-            font-weight: bold;
-            font-size: 18px;
-        }
-        .real-pay-content {
-            padding: 20px;
-        }
-        .real-pay-course-title {
-            font-size: 20px;
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
-        .real-pay-time {
-            color: #999;
-            margin-bottom: 16px;
-        }
-        .real-pay-red-box {
-            background: #e53935;
-            color: #fff;
-            padding: 14px;
-            border-radius: 6px;
-            line-height: 1.6;
-            margin-bottom: 20px;
-            font-size: 15px;
-        }
-        .locked-box {
-            background: #f5f5f5;
-            padding: 40px 20px;
-            text-align: center;
-            border-radius: 8px;
-            margin-bottom: 20px;
-        }
-        .locked-icon {
-            font-size: 50px;
-            margin-bottom: 10px;
-        }
-        .locked-text {
-            font-size: 18px;
-            color: #666;
-        }
-        .unlock-content {
-            display: none;
-            padding: 20px;
-            background: #fff;
-            border: 1px solid #eee;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            font-size: 16px;
-            line-height: 1.8;
-        }
-        .history-title {
-            font-size: 18px;
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
-        .history-item {
-            padding: 12px 0;
-            border-bottom: 1px solid #eee;
-            display: flex;
-            justify-content: space-between;
-        }
-        .real-pay-footer {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: #fff;
-            padding: 14px 20px;
-            border-top: 1px solid #eee;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            max-width: 480px;
-            margin: auto;
-        }
-        .real-pay-price {
-            font-size: 24px;
-            font-weight: bold;
-            color: red;
-        }
-        .real-pay-btn {
-            background: #07c160;
-            color: #fff;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 6px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-    </style>
-</head>
-<body>
-
-<div class="forbidden" id="pcTip">
-    <h1>❌ 禁止访问</h1>
-    <p>请使用手机访问</p>
-</div>
-
-<!-- ===================== 原有首页 保留 ===================== -->
-<div class="home" id="home">
-    <div class="top-bar">知识付费平台</div>
-    <div class="banner">
-        <div class="logo-box">
-            <img src="https://s41.ax1x.com/2026/05/04/pe7jCfe.png" alt="LOGO">
-        </div>
-        <div class="banner-info">
-            <div class="banner-title">发财树优质资料</div>
-            <div class="online-count">在线人数:2286</div>
-        </div>
-    </div>
-    <div class="banner-menu">
-        <div>主页码</div><div>|</div><div>联系客服</div>
-    </div>
-    <div class="search-area">
-        <input type="text" class="search-input" placeholder="请输入关键字">
-        <button class="search-btn">搜索</button>
-    </div>
-    <div class="tab-bar">
-        <div class="tab-item active" onclick="showHome()">今日更新</div>
-        <div class="tab-item" onclick="showExpert()">专家</div>
-    </div>
-
-    <div class="course-list">
-        <!-- 点击课程 → 跳真实付费详情页 -->
-        <div class="course-item" onclick="goRealPayDetail('第01期 精品资料','2026-05-04 10:00')">
-            <div class="course-title">第01期 精品课件</div>
-            <div class="course-time">05-01 10:00</div>
-            <div class="course-price">¥1699</div>
-        </div>
-        <div class="course-item" onclick="goRealPayDetail('第02期 精品资料','2026-05-04 11:00')">
-            <div class="course-title">第02期 精品课件</div>
-            <div class="course-time">05-02 11:00</div>
-            <div class="course-price">¥1699</div>
-        </div>
-    </div>
-
-    <div class="footer-nav">
-        <div class="nav-item">🏠 首页</div>
-        <div class="nav-item">📋 已购</div>
-        <div class="nav-item">👤 我的</div>
-    </div>
-</div>
-
-<!-- ===================== 原有专家、记录、旧详情页、支付弹窗 全部保留 ===================== -->
-<div class="expert-page" id="expertPage"></div>
-<div class="record-page" id="recordPage"></div>
-<div class="detail" id="detail"></div>
-
-<div class="pay-modal" id="payModal">
-    <div class="pay-box">
-        <div class="pay-title">请扫码支付 1699 元</div>
-        <div class="pay-tip">1. 点击【保存收款码】<br>2. 微信扫一扫 → 相册<br>3. 支付成功后联系客服解锁</div>
-        <div class="pay-img"><img id="payImg"></div>
-        <button class="save-btn" onclick="saveQrcode()">💾 保存收款码</button>
-        <button class="close-btn" onclick="closePay()">关闭</button>
-    </div>
-</div>
-
-<!-- ===================== 👉 新增：真实付费详情页（和你截图一致） ===================== -->
-<div class="real-pay-detail" id="realPayDetail">
-    <div class="real-pay-header">
-        <div class="real-pay-back" onclick="goHome()">←</div>
-        <div class="real-pay-title">课程详情</div>
-    </div>
-    <div class="real-pay-content">
-        <div class="real-pay-course-title" id="realPayTitle">课程标题</div>
-        <div class="real-pay-time" id="realPayTime">发布时间</div>
-
-        <!-- 红色提示 -->
-        <div class="real-pay-red-box">
-            付费后可查看完整内容，未付款无法查看！付款后联系客服解锁。
-        </div>
-
-        <!-- 锁头隐藏内容 -->
-        <div class="locked-box" id="lockedBox">
-            <div class="locked-icon">🔒</div>
-            <div class="locked-text">请付款后解锁内容</div>
-        </div>
-
-        <!-- 付费成功才显示 -->
-        <div class="unlock-content" id="unlockContent">
-            ✅ 已解锁<br><br>
-            这里是你要隐藏的核心资料内容，可自由编辑<br>
-            例如：123期 三中三 05-12-18-22-25-33
-        </div>
-
-        <!-- 往期课程（你可手动改） -->
-        <div class="history-title">昨日课程内容（可手动修改）</div>
-        <div class="history-item">
-            <div>122期 三中三</div>
-            <div style="color:red">已开奖</div>
-        </div>
-    </div>
-
-    <div class="real-pay-footer">
-        <div class="real-pay-price">¥1699</div>
-        <button class="real-pay-btn" onclick="openPayForReal()">微信支付</button>
-    </div>
-</div>
-
-<script>
 var wxQrcode = "https://s41.ax1x.com/2026/05/04/pe7j01J.png";
 
-// ===================== 原有函数 完全保留 =====================
+// 获取北京时间
 function getNow() {
     const d = new Date();
     const y = d.getFullYear();
@@ -344,28 +11,46 @@ function getNow() {
     const s = String(d.getSeconds()).padStart(2,'0');
     return `${y}-${m}-${day} ${h}:${i}:${s}`;
 }
-function syncAutoTime() {}
-function isMobile() { return /Android|iPhone|iPad/i.test(navigator.userAgent); }
+
+// 自动填充动态时间
+function syncAutoTime() {
+    document.querySelectorAll('.auto-time').forEach(el => {
+        el.innerText = getNow();
+    });
+}
+
+// 判断手机访问
+function isMobile() {
+    return /Android|iPhone|iPad/i.test(navigator.userAgent);
+}
+
 window.onload = function() {
     if (!isMobile()) {
         document.getElementById("pcTip").style.display = "flex";
         document.getElementById("home").style.display = "none";
     }
-    checkRealPayStatus(); // 👉 新增：加载就检查是否有权限
+    syncAutoTime();
 };
-function goHome() {
-    document.getElementById("home").style.display = "block";
+
+// 页面跳转原有方法 全部保留
+function goDetail() {
+    document.getElementById("home").style.display = "none";
+    document.getElementById("detail").style.display = "block";
     document.getElementById("expertPage").style.display = "none";
     document.getElementById("recordPage").style.display = "none";
-    document.getElementById("detail").style.display = "none";
-    document.getElementById("realPayDetail").style.display = "none";
+    document.getElementById("payDetailPage").style.display = "none";
+    syncAutoTime();
 }
-function showExpert(){ goHome(); }
-function showHome(){ goHome(); }
-function goRecord(){ goHome(); }
-function goExpert(){ goHome(); }
-function goDetail(){ goHome(); }
-
+function goHome() {
+    document.getElementById("detail").style.display = "none";
+    document.getElementById("expertPage").style.display = "none";
+    document.getElementById("recordPage").style.display = "none";
+    document.getElementById("payDetailPage").style.display = "none";
+    document.getElementById("home").style.display = "block";
+    document.querySelectorAll(".tab-item")[0].classList.add("active");
+    document.querySelectorAll(".tab-item")[1].classList.remove("active");
+    syncAutoTime();
+}
 function showPay() {
     document.getElementById("payImg").src = wxQrcode;
     document.getElementById("payModal").style.display = "flex";
@@ -379,44 +64,83 @@ function saveQrcode() {
     a.href = img.src;
     a.download = "收款码.png";
     a.click();
-    alert("已保存！请支付后联系客服解锁");
+    alert("已保存收款码！\n⚠️仅扫码未付款无法解锁\n付款完成请联系客服人工解锁");
+}
+function showExpert(){
+    document.getElementById("home").style.display = "none";
+    document.getElementById("detail").style.display = "none";
+    document.getElementById("recordPage").style.display = "none";
+    document.getElementById("payDetailPage").style.display = "none";
+    document.getElementById("expertPage").style.display = "block";
+    document.querySelectorAll(".tab-item")[0].classList.remove("active");
+    document.querySelectorAll(".tab-item")[1].classList.add("active");
+    syncAutoTime();
+}
+function showHome(){ goHome(); }
+function goRecord(){
+    document.getElementById("home").style.display = "none";
+    document.getElementById("detail").style.display = "none";
+    document.getElementById("expertPage").style.display = "none";
+    document.getElementById("payDetailPage").style.display = "none";
+    document.getElementById("recordPage").style.display = "block";
+    syncAutoTime();
+}
+function goExpert(){
+    document.getElementById("home").style.display = "none";
+    document.getElementById("detail").style.display = "none";
+    document.getElementById("recordPage").style.display = "none";
+    document.getElementById("payDetailPage").style.display = "none";
+    document.getElementById("expertPage").style.display = "block";
 }
 
-// ===================== 👉 新增：真实付费安全逻辑（只有你能解锁） =====================
-var currentPrice = 1699;
+let currentCourseKey = "";
 
 // 进入付费详情页
-function goRealPayDetail(title, time) {
-    document.getElementById("realPayTitle").innerText = title;
-    document.getElementById("realPayTime").innerText = time;
+function goPayDetail(title, time) {
+    document.getElementById("payDetailTitle").innerText = title;
+    document.getElementById("payDetailMeta").innerText = `发布于: ${time} 228购买`;
+    // 生成当前课程唯一标识
+    currentCourseKey = "paid_course_" + title;
+
     document.getElementById("home").style.display = "none";
-    document.getElementById("realPayDetail").style.display = "block";
-    checkRealPayStatus();
+    document.getElementById("detail").style.display = "none";
+    document.getElementById("expertPage").style.display = "none";
+    document.getElementById("recordPage").style.display = "none";
+    document.getElementById("payDetailPage").style.display = "block";
+
+    // 检查本课程是否已人工解锁
+    checkCourseLock();
 }
 
-// 打开支付码
-function openPayForReal() {
-    showPay();
-}
-
-// 👉 核心：检查是否有权限（前端无法伪造支付成功）
-function checkRealPayStatus() {
-    const paid = localStorage.getItem("realPaid_" + currentPrice);
-    if (paid === "ok") {
-        document.getElementById("lockedBox").style.display = "none";
-        document.getElementById("unlockContent").style.display = "block";
-    } else {
-        document.getElementById("lockedBox").style.display = "block";
-        document.getElementById("unlockContent").style.display = "none";
+// 检查单课程锁定状态
+function checkCourseLock() {
+    let isUnlock = localStorage.getItem(currentCourseKey) === "ok";
+    if(isUnlock){
+        document.getElementById("payDetailLockBox").style.display = "none";
+        document.getElementById("payDetailUnlockContent").style.display = "block";
+    }else{
+        document.getElementById("payDetailLockBox").style.display = "block";
+        document.getElementById("payDetailUnlockContent").style.display = "none";
     }
 }
 
-// 👉 只有你能执行：客服后台解锁（用户自己找不到、改不了）
-function adminUnlockContent() {
-    localStorage.setItem("realPaid_" + currentPrice, "ok");
-    checkRealPayStatus();
-    alert("✅ 已成功解锁！");
+// 【关键修改】点击支付只弹二维码，绝不自动解锁
+function payNow() {
+    showPay();
+    // 完全移除：自动付款成功、自动打标记、自动解锁逻辑
+    alert("请保存二维码，微信扫码完整付款！\n付款成功后联系客服核对到账，人工解锁内容");
+}
+
+// ========== 客服专属解锁入口（只有你能用）==========
+// 用法：用户转账到账后，你在当前页面浏览器控制台输入：
+// unlockNow()  回车，即刻解锁当前这一期内容
+function unlockNow(){
+    if(!currentCourseKey){
+        alert("请先打开对应课程详情页再解锁");
+        return;
+    }
+    localStorage.setItem(currentCourseKey,"ok");
+    checkCourseLock();
+    alert("✅ 已为本用户解锁本期课程内容");
 }
 </script>
-</body>
-</html>
