@@ -199,6 +199,14 @@
         <p style="margin-top: 20px;">扫码或在手机浏览器中打开</p>
     </div>
 
+    <!-- 下拉刷新指示器 -->
+    <div id="pullRefresh" style="display: none; position: fixed; top: 0; left: 0; right: 0; background: white; z-index: 999; padding: 10px; text-align: center; border-bottom: 1px solid #eee;">
+        <div style="font-size: 14px; color: #666;">
+            <span id="refreshIcon">⬇️</span>
+            <span id="refreshText">下拉刷新</span>
+        </div>
+    </div>
+
     <!-- 移动端页面 -->
     <div id="mobileApp">
         <!-- 首页 -->
@@ -1129,6 +1137,124 @@
 
         // ========== 作者管理系统结束 ==========
 
+        // ========== 下拉刷新功能 ==========
+        
+        // 下拉刷新相关变量
+        let startY = 0;
+        let currentY = 0;
+        let isRefreshing = false;
+        let isPulling = false;
+        const PULL_THRESHOLD = 60; // 触发刷新的下拉距离
+
+        // 触摸开始事件
+        function onTouchStart(e) {
+            if (isRefreshing) return;
+            
+            // 只有当页面在顶部时才允许下拉刷新
+            if (window.scrollY === 0) {
+                startY = e.touches[0].clientY;
+                isPulling = true;
+            }
+        }
+
+        // 触摸移动事件
+        function onTouchMove(e) {
+            if (!isPulling || isRefreshing) return;
+            if (window.scrollY !== 0) return;
+
+            currentY = e.touches[0].clientY;
+            const pullDistance = currentY - startY;
+
+            if (pullDistance > 0) {
+                // 显示刷新指示器
+                document.getElementById('pullRefresh').style.display = 'block';
+                
+                // 根据下拉距离调整显示文字
+                const refreshText = document.getElementById('refreshText');
+                const refreshIcon = document.getElementById('refreshIcon');
+                
+                if (pullDistance >= PULL_THRESHOLD) {
+                    refreshText.textContent = '松开刷新';
+                    refreshIcon.textContent = '🤚';
+                } else {
+                    refreshText.textContent = '下拉刷新';
+                    refreshIcon.textContent = '⬇️';
+                }
+                
+                // 调整页面内容位置（模拟下拉效果）
+                document.getElementById('mobileApp').style.transform = `translateY(${pullDistance * 0.5}px)`;
+            }
+        }
+
+        // 触摸结束事件
+        function onTouchEnd() {
+            if (!isPulling || isRefreshing) {
+                isPulling = false;
+                return;
+            }
+
+            const pullDistance = currentY - startY;
+            
+            // 重置状态
+            isPulling = false;
+            
+            if (pullDistance >= PULL_THRESHOLD) {
+                // 触发刷新
+                doRefresh();
+            } else {
+                // 没有达到阈值，收起
+                document.getElementById('pullRefresh').style.display = 'none';
+                document.getElementById('mobileApp').style.transform = 'translateY(0)';
+            }
+        }
+
+        // 执行刷新
+        function doRefresh() {
+            isRefreshing = true;
+            
+            // 更新刷新状态
+            document.getElementById('refreshText').textContent = '刷新中...';
+            document.getElementById('refreshIcon').textContent = '🔄';
+            document.getElementById('mobileApp').style.transform = `translateY(${PULL_THRESHOLD}px)`;
+            
+            // 模拟网络请求延迟
+            setTimeout(() => {
+                // 重新加载数据
+                refreshAllData();
+                
+                // 刷新完成
+                document.getElementById('refreshText').textContent = '刷新完成';
+                document.getElementById('refreshIcon').textContent = '✓';
+                
+                // 延迟收起
+                setTimeout(() => {
+                    document.getElementById('pullRefresh').style.display = 'none';
+                    document.getElementById('mobileApp').style.transform = 'translateY(0)';
+                    isRefreshing = false;
+                }, 500);
+            }, 1500);
+        }
+
+        // 刷新所有数据
+        function refreshAllData() {
+            // 更新发布时间
+            updatePublishTime();
+            
+            // 重新渲染所有列表
+            renderHomeCourses();
+            renderExperts();
+            renderRecords();
+            renderDetailHistory();
+            renderHistoryUpdates();
+            
+            // 如果当前在详情页，检查解锁状态
+            if (document.getElementById('detail').style.display === 'block') {
+                checkUnlockStatus();
+            }
+        }
+
+        // ========== 页面初始化 ==========
+
         // 初始化页面
         function initPage() {
             if (!/Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
@@ -1151,6 +1277,10 @@
             renderRecords();
             renderDetailHistory();
             renderHistoryUpdates();
+            // 添加下拉刷新事件监听
+            document.addEventListener('touchstart', onTouchStart, { passive: true });
+            document.addEventListener('touchmove', onTouchMove, { passive: true });
+            document.addEventListener('touchend', onTouchEnd, { passive: true });
         }
 
         // 页面加载完成后初始化
