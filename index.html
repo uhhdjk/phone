@@ -479,6 +479,21 @@
                     <label style="font-size: 13px; color: #666;">用户ID</label>
                     <input type="text" id="unlockUserId" placeholder="请输入要解锁的用户ID" style="width: 100%; height: 40px; margin-top: 5px; padding: 0 12px; border: 1px solid #ddd; border-radius: 6px;">
                 </div>
+                <div style="margin-bottom: 12px;">
+                    <label style="font-size: 13px; color: #666;">选择课程</label>
+                    <select id="unlockCourseId" style="width: 100%; height: 40px; margin-top: 5px; padding: 0 12px; border: 1px solid #ddd; border-radius: 6px;">
+                        <option value="1">123期 新&奥 新【金手指】一肖一码中特</option>
+                        <option value="2">123期 新&奥 新【澳门】一码中特</option>
+                        <option value="3">123期 新&奥 新【幸运星】两码中特</option>
+                        <option value="4">123期 新&奥 新【财运连连】两码中特</option>
+                        <option value="5">123期 新&奥 新【安溪龙】三码中特</option>
+                        <option value="6">123期 新&奥 新【南天霸】三码中特</option>
+                        <option value="7">123期 新&奥 新【三太子】三码中特</option>
+                        <option value="8">123期 新&奥 新【暴力猫】四码中特</option>
+                        <option value="9">123期 新&奥 新【招财富神】四码中特</option>
+                        <option value="10">123期 新&奥 新【吉祥符】四码中特</option>
+                    </select>
+                </div>
                 <button onclick="unlockUser()" style="width: 100%; height: 45px; background: #4caf50; color: white; border: none; border-radius: 8px; font-size: 16px;">解锁该用户</button>
             </div>
 
@@ -738,6 +753,13 @@
         function goDetail(courseId) { 
             hideAllPages(); 
             document.getElementById('detail').style.display = 'block'; 
+            // 保存当前课程ID
+            localStorage.setItem('currentCourseId', courseId.toString());
+            // 更新课程标题显示
+            const course = courses.find(c => c.id === courseId);
+            if (course) {
+                document.getElementById('detailCourseTitle').textContent = course.title;
+            }
             renderDetailHistory(); 
             // 检查是否已解锁
             checkUnlockStatus();
@@ -861,33 +883,42 @@
             alert('内容保存成功！');
         }
 
-        // 获取已解锁用户列表
-        function getUnlockedUsers() {
-            const saved = localStorage.getItem('unlockedUsers');
+        // 获取已解锁记录列表（包含用户ID和课程ID）
+        function getUnlockedRecords() {
+            const saved = localStorage.getItem('unlockedRecords');
             return saved ? JSON.parse(saved) : [];
         }
 
-        // 保存已解锁用户列表
-        function saveUnlockedUsers(users) {
-            localStorage.setItem('unlockedUsers', JSON.stringify(users));
+        // 保存已解锁记录列表
+        function saveUnlockedRecords(records) {
+            localStorage.setItem('unlockedRecords', JSON.stringify(records));
         }
 
-        // 解锁指定用户
+        // 解锁指定用户的指定课程
         function unlockUser() {
             const userId = document.getElementById('unlockUserId').value.trim();
+            const courseId = document.getElementById('unlockCourseId').value;
+            
             if (!userId) {
                 alert('请输入用户ID！');
                 return;
             }
 
-            const unlockedUsers = getUnlockedUsers();
-            if (unlockedUsers.includes(userId)) {
-                alert('该用户已解锁！');
+            const unlockedRecords = getUnlockedRecords();
+            
+            // 检查该用户是否已解锁该课程
+            const existingRecord = unlockedRecords.find(r => r.userId === userId && r.courseId === courseId);
+            if (existingRecord) {
+                alert('该用户已解锁此课程！');
                 return;
             }
 
-            unlockedUsers.push(userId);
-            saveUnlockedUsers(unlockedUsers);
+            unlockedRecords.push({
+                userId: userId,
+                courseId: parseInt(courseId),
+                unlockTime: getBeijingTime().full
+            });
+            saveUnlockedRecords(unlockedRecords);
             renderUnlockedUsers();
             document.getElementById('unlockUserId').value = '';
             alert('用户解锁成功！');
@@ -896,36 +927,60 @@
         // 渲染已解锁用户列表
         function renderUnlockedUsers() {
             const container = document.getElementById('unlockedUsersList');
-            const unlockedUsers = getUnlockedUsers();
+            const unlockedRecords = getUnlockedRecords();
 
-            if (unlockedUsers.length === 0) {
+            if (unlockedRecords.length === 0) {
                 container.innerHTML = '<div style="text-align: center; color: #999; padding: 20px;">暂无已解锁用户</div>';
                 return;
             }
 
-            let html = '';
-            unlockedUsers.forEach((userId, index) => {
-                html += `<div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; border-bottom: 1px solid #eee;">
-                    <span style="color: #333;">${index + 1}. ${userId}</span>
-                    <span style="color: #4caf50; font-size: 12px;">已解锁</span>
-                </div>`;
+            // 按用户ID分组
+            const userGroups = {};
+            unlockedRecords.forEach(record => {
+                if (!userGroups[record.userId]) {
+                    userGroups[record.userId] = [];
+                }
+                userGroups[record.userId].push(record);
             });
+
+            let html = '';
+            let index = 1;
+            for (const userId in userGroups) {
+                const records = userGroups[userId];
+                html += `<div style="padding: 10px 12px; border-bottom: 1px solid #eee;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                        <span style="color: #333; font-weight: 600;">${index++}. ${userId}</span>
+                        <span style="color: #4caf50; font-size: 12px;">已解锁 ${records.length} 门课程</span>
+                    </div>`;
+                
+                records.forEach(record => {
+                    const course = courses.find(c => c.id === record.courseId);
+                    const courseName = course ? course.title.substring(0, 20) + '...' : `课程${record.courseId}`;
+                    html += `<div style="display: flex; justify-content: space-between; align-items: center; padding: 4px 8px; background: #f8f9fa; border-radius: 4px; margin-bottom: 4px;">
+                        <span style="color: #666; font-size: 12px;">📚 ${courseName}</span>
+                        <span style="color: #999; font-size: 10px;">${record.unlockTime}</span>
+                    </div>`;
+                });
+                html += '</div>';
+            }
             container.innerHTML = html;
         }
 
-        // 检查当前用户是否已解锁
+        // 检查当前用户是否已解锁当前课程
         function checkUnlockStatus() {
             const userId = localStorage.getItem('userId') || generateUserId();
-            const unlockedUsers = getUnlockedUsers();
-            const isUnlocked = unlockedUsers.includes(userId);
+            const currentCourseId = parseInt(localStorage.getItem('currentCourseId') || '1');
+            const unlockedRecords = getUnlockedRecords();
+            
+            // 检查该用户是否已解锁当前课程
+            const isUnlocked = unlockedRecords.some(r => r.userId === userId && r.courseId === currentCourseId);
             
             if (isUnlocked) {
-                // 如果用户已解锁，显示课程内容
-                const savedContent = localStorage.getItem('courseContent');
-                if (savedContent) {
-                    const content = JSON.parse(savedContent);
-                    document.getElementById('detailContent').textContent = content.content;
-                    document.getElementById('detailCourseTitle').textContent = content.title;
+                // 如果用户已解锁当前课程，显示课程内容
+                const course = courses.find(c => c.id === currentCourseId);
+                if (course) {
+                    document.getElementById('detailContent').textContent = course.value;
+                    document.getElementById('detailCourseTitle').textContent = course.title;
                 } else {
                     document.getElementById('detailContent').textContent = '鸡【46】';
                 }
