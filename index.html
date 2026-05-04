@@ -235,7 +235,7 @@
                     <span></span>
                 </div>
                 <div class="course-title" id="detailCourseTitle">123期 新&奥 新【金手指】一肖一码中特</div>
-                <div class="course-meta">发布于: 2026-05-03 17:09:40 226购买</div>
+                <div class="course-meta" id="courseMeta">发布于: 北京时间 2026-05-03 17:09:40 226购买</div>
             </div>
             <div class="detail-tabs">
                 <div class="tab-item active" onclick="goHome()">今日更新</div>
@@ -427,6 +427,32 @@
     </div>
 
     <script>
+        // 获取当前北京时间
+        function getBeijingTime() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            return {
+                full: `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`,
+                date: `${year}-${month}-${day}`,
+                time: `${hours}:${minutes}:${seconds}`,
+                short: `${month}-${day} ${hours}:${minutes}`
+            };
+        }
+
+        // 更新发布时间显示
+        function updatePublishTime() {
+            const beijingTime = getBeijingTime();
+            const courseMetaEl = document.getElementById('courseMeta');
+            if (courseMetaEl) {
+                courseMetaEl.textContent = `发布于: 北京时间 ${beijingTime.full} 226购买`;
+            }
+        }
+
         // 课程数据
         const courses = [
             { id: 1, title: '123期 新&奥 新【金手指】一肖一码中特', time: '05-03 17:09', price: '¥1699', buyCount: 226, seal: '红', value: '鸡【46】', result: '对' },
@@ -465,13 +491,41 @@
             { id: 10, name: '暴富财神', hits: 9, avatar: '富' }
         ];
 
-        // 购买记录数据
-        const records = [
-            { id: 1, title: '121期 新&奥 新【运金财来】一码中特', time: '2026-05-01 20:30:41', seal: '红', price: '¥788', viewCount: 11095 },
-            { id: 2, title: '120期 新&奥 新【金手指】一肖一码中特', time: '2026-04-30 15:45:32', seal: '红', price: '¥1699', viewCount: 8956 },
-            { id: 3, title: '119期 新&奥 新【金手指】一肖一码中特', time: '2026-04-29 15:56:18', seal: '红', price: '¥1699', viewCount: 7823 },
-            { id: 4, title: '116期 新&奥 新【天天暴富】八码中特', time: '2026-04-26 15:51:15', seal: '红', price: '¥888', viewCount: 6543 }
-        ];
+        // 获取本地存储的购买记录，如果没有则使用默认数据
+        function getPurchaseRecords() {
+            const storedRecords = localStorage.getItem('purchaseRecords');
+            if (storedRecords) {
+                return JSON.parse(storedRecords);
+            }
+            // 默认购买记录
+            return [
+                { id: 1, title: '121期 新&奥 新【运金财来】一码中特', time: '2026-05-01 20:30:41', seal: '红', price: '¥788', viewCount: 11095 },
+                { id: 2, title: '120期 新&奥 新【金手指】一肖一码中特', time: '2026-04-30 15:45:32', seal: '红', price: '¥1699', viewCount: 8956 },
+                { id: 3, title: '119期 新&奥 新【金手指】一肖一码中特', time: '2026-04-29 15:56:18', seal: '红', price: '¥1699', viewCount: 7823 },
+                { id: 4, title: '116期 新&奥 新【天天暴富】八码中特', time: '2026-04-26 15:51:15', seal: '红', price: '¥888', viewCount: 6543 }
+            ];
+        }
+
+        // 保存购买记录到本地存储
+        function savePurchaseRecords(records) {
+            localStorage.setItem('purchaseRecords', JSON.stringify(records));
+        }
+
+        // 添加新的购买记录
+        function addPurchaseRecord(title, price) {
+            const records = getPurchaseRecords();
+            const newRecord = {
+                id: Date.now(),
+                title: title,
+                time: getBeijingTime().full,
+                seal: '红',
+                price: price,
+                viewCount: Math.floor(Math.random() * 5000) + 1000
+            };
+            records.unshift(newRecord);
+            savePurchaseRecords(records);
+            renderRecords();
+        }
 
         // 生成唯一用户ID
         function generateUserId() {
@@ -557,8 +611,9 @@
         // 渲染购买记录
         function renderRecords() {
             const container = document.getElementById('recordList');
+            const purchaseRecords = getPurchaseRecords();
             let html = '';
-            records.forEach(record => {
+            purchaseRecords.forEach(record => {
                 html += `<div class="record-card">
                     <div class="record-header">
                         <span class="record-time">${record.time}</span>
@@ -653,6 +708,10 @@
                 document.getElementById('mobileApp').style.display = 'none';
                 return;
             }
+            // 更新发布时间为北京时间
+            updatePublishTime();
+            // 每秒更新北京时间显示
+            setInterval(updatePublishTime, 1000);
             // 初始化用户ID
             const userId = generateUserId();
             document.getElementById('userId').textContent = '用户ID: ' + userId;
