@@ -5,1040 +5,139 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>知识付费平台</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif; background-color: #f5f5f5; min-height: 100vh; }
         
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
-            background-color: #f5f5f5;
-            min-height: 100vh;
-        }
-
         /* PC提示页 */
-        #pcTip {
-            display: none;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background: linear-gradient(135deg, #ff3333, #cc0000);
-            color: white;
-            text-align: center;
-            padding: 20px;
-        }
-        
-        #pcTip h1 {
-            font-size: 28px;
-            margin-bottom: 20px;
-        }
-        
-        #pcTip p {
-            font-size: 16px;
-            line-height: 1.8;
-        }
-        
-        #pcTip .qrcode-box {
-            margin-top: 30px;
-            background: white;
-            padding: 15px;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-        }
-        
-        #pcTip .qrcode-box img {
-            width: 200px;
-            height: 200px;
-        }
+        #pcTip { display: none; flex-direction: column; justify-content: center; align-items: center; height: 100vh; background: linear-gradient(135deg, #ff3333, #cc0000); color: white; text-align: center; padding: 20px; }
+        #pcTip h1 { font-size: 28px; margin-bottom: 20px; }
+        #pcTip p { font-size: 16px; line-height: 1.8; }
+        #pcTip .qrcode-box { margin-top: 30px; background: white; padding: 15px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+        #pcTip .qrcode-box img { width: 200px; height: 200px; }
 
         /* 页面容器 */
-        .page-container {
-            display: none;
-            min-height: 100vh;
-            padding-bottom: 70px;
-        }
-        
-        .page-container.active {
-            display: block;
-        }
+        .page-container { display: none; min-height: 100vh; padding-bottom: 70px; }
+        .page-container.active { display: block; }
 
-        /* 头部样式 */
-        header {
-            background: linear-gradient(135deg, #ff3333, #cc0000);
-            color: white;
-            padding: 12px 15px;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-        
-        header .logo-area {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        header .logo {
-            width: 40px;
-            height: 40px;
-            border-radius: 8px;
-            background: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        header .logo img {
-            width: 32px;
-            height: 32px;
-            border-radius: 6px;
-        }
-        
-        header .title {
-            font-size: 17px;
-            font-weight: 600;
-        }
-        
-        header .online-count {
-            font-size: 11px;
-            opacity: 0.85;
-        }
+        /* 头部标题栏 - 红色背景 */
+        .header-top { background: linear-gradient(135deg, #ff3333, #cc0000); padding: 15px; display: flex; align-items: center; gap: 12px; }
+        .header-top .logo-wrap { width: 44px; height: 44px; border-radius: 10px; background: white; display: flex; align-items: center; justify-content: center; }
+        .header-top .logo-wrap img { width: 36px; height: 36px; border-radius: 8px; }
+        .header-top .site-info { flex: 1; }
+        .header-top .site-info .site-title { font-size: 18px; font-weight: 700; color: white; margin-bottom: 3px; }
+        .header-top .site-info .online-num { font-size: 12px; color: rgba(255,255,255,0.85); }
 
-        /* 二级导航标签 */
-        .nav-tabs {
-            display: flex;
-            background: white;
-            padding: 8px 0;
-            border-bottom: 1px solid #eee;
-        }
-        
-        .nav-tabs .tab-item {
-            flex: 1;
-            text-align: center;
-            padding: 10px 0;
-            font-size: 14px;
-            color: #666;
-            position: relative;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        
-        .nav-tabs .tab-item.active {
-            color: #ff3333;
-            font-weight: 600;
-        }
-        
-        .nav-tabs .tab-item.active::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 40px;
-            height: 3px;
-            background: #ff3333;
-            border-radius: 2px;
-        }
+        /* 子导航标签 */
+        .sub-nav { background: white; display: flex; border-bottom: 1px solid #eee; }
+        .sub-nav .nav-item { flex: 1; padding: 12px 0; text-align: center; font-size: 14px; color: #666; position: relative; cursor: pointer; }
+        .sub-nav .nav-item.active { color: #ff3333; font-weight: 600; }
+        .sub-nav .nav-item.active::after { content: ''; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 50px; height: 3px; background: #ff3333; border-radius: 2px; }
 
         /* 搜索框 */
-        .search-bar {
-            background: white;
-            padding: 12px 15px;
-            display: flex;
-            gap: 10px;
-        }
-        
-        .search-bar input {
-            flex: 1;
-            height: 38px;
-            padding: 0 15px;
-            border: 1px solid #ddd;
-            border-radius: 19px;
-            font-size: 14px;
-            outline: none;
-            transition: border-color 0.3s;
-        }
-        
-        .search-bar input:focus {
-            border-color: #ff3333;
-        }
-        
-        .search-bar button {
-            width: 65px;
-            height: 38px;
-            background: #ff3333;
-            color: white;
-            border: none;
-            border-radius: 19px;
-            font-size: 13px;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-        
-        .search-bar button:hover {
-            background: #cc0000;
-        }
+        .search-wrap { background: white; padding: 12px 15px; display: flex; gap: 10px; }
+        .search-wrap input { flex: 1; height: 38px; padding: 0 15px; border: 1px solid #ddd; border-radius: 19px; font-size: 14px; outline: none; }
+        .search-wrap input:focus { border-color: #ff3333; }
+        .search-wrap button { width: 65px; height: 38px; background: #ff3333; color: white; border: none; border-radius: 19px; font-size: 13px; }
 
         /* 课程列表 */
-        .course-list {
-            padding: 12px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-        
-        .course-item {
-            background: white;
-            border-radius: 8px;
-            padding: 15px;
-            box-shadow: 0 1px 8px rgba(0,0,0,0.06);
-            cursor: pointer;
-            transition: transform 0.2s;
-            position: relative;
-        }
-        
-        .course-item:active {
-            transform: scale(0.98);
-        }
-        
-        .course-item .course-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 10px;
-        }
-        
-        .course-item .course-title {
-            font-size: 15px;
-            font-weight: 600;
-            color: #333;
-            line-height: 1.4;
-            flex: 1;
-            margin-right: 10px;
-        }
-        
-        .course-item .seal {
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            border: 2px solid #ff3333;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 14px;
-            font-weight: 600;
-            color: #ff3333;
-            flex-shrink: 0;
-        }
-        
-        .course-item .seal.black {
-            border-color: #333;
-            color: #333;
-        }
-        
-        .course-item .course-meta {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 12px;
-            color: #999;
-            margin-bottom: 8px;
-        }
-        
-        .course-item .course-meta .publish-time {
-            color: #666;
-        }
-        
-        .course-item .course-meta .buy-count {
-            color: #999;
-        }
-        
-        .course-item .course-footer {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding-top: 10px;
-            border-top: 1px dashed #eee;
-        }
-        
-        .course-item .course-price {
-            color: #ff3333;
-            font-size: 18px;
-            font-weight: 600;
-        }
-        
-        .course-item .course-buy {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            font-size: 12px;
-            color: #999;
-        }
-        
-        .course-item .course-buy img {
-            width: 14px;
-            height: 14px;
-        }
+        .course-list { padding: 10px; display: flex; flex-direction: column; gap: 10px; }
+        .course-card { background: white; border-radius: 8px; padding: 12px; position: relative; box-shadow: 0 1px 5px rgba(0,0,0,0.05); }
+        .course-card .course-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
+        .course-card .course-title { font-size: 15px; font-weight: 600; color: #333; line-height: 1.4; flex: 1; margin-right: 10px; }
+        .course-card .seal { width: 40px; height: 40px; border-radius: 50%; border: 2px solid #ff3333; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: #ff3333; flex-shrink: 0; }
+        .course-card .seal.black { border-color: #666; color: #666; }
+        .course-card .course-meta { font-size: 11px; color: #999; margin-bottom: 8px; }
+        .course-card .course-footer { display: flex; justify-content: space-between; align-items: center; padding-top: 8px; border-top: 1px dashed #eee; }
+        .course-card .course-price { font-size: 18px; font-weight: 700; color: #ff3333; }
+        .course-card .course-buy { font-size: 12px; color: #999; }
 
-        /* 底部导航 */
-        footer {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: white;
-            display: flex;
-            justify-content: space-around;
-            padding: 8px 0;
-            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
-            z-index: 100;
-        }
-        
-        footer .footer-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 3px;
-            color: #999;
-            font-size: 11px;
-            cursor: pointer;
-            transition: color 0.3s;
-        }
-        
-        footer .footer-item.active {
-            color: #ff3333;
-        }
-        
-        footer .footer-item img {
-            width: 22px;
-            height: 22px;
-        }
+        /* 详情页头部 */
+        .detail-header { background: white; padding: 15px; border-bottom: 1px solid #eee; }
+        .detail-header .header-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+        .detail-header .back-btn { font-size: 18px; color: #666; cursor: pointer; }
+        .detail-header .page-title { font-size: 16px; font-weight: 600; color: #333; }
+        .detail-header .course-title { font-size: 16px; font-weight: 600; color: #333; line-height: 1.5; }
+        .detail-header .course-meta { font-size: 11px; color: #999; }
 
-        /* 详情页样式 */
-        #detail .header-bar {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background: linear-gradient(135deg, #ff3333, #cc0000);
-            color: white;
-            padding: 12px 15px;
-        }
-        
-        #detail .header-bar .back-btn {
-            font-size: 18px;
-            cursor: pointer;
-        }
-        
-        #detail .header-bar .title {
-            font-size: 16px;
-            font-weight: 600;
-        }
-
-        /* 详情页内容 */
-        .detail-content {
-            padding: 15px;
-        }
-        
-        .detail-title-box {
-            background: white;
-            border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 12px;
-        }
-        
-        .detail-title-box .course-title {
-            font-size: 16px;
-            font-weight: 600;
-            color: #333;
-            line-height: 1.5;
-            margin-bottom: 10px;
-        }
-        
-        .detail-title-box .course-meta {
-            font-size: 12px;
-            color: #999;
-        }
-        
         /* 红色声明区域 */
-        .red-notice {
-            background: #ffeaea;
-            border: 1px solid #ffcccc;
-            padding: 12px;
-            border-radius: 8px;
-            margin-bottom: 12px;
-        }
-        
-        .red-notice p {
-            font-size: 12px;
-            color: #cc0000;
-            line-height: 1.6;
-            font-weight: 500;
-        }
+        .red-notice { background: #ff3333; padding: 12px; margin: 10px; border-radius: 8px; }
+        .red-notice p { font-size: 12px; color: white; line-height: 1.6; }
 
         /* 内容详情区域 */
-        .content-detail {
-            background: white;
-            border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 12px;
-        }
-        
-        .content-detail .detail-label {
-            font-size: 13px;
-            color: #666;
-            margin-bottom: 8px;
-        }
-        
-        .content-detail .detail-value {
-            font-size: 16px;
-            font-weight: 600;
-            color: #ff3333;
-            font-family: 'Courier New', monospace;
-        }
+        .content-detail { background: white; margin: 0 10px 10px; padding: 15px; border-radius: 8px; }
+        .content-detail .label { font-size: 12px; color: #999; margin-bottom: 8px; }
+        .content-detail .value { font-size: 20px; font-weight: 700; color: #ff3333; font-family: 'Courier New', monospace; }
 
         /* 往期记录区域 */
-        .history-section {
-            background: white;
-            border-radius: 8px;
-            padding: 15px;
-        }
-        
-        .history-section .history-title {
-            font-size: 14px;
-            font-weight: 600;
-            color: #333;
-            margin-bottom: 12px;
-            padding-bottom: 10px;
-            border-bottom: 1px dashed #eee;
-        }
-        
-        .history-list {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-        
-        .history-item {
-            display: flex;
-            align-items: center;
-            padding: 10px;
-            background: #f9f9f9;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-        
-        .history-item:hover {
-            background: #f0f0f0;
-        }
-        
-        .history-item .history-info {
-            flex: 1;
-        }
-        
-        .history-item .history-info .history-title-text {
-            font-size: 13px;
-            font-weight: 500;
-            color: #333;
-            margin-bottom: 3px;
-        }
-        
-        .history-item .history-info .history-value {
-            font-size: 12px;
-            color: #ff3333;
-            font-family: 'Courier New', monospace;
-        }
-        
-        .history-item .seal {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            border: 2px solid #ff3333;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 11px;
-            font-weight: 600;
-            color: #ff3333;
-            margin-left: 10px;
-        }
-        
-        .history-item .seal.black {
-            border-color: #333;
-            color: #333;
-        }
+        .history-section { background: white; margin: 0 10px; padding: 15px; border-radius: 8px; }
+        .history-section .section-title { font-size: 14px; font-weight: 600; color: #333; margin-bottom: 12px; }
+        .history-list { display: flex; flex-direction: column; gap: 12px; }
+        .history-item { display: flex; align-items: center; padding: 12px; background: #f9f9f9; border-radius: 6px; }
+        .history-item .history-info { flex: 1; }
+        .history-item .history-info .history-title { font-size: 13px; font-weight: 500; color: #333; margin-bottom: 4px; }
+        .history-item .history-info .history-value { font-size: 14px; font-weight: 600; color: #ff3333; font-family: 'Courier New', monospace; }
+        .history-item .result-badge { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; margin-left: 10px; }
+        .history-item .result-badge.correct { background: #4caf50; color: white; }
+        .history-item .result-badge.wrong { background: #ff3333; color: white; }
+        .history-item .seal { width: 36px; height: 36px; border-radius: 50%; border: 2px solid #ff3333; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: #ff3333; margin-left: 10px; }
+        .history-item .seal.black { border-color: #666; color: #666; }
 
         /* 专家列表页 */
-        .expert-list {
-            padding: 12px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-        
-        .expert-item {
-            background: white;
-            border-radius: 8px;
-            padding: 15px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            box-shadow: 0 1px 8px rgba(0,0,0,0.06);
-            cursor: pointer;
-        }
-        
-        .expert-item .rank-badge {
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #ffd700, #ffb700);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 13px;
-            font-weight: 600;
-            flex-shrink: 0;
-        }
-        
-        .expert-item .rank-badge.top3 {
-            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
-        }
-        
-        .expert-item .expert-avatar {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 20px;
-            font-weight: 600;
-            flex-shrink: 0;
-        }
-        
-        .expert-item .expert-info {
-            flex: 1;
-        }
-        
-        .expert-item .expert-info .expert-name {
-            font-size: 15px;
-            font-weight: 600;
-            color: #333;
-            margin-bottom: 4px;
-        }
-        
-        .expert-item .expert-info .expert-cert {
-            font-size: 11px;
-            color: #ff9800;
-            background: #fff8e1;
-            padding: 2px 6px;
-            border-radius: 4px;
-            display: inline-block;
-        }
-        
-        .expert-item .expert-stats {
-            text-align: right;
-        }
-        
-        .expert-item .expert-stats .hit-count {
-            font-size: 16px;
-            font-weight: 600;
-            color: #ff3333;
-        }
-        
-        .expert-item .expert-stats .hit-label {
-            font-size: 11px;
-            color: #999;
-        }
+        .expert-list { padding: 10px; display: flex; flex-direction: column; gap: 10px; }
+        .expert-card { background: white; border-radius: 8px; padding: 15px; display: flex; align-items: center; gap: 12px; }
+        .expert-card .rank-badge { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, #ffd700, #ffb700); display: flex; align-items: center; justify-content: center; color: white; font-size: 14px; font-weight: 700; }
+        .expert-card .rank-badge.top3 { background: linear-gradient(135deg, #ff6b6b, #ee5a24); }
+        .expert-card .expert-avatar { width: 50px; height: 50px; border-radius: 50%; background: linear-gradient(135deg, #667eea, #764ba2); display: flex; align-items: center; justify-content: center; color: white; font-size: 22px; font-weight: 700; position: relative; }
+        .expert-card .expert-avatar .cert-badge { position: absolute; bottom: -2px; right: -2px; width: 18px; height: 18px; background: #ff9800; border-radius: 50%; border: 2px solid white; display: flex; align-items: center; justify-content: center; font-size: 9px; }
+        .expert-card .expert-info { flex: 1; }
+        .expert-card .expert-info .expert-name { font-size: 15px; font-weight: 600; color: #333; margin-bottom: 3px; }
+        .expert-card .expert-info .expert-cert { font-size: 11px; color: #ff9800; }
+        .expert-card .hit-count { font-size: 18px; font-weight: 700; color: #ff3333; }
+        .expert-card .hit-label { font-size: 11px; color: #999; text-align: right; }
 
         /* 记录列表页 */
-        .record-list {
-            padding: 12px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-        
-        .record-item {
-            background: white;
-            border-radius: 8px;
-            padding: 15px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            box-shadow: 0 1px 8px rgba(0,0,0,0.06);
-        }
-        
-        .record-item .record-info {
-            flex: 1;
-        }
-        
-        .record-item .record-info .record-title {
-            font-size: 14px;
-            font-weight: 500;
-            color: #333;
-            margin-bottom: 4px;
-        }
-        
-        .record-item .record-info .record-time {
-            font-size: 12px;
-            color: #999;
-        }
-        
-        .record-item .seal {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            border: 2px solid #ff3333;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 12px;
-            font-weight: 600;
-            color: #ff3333;
-        }
-        
-        .record-item .seal.black {
-            border-color: #333;
-            color: #333;
-        }
+        .record-page-header { background: white; padding: 15px; }
+        .record-page-header .record-title { font-size: 16px; font-weight: 600; color: #333; margin-bottom: 15px; }
+        .record-page-header .expert-profile { display: flex; align-items: center; gap: 12px; }
+        .record-page-header .expert-profile .avatar { width: 48px; height: 48px; border-radius: 50%; background: linear-gradient(135deg, #667eea, #764ba2); display: flex; align-items: center; justify-content: center; color: white; font-size: 20px; font-weight: 700; position: relative; }
+        .record-page-header .expert-profile .avatar .cert-badge { position: absolute; bottom: -2px; right: -2px; width: 18px; height: 18px; background: #ff9800; border-radius: 50%; border: 2px solid white; display: flex; align-items: center; justify-content: center; font-size: 9px; }
+        .record-page-header .expert-profile .info { flex: 1; }
+        .record-page-header .expert-profile .info .name { font-size: 16px; font-weight: 600; color: #333; }
+        .record-page-header .expert-profile .info .cert { font-size: 11px; color: #ff9800; }
 
-        /* 付费详情页 */
-        #payDetailPage {
-            background-color: #f5f5f5;
-        }
-        
-        #payDetailPage .header-bar {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background: linear-gradient(135deg, #ff3333, #cc0000);
-            color: white;
-            padding: 12px 15px;
-        }
-        
-        #payDetailPage .header-bar .back-btn {
-            font-size: 18px;
-            cursor: pointer;
-        }
-        
-        #payDetailPage .header-bar .title {
-            font-size: 16px;
-            font-weight: 600;
-        }
+        .record-list { padding: 10px; display: flex; flex-direction: column; gap: 10px; }
+        .record-card { background: white; border-radius: 8px; padding: 15px; display: flex; justify-content: space-between; align-items: flex-start; }
+        .record-card .record-info { flex: 1; }
+        .record-card .record-info .record-title { font-size: 14px; font-weight: 500; color: #333; margin-bottom: 5px; }
+        .record-card .record-info .record-time { font-size: 11px; color: #999; }
+        .record-card .seal { width: 40px; height: 40px; border-radius: 50%; border: 2px solid #ff3333; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: #ff3333; }
+        .record-card .seal.black { border-color: #666; color: #666; }
 
-        /* 付费详情页内容区域 */
-        #payDetailPage .content-area {
-            padding: 15px;
-            padding-bottom: 80px;
-        }
+        /* 往期更新列表 */
+        .history-update-list { padding: 10px; display: flex; flex-direction: column; gap: 10px; }
+        .history-update-card { background: white; border-radius: 8px; padding: 15px; }
+        .history-update-card .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 5px; }
+        .history-update-card .history-title { font-size: 15px; font-weight: 600; color: #333; flex: 1; margin-right: 10px; }
+        .history-update-card .seal { width: 36px; height: 36px; border-radius: 50%; border: 2px solid #ff3333; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: #ff3333; }
+        .history-update-card .seal.black { border-color: #666; color: #666; }
+        .history-update-card .history-time { font-size: 11px; color: #999; }
 
-        /* 付费详情页标题区域 */
-        #payDetailPage .detail-title-box {
-            background: white;
-            border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 12px;
-        }
-        
-        #payDetailPage .detail-title-box .course-title {
-            font-size: 17px;
-            font-weight: 600;
-            color: #333;
-            line-height: 1.5;
-            margin-bottom: 8px;
-        }
-        
-        #payDetailPage .detail-title-box .course-meta {
-            font-size: 12px;
-            color: #999;
-            display: flex;
-            justify-content: space-between;
-        }
+        /* 底部导航 */
+        footer { position: fixed; bottom: 0; left: 0; right: 0; background: white; display: flex; padding: 8px 0; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); z-index: 100; }
+        footer .footer-item { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px; color: #999; font-size: 11px; }
+        footer .footer-item.active { color: #ff3333; }
+        footer .footer-item img { width: 22px; height: 22px; }
 
-        /* 付费详情页红色声明 */
-        #payDetailPage .red-notice {
-            background: #ffeaea;
-            border: 1px solid #ffcccc;
-            padding: 12px;
-            border-radius: 8px;
-            margin-bottom: 12px;
-        }
-        
-        #payDetailPage .red-notice p {
-            font-size: 12px;
-            color: #cc0000;
-            line-height: 1.6;
-            font-weight: 500;
-        }
+        /* 详情页导航 */
+        .detail-tabs { display: flex; background: white; }
+        .detail-tabs .tab-item { flex: 1; padding: 12px 0; text-align: center; font-size: 14px; color: #666; position: relative; cursor: pointer; }
+        .detail-tabs .tab-item.active { color: #ff3333; font-weight: 600; }
+        .detail-tabs .tab-item.active::after { content: ''; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 50px; height: 3px; background: #ff3333; border-radius: 2px; }
 
-        /* 锁定内容区域 */
-        #payDetailPage .lock-content-box {
-            background: white;
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 12px;
-        }
-        
-        #payDetailPage .lock-content-box .lock-header {
-            text-align: center;
-            margin-bottom: 15px;
-        }
-        
-        #payDetailPage .lock-content-box .lock-icon {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: #ff3333;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 24px;
-            margin: 0 auto 10px;
-        }
-        
-        #payDetailPage .lock-content-box .lock-text {
-            font-size: 14px;
-            color: #666;
-            text-align: center;
-        }
-        
-        #payDetailPage .lock-content-box .hidden-content {
-            background: #f8f8f8;
-            border: 2px dashed #ddd;
-            border-radius: 8px;
-            padding: 25px 15px;
-            text-align: center;
-        }
-        
-        #payDetailPage .lock-content-box .hidden-content .lock-badge {
-            display: inline-block;
-            padding: 6px 16px;
-            background: linear-gradient(135deg, #ff3333, #cc0000);
-            color: white;
-            border-radius: 15px;
-            font-size: 13px;
-            font-weight: 600;
-            margin-bottom: 8px;
-        }
-        
-        #payDetailPage .lock-content-box .hidden-content p {
-            font-size: 12px;
-            color: #999;
-        }
-
-        /* 解锁后内容区域 */
-        #payDetailPage .unlock-content-box {
-            background: white;
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 12px;
-        }
-        
-        #payDetailPage .unlock-content-box .unlock-header {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 15px;
-            padding-bottom: 15px;
-            border-bottom: 1px dashed #eee;
-        }
-        
-        #payDetailPage .unlock-content-box .unlock-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: #4caf50;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 18px;
-        }
-        
-        #payDetailPage .unlock-content-box .unlock-text h3 {
-            font-size: 15px;
-            font-weight: 600;
-            color: #333;
-            margin-bottom: 2px;
-        }
-        
-        #payDetailPage .unlock-content-box .unlock-text p {
-            font-size: 11px;
-            color: #999;
-        }
-        
-        #payDetailPage .course-content {
-            background: #f9f9f9;
-            border-radius: 8px;
-            padding: 15px;
-        }
-        
-        #payDetailPage .course-content .content-title {
-            font-size: 13px;
-            color: #666;
-            margin-bottom: 12px;
-        }
-        
-        #payDetailPage .course-content .content-item {
-            background: white;
-            border-radius: 6px;
-            padding: 12px;
-            margin-bottom: 10px;
-            border-left: 4px solid #ff3333;
-        }
-        
-        #payDetailPage .course-content .content-item:last-child {
-            margin-bottom: 0;
-        }
-        
-        #payDetailPage .course-content .content-item .item-label {
-            font-size: 12px;
-            color: #999;
-            margin-bottom: 5px;
-        }
-        
-        #payDetailPage .course-content .content-item .item-value {
-            font-size: 16px;
-            font-weight: 600;
-            color: #ff3333;
-            font-family: 'Courier New', monospace;
-        }
-
-        /* 付费详情页往期记录 */
-        #payDetailPage .history-section {
-            background: white;
-            border-radius: 8px;
-            padding: 15px;
-        }
-        
-        #payDetailPage .history-section .history-title {
-            font-size: 14px;
-            font-weight: 600;
-            color: #333;
-            margin-bottom: 12px;
-            padding-bottom: 10px;
-            border-bottom: 1px dashed #eee;
-        }
-        
-        #payDetailPage .history-list {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-        
-        #payDetailPage .history-item {
-            display: flex;
-            align-items: center;
-            padding: 10px;
-            background: #f9f9f9;
-            border-radius: 6px;
-        }
-        
-        #payDetailPage .history-item .history-info {
-            flex: 1;
-        }
-        
-        #payDetailPage .history-item .history-info .history-title-text {
-            font-size: 13px;
-            font-weight: 500;
-            color: #333;
-            margin-bottom: 3px;
-        }
-        
-        #payDetailPage .history-item .history-info .history-value {
-            font-size: 12px;
-            color: #ff3333;
-            font-family: 'Courier New', monospace;
-        }
-        
-        #payDetailPage .history-item .seal {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            border: 2px solid #ff3333;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 11px;
-            font-weight: 600;
-            color: #ff3333;
-            margin-left: 10px;
-        }
-        
-        #payDetailPage .history-item .seal.black {
-            border-color: #333;
-            color: #333;
-        }
-
-        /* 底部付费按钮 */
-        #payDetailPage .bottom-pay-bar {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: white;
-            padding: 12px 15px;
-            padding-bottom: calc(12px + env(safe-area-inset-bottom));
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            box-shadow: 0 -2px 15px rgba(0,0,0,0.1);
-            z-index: 100;
-        }
-        
-        #payDetailPage .bottom-pay-bar .price-info {
-            flex: 1;
-        }
-        
-        #payDetailPage .bottom-pay-bar .price-label {
-            font-size: 11px;
-            color: #999;
-            margin-bottom: 3px;
-        }
-        
-        #payDetailPage .bottom-pay-bar .price-value {
-            font-size: 20px;
-            font-weight: 600;
-            color: #ff3333;
-        }
-        
-        #payDetailPage .bottom-pay-bar .pay-btn {
-            width: 130px;
-            height: 42px;
-            background: linear-gradient(135deg, #ff3333, #cc0000);
-            color: white;
-            border: none;
-            border-radius: 21px;
-            font-size: 15px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        
-        #payDetailPage .bottom-pay-bar .pay-btn:hover {
-            transform: scale(1.02);
-        }
-
-        /* 支付弹窗 */
-        #payModal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0,0,0,0.6);
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            padding: 20px;
-        }
-        
-        .pay-modal-content {
-            background: white;
-            border-radius: 12px;
-            padding: 20px;
-            width: 100%;
-            max-width: 320px;
-        }
-        
-        .pay-modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-        }
-        
-        .pay-modal-header h3 {
-            font-size: 17px;
-            font-weight: 600;
-            color: #333;
-        }
-        
-        .pay-modal-header .close-btn {
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            background: #f0f0f0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-            color: #999;
-            cursor: pointer;
-        }
-        
-        #payImg {
-            width: 100%;
-            height: auto;
-            border-radius: 8px;
-            margin-bottom: 12px;
-        }
-        
-        .pay-modal-content p {
-            font-size: 12px;
-            color: #999;
-            text-align: center;
-            margin-bottom: 15px;
-        }
-        
-        .pay-modal-actions {
-            display: flex;
-            gap: 10px;
-        }
-        
-        .pay-modal-actions button {
-            flex: 1;
-            height: 42px;
-            border-radius: 21px;
-            font-size: 14px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        
-        .pay-modal-actions .btn-secondary {
-            background: #f5f5f5;
-            color: #666;
-            border: none;
-        }
-        
-        .pay-modal-actions .btn-primary {
-            background: linear-gradient(135deg, #ff3333, #cc0000);
-            color: white;
-            border: none;
-        }
-
-        /* 自动时间样式 */
-        .auto-time {
-            color: #ff3333;
-            font-weight: 500;
-        }
-
-        /* 滚动条美化 */
-        ::-webkit-scrollbar {
-            width: 4px;
-        }
-        
-        ::-webkit-scrollbar-track {
-            background: #f1f1f1;
-        }
-        
-        ::-webkit-scrollbar-thumb {
-            background: #ddd;
-            border-radius: 2px;
-        }
-        
-        ::-webkit-scrollbar-thumb:hover {
-            background: #ccc;
-        }
+        /* 滚动条 */
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #ddd; border-radius: 2px; }
     </style>
 </head>
 <body>
@@ -1056,305 +155,151 @@
     <div id="mobileApp">
         <!-- 首页 -->
         <div id="home" class="page-container" style="display: block;">
-            <header>
-                <div class="logo-area">
-                    <div class="logo">
-                        <img src="https://neeko-copilot.bytedance.net/api/text_to_image?prompt=golden%20money%20tree%20logo%20icon%20simple%20flat%20design%20green%20background&image_size=square" alt="Logo">
-                    </div>
-                    <div>
-                        <div class="title">摇钱树优质料</div>
-                        <div class="online-count">在线人数: 3842</div>
-                    </div>
+            <div class="header-top">
+                <div class="logo-wrap">
+                    <img src="https://s41.ax1x.com/2026/05/04/pe7jCfe.png" alt="Logo">
                 </div>
-            </header>
-            
-            <div class="search-bar">
+                <div class="site-info">
+                    <div class="site-title">摇钱树优质料</div>
+                    <div class="online-num">在线人数: 3842</div>
+                </div>
+            </div>
+            <div class="sub-nav">
+                <div class="nav-item active" onclick="goHome()">主页码</div>
+                <div class="nav-item" onclick="showExpert()">联系客服</div>
+            </div>
+            <div class="search-wrap">
                 <input type="text" placeholder="请输入关键字">
                 <button>搜索</button>
             </div>
-            
             <div class="nav-tabs">
                 <div class="tab-item active" onclick="goHome()">今日更新</div>
                 <div class="tab-item" onclick="showExpert()">专家</div>
             </div>
-            
-            <div class="course-list" id="homeCourseList">
-                <!-- 动态生成课程列表 -->
-            </div>
-            
+            <div class="course-list" id="homeCourseList"></div>
             <footer>
-                <div class="footer-item active" onclick="goHome()">
-                    <img src="https://neeko-copilot.bytedance.net/api/text_to_image?prompt=home%20icon%20simple%20red%20active&image_size=square" alt="首页">
-                    <span>首页</span>
-                </div>
-                <div class="footer-item" onclick="goRecord()">
-                    <img src="https://neeko-copilot.bytedance.net/api/text_to_image?prompt=shopping%20bag%20icon%20simple%20gray&image_size=square" alt="已购">
-                    <span>已购物料</span>
-                </div>
-                <div class="footer-item" onclick="showExpert()">
-                    <img src="https://neeko-copilot.bytedance.net/api/text_to_image?prompt=user%20icon%20simple%20gray&image_size=square" alt="我的">
-                    <span>我的</span>
-                </div>
+                <div class="footer-item active" onclick="goHome()"><img src="https://neeko-copilot.bytedance.net/api/text_to_image?prompt=home%20icon%20red&image_size=square"><span>首页</span></div>
+                <div class="footer-item" onclick="goRecord()"><img src="https://neeko-copilot.bytedance.net/api/text_to_image?prompt=shopping%20bag%20icon%20gray&image_size=square"><span>已购物料</span></div>
+                <div class="footer-item" onclick="showExpert()"><img src="https://neeko-copilot.bytedance.net/api/text_to_image?prompt=user%20icon%20gray&image_size=square"><span>我的</span></div>
             </footer>
         </div>
 
         <!-- 详情页 -->
         <div id="detail" class="page-container">
-            <div class="header-bar">
-                <span class="back-btn" onclick="goHome()">←</span>
-                <span class="title">详情</span>
-                <span></span>
+            <div class="detail-header">
+                <div class="header-row">
+                    <span class="back-btn" onclick="goHome()">←</span>
+                    <span class="page-title">详情</span>
+                    <span></span>
+                </div>
+                <div class="course-title" id="detailCourseTitle">123期 新&奥 新【金手指】一肖一码中特</div>
+                <div class="course-meta">发布于: 2026-05-03 17:09:40 226购买</div>
             </div>
-            
-            <div class="nav-tabs">
+            <div class="detail-tabs">
                 <div class="tab-item active" onclick="goHome()">今日更新</div>
                 <div class="tab-item" onclick="goHistory()">往期更新</div>
             </div>
-            
-            <div class="detail-content">
-                <div class="detail-title-box">
-                    <div class="course-title">123期 新&奥 新【金手指】一肖一码中特</div>
-                    <div class="course-meta">发布于: 2026-05-03 17:09:40 226购买</div>
-                </div>
-                
-                <div class="red-notice">
-                    <p>声明:该文章由作者发布,内容属于知识付费文章,用户购买成功即视为认可作者推荐,并属于个人自愿购买行为,该文章不作任何售后处理,双方产生的交易纠纷与平台无关。</p>
-                </div>
-                
-                <div class="content-detail">
-                    <div class="detail-label">内容详情</div>
-                    <div class="detail-value">鸡【46】</div>
-                </div>
-                
-                <div class="history-section">
-                    <div class="history-title">往期记录:</div>
-                    <div class="history-list" id="detailHistoryList">
-                        <!-- 动态生成往期记录 -->
-                    </div>
-                </div>
+            <div class="red-notice">
+                <p>声明:该文章由作者发布,内容属于知识付费文章,用户购买成功即视为认可作者推荐,并属于个人自愿购买行为,该文章不作任何售后处理,双方产生的交易纠纷与平台无关。</p>
             </div>
-            
+            <div class="content-detail">
+                <div class="label">内容详情</div>
+                <div class="value">鸡【46】</div>
+            </div>
+            <div class="history-section">
+                <div class="section-title">往期记录:</div>
+                <div class="history-list" id="detailHistoryList"></div>
+            </div>
             <footer>
-                <div class="footer-item" onclick="goHome()">
-                    <img src="https://neeko-copilot.bytedance.net/api/text_to_image?prompt=home%20icon%20simple%20gray&image_size=square" alt="首页">
-                    <span>首页</span>
-                </div>
-                <div class="footer-item" onclick="goRecord()">
-                    <img src="https://neeko-copilot.bytedance.net/api/text_to_image?prompt=shopping%20bag%20icon%20simple%20gray&image_size=square" alt="已购">
-                    <span>已购物料</span>
-                </div>
-                <div class="footer-item active" onclick="showExpert()">
-                    <img src="https://neeko-copilot.bytedance.net/api/text_to_image?prompt=user%20icon%20simple%20red%20active&image_size=square" alt="我的">
-                    <span>我的</span>
-                </div>
+                <div class="footer-item" onclick="goHome()"><img src="https://neeko-copilot.bytedance.net/api/text_to_image?prompt=home%20icon%20gray&image_size=square"><span>首页</span></div>
+                <div class="footer-item" onclick="goRecord()"><img src="https://neeko-copilot.bytedance.net/api/text_to_image?prompt=shopping%20bag%20icon%20gray&image_size=square"><span>已购物料</span></div>
+                <div class="footer-item active" onclick="showExpert()"><img src="https://neeko-copilot.bytedance.net/api/text_to_image?prompt=user%20icon%20red&image_size=square"><span>我的</span></div>
             </footer>
         </div>
 
         <!-- 专家页 -->
         <div id="expertPage" class="page-container">
-            <header>
-                <div class="logo-area">
-                    <div class="logo">
-                        <img src="https://neeko-copilot.bytedance.net/api/text_to_image?prompt=golden%20money%20tree%20logo%20icon%20simple%20flat%20design%20green%20background&image_size=square" alt="Logo">
-                    </div>
-                    <div>
-                        <div class="title">摇钱树优质料</div>
-                        <div class="online-count">在线人数: 3842</div>
-                    </div>
+            <div class="header-top">
+                <div class="logo-wrap">
+                    <img src="https://s41.ax1x.com/2026/05/04/pe7jCfe.png" alt="Logo">
                 </div>
-            </header>
-            
+                <div class="site-info">
+                    <div class="site-title">摇钱树优质料</div>
+                    <div class="online-num">在线人数: 3842</div>
+                </div>
+            </div>
+            <div class="sub-nav">
+                <div class="nav-item" onclick="goHome()">主页码</div>
+                <div class="nav-item active" onclick="showExpert()">联系客服</div>
+            </div>
+            <div class="search-wrap">
+                <input type="text" placeholder="请输入关键字">
+                <button>搜索</button>
+            </div>
             <div class="nav-tabs">
                 <div class="tab-item" onclick="goHome()">今日更新</div>
                 <div class="tab-item active" onclick="showExpert()">专家</div>
             </div>
-            
-            <div class="expert-list" id="expertList">
-                <!-- 动态生成专家列表 -->
-            </div>
-            
+            <div class="expert-list" id="expertList"></div>
             <footer>
-                <div class="footer-item" onclick="goHome()">
-                    <img src="https://neeko-copilot.bytedance.net/api/text_to_image?prompt=home%20icon%20simple%20gray&image_size=square" alt="首页">
-                    <span>首页</span>
-                </div>
-                <div class="footer-item" onclick="goRecord()">
-                    <img src="https://neeko-copilot.bytedance.net/api/text_to_image?prompt=shopping%20bag%20icon%20simple%20gray&image_size=square" alt="已购">
-                    <span>已购物料</span>
-                </div>
-                <div class="footer-item active" onclick="showExpert()">
-                    <img src="https://neeko-copilot.bytedance.net/api/text_to_image?prompt=user%20icon%20simple%20red%20active&image_size=square" alt="我的">
-                    <span>我的</span>
-                </div>
+                <div class="footer-item" onclick="goHome()"><img src="https://neeko-copilot.bytedance.net/api/text_to_image?prompt=home%20icon%20gray&image_size=square"><span>首页</span></div>
+                <div class="footer-item" onclick="goRecord()"><img src="https://neeko-copilot.bytedance.net/api/text_to_image?prompt=shopping%20bag%20icon%20gray&image_size=square"><span>已购物料</span></div>
+                <div class="footer-item active" onclick="showExpert()"><img src="https://neeko-copilot.bytedance.net/api/text_to_image?prompt=user%20icon%20red&image_size=square"><span>我的</span></div>
             </footer>
         </div>
 
         <!-- 记录页 -->
         <div id="recordPage" class="page-container">
-            <div class="header-bar" style="background: linear-gradient(135deg, #ff3333, #cc0000); color: white; padding: 12px 15px; display: flex; align-items: center; justify-content: space-between;">
-                <span class="back-btn" style="font-size: 18px; cursor: pointer;" onclick="goHome()">←</span>
-                <span class="title" style="font-size: 16px; font-weight: 600;">记录列表</span>
-                <span></span>
+            <div class="detail-header">
+                <div class="header-row">
+                    <span class="back-btn" onclick="goHome()">←</span>
+                    <span class="page-title">记录列表</span>
+                    <span></span>
+                </div>
             </div>
-            
-            <div class="record-list" id="recordList">
-                <!-- 动态生成记录列表 -->
+            <div class="record-page-header">
+                <div class="expert-profile">
+                    <div class="avatar">
+                        <span>天</span>
+                        <span class="cert-badge">证</span>
+                    </div>
+                    <div class="info">
+                        <div class="name">天天暴富</div>
+                        <div class="cert">认证专家</div>
+                    </div>
+                </div>
             </div>
-            
+            <div class="record-list" id="recordList"></div>
             <footer>
-                <div class="footer-item" onclick="goHome()">
-                    <img src="https://neeko-copilot.bytedance.net/api/text_to_image?prompt=home%20icon%20simple%20gray&image_size=square" alt="首页">
-                    <span>首页</span>
-                </div>
-                <div class="footer-item active" onclick="goRecord()">
-                    <img src="https://neeko-copilot.bytedance.net/api/text_to_image?prompt=shopping%20bag%20icon%20simple%20red%20active&image_size=square" alt="已购">
-                    <span>已购物料</span>
-                </div>
-                <div class="footer-item" onclick="showExpert()">
-                    <img src="https://neeko-copilot.bytedance.net/api/text_to_image?prompt=user%20icon%20simple%20gray&image_size=square" alt="我的">
-                    <span>我的</span>
-                </div>
+                <div class="footer-item" onclick="goHome()"><img src="https://neeko-copilot.bytedance.net/api/text_to_image?prompt=home%20icon%20gray&image_size=square"><span>首页</span></div>
+                <div class="footer-item active" onclick="goRecord()"><img src="https://neeko-copilot.bytedance.net/api/text_to_image?prompt=shopping%20bag%20icon%20red&image_size=square"><span>已购物料</span></div>
+                <div class="footer-item" onclick="showExpert()"><img src="https://neeko-copilot.bytedance.net/api/text_to_image?prompt=user%20icon%20gray&image_size=square"><span>我的</span></div>
             </footer>
-        </div>
-
-        <!-- 付费详情页 -->
-        <div id="payDetailPage" class="page-container">
-            <div class="header-bar">
-                <span class="back-btn" onclick="goHome()">←</span>
-                <span class="title">详情</span>
-                <span></span>
-            </div>
-            
-            <div class="content-area">
-                <!-- 课程标题区域 -->
-                <div class="detail-title-box">
-                    <div class="course-title" id="payDetailTitle">课程标题</div>
-                    <div class="course-meta" id="payDetailMeta">发布于: 2026-05-03 17:09:40 226购买</div>
-                </div>
-                
-                <!-- 红色声明区域 -->
-                <div class="red-notice">
-                    <p>声明:该文章由作者发布,内容属于知识付费文章,用户购买成功即视为认可作者推荐,并属于个人自愿购买行为,该文章不作任何售后处理,双方产生的交易纠纷与平台无关。</p>
-                </div>
-                
-                <!-- 锁定状态内容 -->
-                <div id="payDetailLockBox">
-                    <div class="lock-content-box">
-                        <div class="lock-header">
-                            <div class="lock-icon">🔒</div>
-                            <div class="lock-text">内容未解锁</div>
-                        </div>
-                        <div class="hidden-content">
-                            <div class="lock-badge">🔒 已加密</div>
-                            <p>支付完成后联系客服人工解锁，解锁后可永久查看</p>
-                        </div>
-                    </div>
-                    
-                    <!-- 往期记录 -->
-                    <div class="history-section">
-                        <div class="history-title">往期记录:</div>
-                        <div class="history-list" id="payDetailHistory">
-                            <!-- 动态生成往期记录 -->
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- 解锁后内容 -->
-                <div id="payDetailUnlockContent" style="display: none;">
-                    <div class="unlock-content-box">
-                        <div class="unlock-header">
-                            <div class="unlock-icon">✅</div>
-                            <div class="unlock-text">
-                                <h3>已解锁</h3>
-                                <p>可永久查看此内容</p>
-                            </div>
-                        </div>
-                        <div class="course-content">
-                            <div class="content-title">📋 本期内容</div>
-                            <div class="content-item">
-                                <div class="item-label">本期特码</div>
-                                <div class="item-value" id="courseSpecialCode">鸡【46】</div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- 往期记录 -->
-                    <div class="history-section">
-                        <div class="history-title">往期记录:</div>
-                        <div class="history-list" id="payDetailHistoryUnlocked">
-                            <!-- 动态生成往期记录 -->
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- 底部付费按钮 -->
-            <div class="bottom-pay-bar">
-                <div class="price-info">
-                    <div class="price-label">课程价格</div>
-                    <div class="price-value" id="payDetailPrice">¥1699</div>
-                </div>
-                <button class="pay-btn" onclick="payNow()">立即购买</button>
-            </div>
         </div>
 
         <!-- 往期更新页 -->
         <div id="historyPage" class="page-container">
-            <div class="header-bar" style="background: linear-gradient(135deg, #ff3333, #cc0000); color: white; padding: 12px 15px; display: flex; align-items: center; justify-content: space-between;">
-                <span class="back-btn" style="font-size: 18px; cursor: pointer;" onclick="goHome()">←</span>
-                <span class="title" style="font-size: 16px; font-weight: 600;">详情</span>
-                <span></span>
+            <div class="detail-header">
+                <div class="header-row">
+                    <span class="back-btn" onclick="goHome()">←</span>
+                    <span class="page-title">详情</span>
+                    <span></span>
+                </div>
             </div>
-            
-            <div class="nav-tabs">
+            <div class="detail-tabs">
                 <div class="tab-item" onclick="goHome()">今日更新</div>
                 <div class="tab-item active" onclick="goHistory()">往期更新</div>
             </div>
-            
-            <div class="course-list" id="historyCourseList">
-                <!-- 动态生成往期课程列表 -->
-            </div>
-            
+            <div class="history-update-list" id="historyUpdateList"></div>
             <footer>
-                <div class="footer-item" onclick="goHome()">
-                    <img src="https://neeko-copilot.bytedance.net/api/text_to_image?prompt=home%20icon%20simple%20gray&image_size=square" alt="首页">
-                    <span>首页</span>
-                </div>
-                <div class="footer-item" onclick="goRecord()">
-                    <img src="https://neeko-copilot.bytedance.net/api/text_to_image?prompt=shopping%20bag%20icon%20simple%20gray&image_size=square" alt="已购">
-                    <span>已购物料</span>
-                </div>
-                <div class="footer-item" onclick="showExpert()">
-                    <img src="https://neeko-copilot.bytedance.net/api/text_to_image?prompt=user%20icon%20simple%20gray&image_size=square" alt="我的">
-                    <span>我的</span>
-                </div>
+                <div class="footer-item" onclick="goHome()"><img src="https://neeko-copilot.bytedance.net/api/text_to_image?prompt=home%20icon%20gray&image_size=square"><span>首页</span></div>
+                <div class="footer-item" onclick="goRecord()"><img src="https://neeko-copilot.bytedance.net/api/text_to_image?prompt=shopping%20bag%20icon%20gray&image_size=square"><span>已购物料</span></div>
+                <div class="footer-item" onclick="showExpert()"><img src="https://neeko-copilot.bytedance.net/api/text_to_image?prompt=user%20icon%20gray&image_size=square"><span>我的</span></div>
             </footer>
-        </div>
-
-        <!-- 支付弹窗 -->
-        <div id="payModal">
-            <div class="pay-modal-content">
-                <div class="pay-modal-header">
-                    <h3>微信支付</h3>
-                    <div class="close-btn" onclick="closePay()">×</div>
-                </div>
-                <img id="payImg" src="" alt="收款码">
-                <p>保存图片到相册，打开微信扫码付款</p>
-                <div class="pay-modal-actions">
-                    <button class="btn-secondary" onclick="closePay()">关闭</button>
-                    <button class="btn-primary" onclick="saveQrcode()">保存收款码</button>
-                </div>
-            </div>
         </div>
     </div>
 
     <script>
-        'use strict';
-
-        // 微信收款二维码地址
-        var wxQrcode = 'https://s41.ax1x.com/2026/05/04/pe7j01J.png';
-
-        // 课程数据
         const courses = [
             { id: 1, title: '123期 新&奥 新【金手指】一肖一码中特', time: '05-03 17:09', price: '¥1699', buyCount: 226, seal: '红', value: '鸡【46】', result: '对' },
             { id: 2, title: '123期 新&奥 新【澳门】一码中特', time: '05-03 17:05', price: '¥1680', buyCount: 213, seal: '黑', value: '马【07】', result: '错' },
@@ -1368,7 +313,6 @@
             { id: 10, title: '123期 新&奥 新【吉祥符】四码中特', time: '05-03 16:10', price: '¥888', buyCount: 251, seal: '红', value: '鸡【46】', result: '对' }
         ];
 
-        // 往期课程数据
         const historyCourses = [
             { id: 101, title: '122期 新&奥 新【金手指】一肖一码中特', time: '05-02 13:39', seal: '黑', value: '马【37】', result: '错' },
             { id: 102, title: '121期 新&奥 新【金手指】一肖一码中特', time: '05-01 14:45', seal: '黑', value: '猪【32】', result: '错' },
@@ -1380,7 +324,6 @@
             { id: 108, title: '115期 新&奥 新【金手指】一肖一码中特', time: '04-25 16:56', seal: '红', value: '牛【02】', result: '对' }
         ];
 
-        // 专家数据
         const experts = [
             { id: 1, name: '天天暴富', hits: 16, avatar: '天' },
             { id: 2, name: '澳门财神', hits: 16, avatar: '财' },
@@ -1394,7 +337,6 @@
             { id: 10, name: '暴富财神', hits: 9, avatar: '富' }
         ];
 
-        // 记录数据
         const records = [
             { id: 1, title: '122期 新&奥 新【天天暴富】八码中特', time: '2026-05-02 13:39:09', seal: '红' },
             { id: 2, title: '116期 新&奥 新【天天暴富】八码中特', time: '2026-04-26 15:51:15', seal: '红' },
@@ -1411,390 +353,123 @@
             { id: 13, title: '079期 新&奥 新【天天暴富】八码中特', time: '2026-03-20 15:43:42', seal: '红' }
         ];
 
-        // 当前课程唯一标识
-        let currentCourseKey = '';
-
-        /**
-         * 获取当前北京时间
-         */
-        function getNow() {
-            const d = new Date();
-            const y = d.getFullYear();
-            const m = String(d.getMonth() + 1).padStart(2, '0');
-            const day = String(d.getDate()).padStart(2, '0');
-            const h = String(d.getHours()).padStart(2, '0');
-            const i = String(d.getMinutes()).padStart(2, '0');
-            const s = String(d.getSeconds()).padStart(2, '0');
-            return `${y}-${m}-${day} ${h}:${i}:${s}`;
-        }
-
-        /**
-         * 更新auto-time元素时间
-         */
-        function syncAutoTime() {
-            document.querySelectorAll('.auto-time').forEach(el => {
-                el.innerText = getNow();
-            });
-        }
-
-        /**
-         * 判断是否为移动设备
-         */
-        function isMobile() {
-            return /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-        }
-
-        /**
-         * 隐藏所有页面
-         */
         function hideAllPages() {
-            const pages = ['home', 'detail', 'expertPage', 'recordPage', 'payDetailPage', 'historyPage'];
-            pages.forEach(pageId => {
-                const element = document.getElementById(pageId);
-                if (element) element.style.display = 'none';
+            ['home', 'detail', 'expertPage', 'recordPage', 'historyPage'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.style.display = 'none';
             });
         }
 
-        /**
-         * 渲染首页课程列表
-         */
         function renderHomeCourses() {
             const container = document.getElementById('homeCourseList');
-            if (!container) return;
-            
             let html = '';
             courses.forEach(course => {
-                html += `
-                    <div class="course-item" onclick="goPayDetail('${course.title}', '${course.time}', '${course.price}', '${course.value}')">
-                        <div class="course-header">
-                            <div class="course-title">${course.title}</div>
-                            <div class="seal ${course.seal === '黑' ? 'black' : ''}">${course.seal}</div>
-                        </div>
-                        <div class="course-meta">
-                            <span class="publish-time">发布于: ${course.time}</span>
-                            <span class="buy-count">${course.buyCount}购买</span>
-                        </div>
-                        <div class="course-footer">
-                            <span class="course-price">${course.price}</span>
-                            <span class="course-buy">
-                                <img src="https://neeko-copilot.bytedance.net/api/text_to_image?prompt=shopping%20cart%20icon%20simple%20red&image_size=square" alt="购买">
-                                立即购买
-                            </span>
-                        </div>
+                html += `<div class="course-card" onclick="goDetail()">
+                    <div class="course-header">
+                        <div class="course-title">${course.title}</div>
+                        <div class="seal ${course.seal === '黑' ? 'black' : ''}">${course.seal}</div>
                     </div>
-                `;
+                    <div class="course-meta">${course.time} ${course.buyCount}人已购</div>
+                    <div class="course-footer">
+                        <span class="course-price">${course.price}</span>
+                        <span class="course-buy">立即购买</span>
+                    </div>
+                </div>`;
             });
             container.innerHTML = html;
         }
 
-        /**
-         * 渲染详情页往期记录
-         */
         function renderDetailHistory() {
             const container = document.getElementById('detailHistoryList');
-            if (!container) return;
-            
             let html = '';
             historyCourses.slice(0, 5).forEach(course => {
-                html += `
-                    <div class="history-item">
-                        <div class="history-info">
-                            <div class="history-title-text">${course.title}</div>
-                            <div class="history-value">${course.value}</div>
-                        </div>
-                        <div class="seal ${course.seal === '黑' ? 'black' : ''}">${course.seal}</div>
+                const resultClass = course.result === '对' ? 'correct' : 'wrong';
+                const resultIcon = course.result === '对' ? '✓' : '✕';
+                html += `<div class="history-item">
+                    <div class="history-info">
+                        <div class="history-title">${course.title}</div>
+                        <div class="history-value">${course.value}</div>
                     </div>
-                `;
+                    <div class="seal ${course.seal === '黑' ? 'black' : ''}">${course.seal}</div>
+                    <div class="result-badge ${resultClass}">${resultIcon}</div>
+                </div>`;
             });
             container.innerHTML = html;
         }
 
-        /**
-         * 渲染专家列表
-         */
         function renderExperts() {
             const container = document.getElementById('expertList');
-            if (!container) return;
-            
             let html = '';
             experts.forEach((expert, index) => {
-                html += `
-                    <div class="expert-item">
-                        <div class="rank-badge ${index < 3 ? 'top3' : ''}">${index + 1}</div>
-                        <div class="expert-avatar">${expert.avatar}</div>
-                        <div class="expert-info">
-                            <div class="expert-name">${expert.name}</div>
-                            <div class="expert-cert">认证专家</div>
-                        </div>
-                        <div class="expert-stats">
-                            <div class="hit-count">${expert.hits}连中</div>
-                            <div class="hit-label">连中</div>
-                        </div>
+                html += `<div class="expert-card">
+                    <div class="rank-badge ${index < 3 ? 'top3' : ''}">${index + 1}</div>
+                    <div class="expert-avatar">
+                        <span>${expert.avatar}</span>
+                        <span class="cert-badge">证</span>
                     </div>
-                `;
+                    <div class="expert-info">
+                        <div class="expert-name">${expert.name}</div>
+                        <div class="expert-cert">认证专家</div>
+                    </div>
+                    <div style="text-align: right;">
+                        <div class="hit-count">${expert.hits}连中</div>
+                        <div class="hit-label">连中</div>
+                    </div>
+                </div>`;
             });
             container.innerHTML = html;
         }
 
-        /**
-         * 渲染记录列表
-         */
         function renderRecords() {
             const container = document.getElementById('recordList');
-            if (!container) return;
-            
             let html = '';
             records.forEach(record => {
-                html += `
-                    <div class="record-item">
-                        <div class="record-info">
-                            <div class="record-title">${record.title}</div>
-                            <div class="record-time">${record.time}</div>
-                        </div>
-                        <div class="seal ${record.seal === '黑' ? 'black' : ''}">${record.seal}</div>
+                html += `<div class="record-card">
+                    <div class="record-info">
+                        <div class="record-title">${record.title}</div>
+                        <div class="record-time">${record.time}</div>
                     </div>
-                `;
+                    <div class="seal ${record.seal === '黑' ? 'black' : ''}">${record.seal}</div>
+                </div>`;
             });
             container.innerHTML = html;
         }
 
-        /**
-         * 渲染往期课程列表
-         */
-        function renderHistoryCourses() {
-            const container = document.getElementById('historyCourseList');
-            if (!container) return;
-            
+        function renderHistoryUpdates() {
+            const container = document.getElementById('historyUpdateList');
             let html = '';
             historyCourses.forEach(course => {
-                html += `
-                    <div class="course-item" onclick="goDetail()">
-                        <div class="course-header">
-                            <div class="course-title">${course.title}</div>
-                            <div class="seal ${course.seal === '黑' ? 'black' : ''}">${course.seal}</div>
-                        </div>
-                        <div class="course-meta">
-                            <span class="publish-time">发布于: ${course.time}</span>
-                            <span class="buy-count"></span>
-                        </div>
-                        <div class="course-footer" style="border-top: none;">
-                            <span style="color: #666; font-size: 13px;">${course.value}</span>
-                        </div>
+                html += `<div class="history-update-card">
+                    <div class="card-header">
+                        <div class="history-title">${course.title}</div>
+                        <div class="seal ${course.seal === '黑' ? 'black' : ''}">${course.seal}</div>
                     </div>
-                `;
+                    <div class="history-time">发布于: ${course.time}</div>
+                </div>`;
             });
             container.innerHTML = html;
         }
 
-        /**
-         * 渲染付费详情页往期记录
-         */
-        function renderPayDetailHistory() {
-            const container1 = document.getElementById('payDetailHistory');
-            const container2 = document.getElementById('payDetailHistoryUnlocked');
-            
-            let html = '';
-            historyCourses.slice(0, 5).forEach(course => {
-                html += `
-                    <div class="history-item">
-                        <div class="history-info">
-                            <div class="history-title-text">${course.title}</div>
-                            <div class="history-value">${course.value}</div>
-                        </div>
-                        <div class="seal ${course.seal === '黑' ? 'black' : ''}">${course.seal}</div>
-                    </div>
-                `;
-            });
-            
-            if (container1) container1.innerHTML = html;
-            if (container2) container2.innerHTML = html;
-        }
+        function goHome() { hideAllPages(); document.getElementById('home').style.display = 'block'; }
+        function goDetail() { hideAllPages(); document.getElementById('detail').style.display = 'block'; renderDetailHistory(); }
+        function showExpert() { hideAllPages(); document.getElementById('expertPage').style.display = 'block'; }
+        function goRecord() { hideAllPages(); document.getElementById('recordPage').style.display = 'block'; }
+        function goHistory() { hideAllPages(); document.getElementById('historyPage').style.display = 'block'; renderHistoryUpdates(); }
 
-        /**
-         * 页面跳转 - 首页
-         */
-        function goHome() {
-            hideAllPages();
-            document.getElementById('home').style.display = 'block';
-            const tabItems = document.querySelectorAll('.tab-item');
-            if (tabItems.length >= 2) {
-                tabItems[0].classList.add('active');
-                tabItems[1].classList.remove('active');
-            }
-            syncAutoTime();
-        }
-
-        /**
-         * 页面跳转 - 详情页
-         */
-        function goDetail() {
-            hideAllPages();
-            document.getElementById('detail').style.display = 'block';
-            renderDetailHistory();
-            syncAutoTime();
-        }
-
-        /**
-         * 页面跳转 - 专家页
-         */
-        function showExpert() {
-            hideAllPages();
-            document.getElementById('expertPage').style.display = 'block';
-            const tabItems = document.querySelectorAll('.tab-item');
-            if (tabItems.length >= 2) {
-                tabItems[0].classList.remove('active');
-                tabItems[1].classList.add('active');
-            }
-            syncAutoTime();
-        }
-
-        /**
-         * 页面跳转 - 记录页
-         */
-        function goRecord() {
-            hideAllPages();
-            document.getElementById('recordPage').style.display = 'block';
-            syncAutoTime();
-        }
-
-        /**
-         * 页面跳转 - 往期更新页
-         */
-        function goHistory() {
-            hideAllPages();
-            document.getElementById('historyPage').style.display = 'block';
-            renderHistoryCourses();
-            syncAutoTime();
-        }
-
-        /**
-         * 页面跳转 - 付费详情页
-         */
-        function goPayDetail(title, time, price, value) {
-            currentCourseKey = 'course_' + title.replace(/[^a-zA-Z0-9]/g, '_');
-            
-            document.getElementById('payDetailTitle').innerText = title;
-            document.getElementById('payDetailMeta').innerText = '发布于: ' + time + ' 226购买';
-            document.getElementById('payDetailPrice').innerText = price;
-            document.getElementById('courseSpecialCode').innerText = value;
-            
-            renderPayDetailHistory();
-            checkUnlockStatus();
-            
-            hideAllPages();
-            document.getElementById('payDetailPage').style.display = 'block';
-            syncAutoTime();
-        }
-
-        /**
-         * 检查课程解锁状态
-         */
-        function checkUnlockStatus() {
-            const lockBox = document.getElementById('payDetailLockBox');
-            const unlockContent = document.getElementById('payDetailUnlockContent');
-            
-            if (isCourseUnlocked()) {
-                lockBox.style.display = 'none';
-                unlockContent.style.display = 'block';
-            } else {
-                lockBox.style.display = 'block';
-                unlockContent.style.display = 'none';
-            }
-        }
-
-        /**
-         * 判断课程是否已解锁
-         */
-        function isCourseUnlocked() {
-            const unlockedCourses = localStorage.getItem('unlockedCourses');
-            if (!unlockedCourses) return false;
-            const courseList = JSON.parse(unlockedCourses);
-            return courseList.includes(currentCourseKey);
-        }
-
-        /**
-         * 显示支付弹窗
-         */
-        function payNow() {
-            const payModal = document.getElementById('payModal');
-            const payImg = document.getElementById('payImg');
-            payImg.src = wxQrcode;
-            payModal.style.display = 'flex';
-        }
-
-        /**
-         * 关闭支付弹窗
-         */
-        function closePay() {
-            const payModal = document.getElementById('payModal');
-            payModal.style.display = 'none';
-        }
-
-        /**
-         * 保存收款码图片
-         */
-        function saveQrcode() {
-            const payImg = document.getElementById('payImg');
-            const link = document.createElement('a');
-            link.href = payImg.src;
-            link.download = 'wechat_pay_qrcode.png';
-            link.click();
-            alert('收款码已保存到相册，打开微信扫码付款即可');
-        }
-
-        /**
-         * 客服解锁课程函数
-         */
-        window.unlockNow = function() {
-            if (!currentCourseKey) {
-                console.log('❌ 未选择课程');
-                alert('未选择课程，请先打开一个课程的付费详情页');
-                return;
-            }
-            
-            let unlockedCourses = localStorage.getItem('unlockedCourses');
-            if (!unlockedCourses) {
-                unlockedCourses = [];
-            } else {
-                unlockedCourses = JSON.parse(unlockedCourses);
-            }
-            
-            if (!unlockedCourses.includes(currentCourseKey)) {
-                unlockedCourses.push(currentCourseKey);
-                localStorage.setItem('unlockedCourses', JSON.stringify(unlockedCourses));
-                checkUnlockStatus();
-                console.log('✅ 课程解锁成功！');
-                alert('课程解锁成功！内容已显示');
-            } else {
-                console.log('ℹ️ 课程已解锁');
-                alert('课程已解锁');
-            }
-        };
-
-        /**
-         * 页面初始化
-         */
         function initPage() {
-            if (!isMobile()) {
+            if (!/Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
                 document.getElementById('pcTip').style.display = 'flex';
                 document.getElementById('mobileApp').style.display = 'none';
                 return;
             }
-            
             renderHomeCourses();
             renderExperts();
             renderRecords();
             renderDetailHistory();
-            renderPayDetailHistory();
-            
-            setInterval(syncAutoTime, 1000);
-            syncAutoTime();
-            
-            document.addEventListener('keydown', function(e) {
-                if (e.key === 'Escape') {
-                    closePay();
-                }
-            });
+            renderHistoryUpdates();
         }
 
         document.addEventListener('DOMContentLoaded', initPage);
+    </script>
+</body>
+</html>
