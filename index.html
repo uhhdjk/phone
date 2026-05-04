@@ -474,6 +474,7 @@
                 <div style="display: flex; gap: 10px; margin-bottom: 15px;">
                     <button onclick="addCourseRow()" style="flex: 1; height: 45px; background: #4caf50; color: white; border: none; border-radius: 8px; font-size: 14px;">➕ 添加课程</button>
                     <button onclick="saveAllCourses()" style="flex: 1; height: 45px; background: #ff3333; color: white; border: none; border-radius: 8px; font-size: 14px;">💾 保存全部</button>
+                    <button onclick="refreshDataFromServer()" style="flex: 1; height: 45px; background: #6a79f7; color: white; border: none; border-radius: 8px; font-size: 14px;">🔄 刷新数据</button>
                 </div>
                 
                 <!-- 在线编辑表格 -->
@@ -619,8 +620,11 @@
             }
         }
 
-        // 课程数据
-        const courses = [
+        // 数据版本号（每次更新数据时增加版本号）
+        const DATA_VERSION = '20260504001';
+
+        // 默认课程数据（服务器端数据，更新时修改这里）
+        const defaultCourses = [
             { id: 1, title: '123期 新&奥 新【金手指】一肖一码中特', time: '05-03 17:09', price: '¥1699', buyCount: 226, seal: '红', value: '鸡【46】', result: '对' },
             { id: 2, title: '123期 新&奥 新【澳门】一码中特', time: '05-03 17:05', price: '¥1680', buyCount: 213, seal: '黑', value: '马【07】', result: '错' },
             { id: 3, title: '123期 新&奥 新【幸运星】两码中特', time: '05-03 16:58', price: '¥1298', buyCount: 205, seal: '红', value: '鸡【46】', result: '对' },
@@ -632,6 +636,56 @@
             { id: 9, title: '123期 新&奥 新【招财富神】四码中特', time: '05-03 16:18', price: '¥899', buyCount: 226, seal: '红', value: '鸡【46】', result: '对' },
             { id: 10, title: '123期 新&奥 新【吉祥符】四码中特', time: '05-03 16:10', price: '¥888', buyCount: 251, seal: '红', value: '鸡【46】', result: '对' }
         ];
+
+        // 检查数据版本并更新
+        function checkDataVersion() {
+            const localVersion = localStorage.getItem('dataVersion');
+            
+            // 如果服务器版本更新，使用新数据
+            if (localVersion !== DATA_VERSION) {
+                localStorage.setItem('dataVersion', DATA_VERSION);
+                localStorage.setItem('courses', JSON.stringify(defaultCourses));
+                // 清除旧的课程内容缓存
+                courses.forEach(course => {
+                    localStorage.removeItem('courseContent_' + course.id);
+                });
+                return true; // 返回true表示有更新
+            }
+            return false;
+        }
+
+        // 从localStorage获取课程数据，如果没有则使用默认数据
+        function loadCourses() {
+            // 先检查版本
+            checkDataVersion();
+            
+            const stored = localStorage.getItem('courses');
+            if (stored) {
+                try {
+                    return JSON.parse(stored);
+                } catch (e) {
+                    return [...defaultCourses];
+                }
+            }
+            return [...defaultCourses];
+        }
+
+        // 保存课程数据到localStorage
+        function saveCourses(courseList) {
+            localStorage.setItem('courses', JSON.stringify(courseList));
+        }
+
+        // 强制刷新数据（从服务器重新加载）
+        function refreshDataFromServer() {
+            localStorage.setItem('dataVersion', '');
+            localStorage.removeItem('courses');
+            
+            // 重新加载页面
+            window.location.reload();
+        }
+
+        // 课程数据（从localStorage加载，会自动检查版本）
+        let courses = loadCourses();
 
         const historyCourses = [
             { id: 101, title: '122期 新&奥 新【金手指】一肖一码中特', time: '05-02 13:39', seal: '黑', value: '马【37】', result: '错' },
@@ -1535,7 +1589,7 @@
                     courses[courseIndex].seal = seal;
                     courses[courseIndex].value = value;
                     
-                    // 保存到localStorage
+                    // 保存到localStorage（每个课程的详细内容）
                     const courseContent = {
                         title: title,
                         content: value,
@@ -1547,13 +1601,16 @@
                 }
             });
             
+            // 保存整个课程数组到localStorage（关键！）
+            saveCourses(courses);
+            
             // 更新下拉选择框
             updateCourseSelect();
             
             // 更新课程列表显示
             renderCourses();
             
-            alert(`✅ 成功保存 ${successCount} 条课程数据！`);
+            alert(`✅ 成功保存 ${successCount} 条课程数据！\n\n数据已持久化存储，刷新页面后依然有效。`);
         }
 
         // 页面加载时渲染编辑器
