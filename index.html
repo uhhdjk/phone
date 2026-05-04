@@ -1144,28 +1144,52 @@
         let currentY = 0;
         let isRefreshing = false;
         let isPulling = false;
+        let isLongPress = false; // 是否长按
+        let pressTimer = null; // 长按计时器
         const PULL_THRESHOLD = 60; // 触发刷新的下拉距离
+        const TOP_AREA_HEIGHT = 80; // 顶部触发区域高度
+        const LONG_PRESS_DELAY = 200; // 长按判断时间（毫秒）
 
         // 触摸开始事件
         function onTouchStart(e) {
             if (isRefreshing) return;
             
             // 只有当页面在顶部时才允许下拉刷新
-            if (window.scrollY === 0) {
-                startY = e.touches[0].clientY;
-                isPulling = true;
-            }
+            if (window.scrollY > 5) return;
+            
+            // 获取触摸位置
+            const touch = e.touches[0];
+            const touchY = touch.clientY;
+            
+            // 只有点击顶部小区域才允许触发
+            if (touchY > TOP_AREA_HEIGHT) return;
+            
+            startY = touchY;
+            isPulling = true;
+            isLongPress = false;
+            
+            // 启动长按计时器
+            pressTimer = setTimeout(() => {
+                isLongPress = true;
+            }, LONG_PRESS_DELAY);
         }
 
         // 触摸移动事件
         function onTouchMove(e) {
             if (!isPulling || isRefreshing) return;
-            if (window.scrollY !== 0) return;
+            if (window.scrollY > 5) return;
 
             currentY = e.touches[0].clientY;
             const pullDistance = currentY - startY;
+            
+            // 如果移动距离过大（超过10px），认为是滑动而不是点击，取消长按计时器
+            if (pressTimer && Math.abs(pullDistance) > 10) {
+                clearTimeout(pressTimer);
+                pressTimer = null;
+            }
 
-            if (pullDistance > 0) {
+            // 只有长按后或者下拉距离足够大才显示下拉效果
+            if (pullDistance > 0 && (isLongPress || pullDistance > 20)) {
                 // 显示刷新指示器
                 document.getElementById('pullRefresh').style.display = 'block';
                 
@@ -1181,15 +1205,23 @@
                     refreshIcon.textContent = '⬇️';
                 }
                 
-                // 调整页面内容位置（模拟下拉效果）
-                document.getElementById('mobileApp').style.transform = `translateY(${pullDistance * 0.5}px)`;
+                // 调整页面内容位置（模拟下拉效果），增加阻尼感
+                const translateY = Math.min(pullDistance * 0.5, PULL_THRESHOLD * 1.5);
+                document.getElementById('mobileApp').style.transform = `translateY(${translateY}px)`;
             }
         }
 
         // 触摸结束事件
         function onTouchEnd() {
+            // 清除长按计时器
+            if (pressTimer) {
+                clearTimeout(pressTimer);
+                pressTimer = null;
+            }
+            
             if (!isPulling || isRefreshing) {
                 isPulling = false;
+                isLongPress = false;
                 return;
             }
 
@@ -1197,6 +1229,7 @@
             
             // 重置状态
             isPulling = false;
+            isLongPress = false;
             
             if (pullDistance >= PULL_THRESHOLD) {
                 // 触发刷新
