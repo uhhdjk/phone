@@ -394,6 +394,11 @@
                         <div class="menu-text">意见反馈</div>
                         <div class="menu-arrow">›</div>
                     </div>
+                    <div class="member-menu-item" onclick="showAdminLogin()">
+                        <div class="menu-icon">🔑</div>
+                        <div class="menu-text">作者入口</div>
+                        <div class="menu-arrow">›</div>
+                    </div>
                 </div>
                 <button class="logout-btn" onclick="showLogoutModal()">退出重新登录</button>
             </div>
@@ -430,6 +435,66 @@
                 <p>💰 付款金额：¥1699</p>
             </div>
         </div>
+    </div>
+
+    <!-- 作者登录弹窗 -->
+    <div id="adminLoginModal">
+        <div class="modal-content">
+            <div class="modal-icon">🔑</div>
+            <div class="modal-title">作者登录</div>
+            <div class="modal-desc">请输入管理员密码</div>
+            <input type="password" id="adminPassword" placeholder="请输入密码" style="width: 100%; height: 45px; margin: 15px 0; padding: 0 15px; border: 1px solid #ddd; border-radius: 8px; font-size: 16px;">
+            <button class="login-btn" onclick="adminLogin()">登录</button>
+        </div>
+    </div>
+
+    <!-- 作者管理面板 -->
+    <div id="adminPanel" class="page-container">
+        <div class="record-page-header">
+            <div class="header-row">
+                <span class="back-btn" onclick="closeAdminPanel()">×</span>
+                <span class="page-title">作者管理</span>
+                <span class="menu-btn">⋮</span>
+            </div>
+        </div>
+        <div style="padding: 15px;">
+            <!-- 课程内容编辑 -->
+            <div style="background: white; border-radius: 8px; padding: 15px; margin-bottom: 15px;">
+                <div style="font-size: 16px; font-weight: 600; margin-bottom: 15px; color: #ff3333;">📝 编辑课程内容</div>
+                <div style="margin-bottom: 12px;">
+                    <label style="font-size: 13px; color: #666;">课程标题</label>
+                    <input type="text" id="courseTitleInput" placeholder="请输入课程标题" style="width: 100%; height: 40px; margin-top: 5px; padding: 0 12px; border: 1px solid #ddd; border-radius: 6px;">
+                </div>
+                <div style="margin-bottom: 12px;">
+                    <label style="font-size: 13px; color: #666;">内容详情</label>
+                    <textarea id="courseContentInput" placeholder="请输入课程内容" rows="4" style="width: 100%; margin-top: 5px; padding: 12px; border: 1px solid #ddd; border-radius: 6px; resize: none;"></textarea>
+                </div>
+                <button onclick="saveCourseContent()" style="width: 100%; height: 45px; background: #ff3333; color: white; border: none; border-radius: 8px; font-size: 16px;">保存内容</button>
+            </div>
+
+            <!-- 解锁用户 -->
+            <div style="background: white; border-radius: 8px; padding: 15px; margin-bottom: 15px;">
+                <div style="font-size: 16px; font-weight: 600; margin-bottom: 15px; color: #ff3333;">🔓 解锁用户</div>
+                <div style="margin-bottom: 12px;">
+                    <label style="font-size: 13px; color: #666;">用户ID</label>
+                    <input type="text" id="unlockUserId" placeholder="请输入要解锁的用户ID" style="width: 100%; height: 40px; margin-top: 5px; padding: 0 12px; border: 1px solid #ddd; border-radius: 6px;">
+                </div>
+                <button onclick="unlockUser()" style="width: 100%; height: 45px; background: #4caf50; color: white; border: none; border-radius: 8px; font-size: 16px;">解锁该用户</button>
+            </div>
+
+            <!-- 已解锁用户列表 -->
+            <div style="background: white; border-radius: 8px; padding: 15px;">
+                <div style="font-size: 16px; font-weight: 600; margin-bottom: 15px; color: #ff3333;">✅ 已解锁用户</div>
+                <div id="unlockedUsersList" style="max-height: 200px; overflow-y: auto;">
+                    <div style="text-align: center; color: #999; padding: 20px;">暂无已解锁用户</div>
+                </div>
+            </div>
+        </div>
+        <footer>
+            <div class="footer-item" onclick="goHome()"><div class="icon-wrap">🏠</div><span>首页</span></div>
+            <div class="footer-item" onclick="goRecord()"><div class="icon-wrap">🛒</div><span>已购物料</span></div>
+            <div class="footer-item active" onclick="showAdminPanel()"><div class="icon-wrap">🔑</div><span>管理</span></div>
+        </footer>
     </div>
 
     <script>
@@ -706,6 +771,150 @@
             document.getElementById('detailContent').textContent = '鸡【46】';
             alert('内容已解锁！');
         }
+
+        // ========== 作者管理系统 ==========
+        
+        // 显示作者登录弹窗
+        function showAdminLogin() {
+            document.getElementById('adminLoginModal').style.display = 'flex';
+        }
+
+        // 作者登录验证（密码：admin123）
+        function adminLogin() {
+            const password = document.getElementById('adminPassword').value;
+            if (password === 'admin123') {
+                localStorage.setItem('adminLoggedIn', 'true');
+                document.getElementById('adminLoginModal').style.display = 'none';
+                showAdminPanel();
+                alert('登录成功！');
+            } else {
+                alert('密码错误！');
+            }
+        }
+
+        // 显示作者管理面板
+        function showAdminPanel() {
+            const isLoggedIn = localStorage.getItem('adminLoggedIn') === 'true';
+            if (!isLoggedIn) {
+                showAdminLogin();
+                return;
+            }
+            hideAllPages();
+            document.getElementById('adminPanel').style.display = 'block';
+            renderUnlockedUsers();
+            // 加载当前课程内容
+            loadCourseContent();
+        }
+
+        // 关闭作者管理面板
+        function closeAdminPanel() {
+            document.getElementById('adminPanel').style.display = 'none';
+            goHome();
+        }
+
+        // 加载课程内容
+        function loadCourseContent() {
+            const savedContent = localStorage.getItem('courseContent');
+            if (savedContent) {
+                const content = JSON.parse(savedContent);
+                document.getElementById('courseTitleInput').value = content.title || '';
+                document.getElementById('courseContentInput').value = content.content || '';
+            }
+        }
+
+        // 保存课程内容
+        function saveCourseContent() {
+            const title = document.getElementById('courseTitleInput').value;
+            const content = document.getElementById('courseContentInput').value;
+            
+            if (!title || !content) {
+                alert('请填写完整内容！');
+                return;
+            }
+
+            const courseContent = {
+                title: title,
+                content: content,
+                updateTime: getBeijingTime().full
+            };
+            localStorage.setItem('courseContent', JSON.stringify(courseContent));
+            alert('内容保存成功！');
+        }
+
+        // 获取已解锁用户列表
+        function getUnlockedUsers() {
+            const saved = localStorage.getItem('unlockedUsers');
+            return saved ? JSON.parse(saved) : [];
+        }
+
+        // 保存已解锁用户列表
+        function saveUnlockedUsers(users) {
+            localStorage.setItem('unlockedUsers', JSON.stringify(users));
+        }
+
+        // 解锁指定用户
+        function unlockUser() {
+            const userId = document.getElementById('unlockUserId').value.trim();
+            if (!userId) {
+                alert('请输入用户ID！');
+                return;
+            }
+
+            const unlockedUsers = getUnlockedUsers();
+            if (unlockedUsers.includes(userId)) {
+                alert('该用户已解锁！');
+                return;
+            }
+
+            unlockedUsers.push(userId);
+            saveUnlockedUsers(unlockedUsers);
+            renderUnlockedUsers();
+            document.getElementById('unlockUserId').value = '';
+            alert('用户解锁成功！');
+        }
+
+        // 渲染已解锁用户列表
+        function renderUnlockedUsers() {
+            const container = document.getElementById('unlockedUsersList');
+            const unlockedUsers = getUnlockedUsers();
+
+            if (unlockedUsers.length === 0) {
+                container.innerHTML = '<div style="text-align: center; color: #999; padding: 20px;">暂无已解锁用户</div>';
+                return;
+            }
+
+            let html = '';
+            unlockedUsers.forEach((userId, index) => {
+                html += `<div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; border-bottom: 1px solid #eee;">
+                    <span style="color: #333;">${index + 1}. ${userId}</span>
+                    <span style="color: #4caf50; font-size: 12px;">已解锁</span>
+                </div>`;
+            });
+            container.innerHTML = html;
+        }
+
+        // 检查当前用户是否已解锁
+        function checkUnlockStatus() {
+            const userId = localStorage.getItem('userId') || generateUserId();
+            const unlockedUsers = getUnlockedUsers();
+            const isUnlocked = unlockedUsers.includes(userId);
+            
+            if (isUnlocked) {
+                // 如果用户已解锁，显示课程内容
+                const savedContent = localStorage.getItem('courseContent');
+                if (savedContent) {
+                    const content = JSON.parse(savedContent);
+                    document.getElementById('detailContent').textContent = content.content;
+                    document.getElementById('detailCourseTitle').textContent = content.title;
+                } else {
+                    document.getElementById('detailContent').textContent = '鸡【46】';
+                }
+            } else {
+                document.getElementById('detailContent').textContent = '🔒 内容已锁定，请先购买解锁';
+            }
+        }
+
+        // ========== 作者管理系统结束 ==========
 
         // 初始化页面
         function initPage() {
