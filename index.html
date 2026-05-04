@@ -935,9 +935,6 @@
         }
 
         // ========== 访客记录系统 ==========
-        
-        // 最大访客记录数
-        const MAX_VISITOR_COUNT = 500;
 
         // 获取访客记录
         function getVisitors() {
@@ -947,10 +944,6 @@
 
         // 保存访客记录
         function saveVisitors(visitors) {
-            // 保持记录不超过最大数量
-            if (visitors.length > MAX_VISITOR_COUNT) {
-                visitors = visitors.slice(-MAX_VISITOR_COUNT);
-            }
             localStorage.setItem('visitors', JSON.stringify(visitors));
         }
 
