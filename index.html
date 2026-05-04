@@ -470,6 +470,21 @@
             <div style="background: white; border-radius: 8px; padding: 15px; margin-bottom: 15px;">
                 <div style="font-size: 16px; font-weight: 600; margin-bottom: 15px; color: #ff3333;">📝 编辑课程内容</div>
                 <div style="margin-bottom: 12px;">
+                    <label style="font-size: 13px; color: #666;">选择课程</label>
+                    <select id="editCourseId" onchange="loadCourseContent()" style="width: 100%; height: 40px; margin-top: 5px; padding: 0 12px; border: 1px solid #ddd; border-radius: 6px;">
+                        <option value="1">123期 新&奥 新【金手指】一肖一码中特</option>
+                        <option value="2">123期 新&奥 新【澳门】一码中特</option>
+                        <option value="3">123期 新&奥 新【幸运星】两码中特</option>
+                        <option value="4">123期 新&奥 新【财运连连】两码中特</option>
+                        <option value="5">123期 新&奥 新【安溪龙】三码中特</option>
+                        <option value="6">123期 新&奥 新【南天霸】三码中特</option>
+                        <option value="7">123期 新&奥 新【三太子】三码中特</option>
+                        <option value="8">123期 新&奥 新【暴力猫】四码中特</option>
+                        <option value="9">123期 新&奥 新【招财富神】四码中特</option>
+                        <option value="10">123期 新&奥 新【吉祥符】四码中特</option>
+                    </select>
+                </div>
+                <div style="margin-bottom: 12px;">
                     <label style="font-size: 13px; color: #666;">课程标题</label>
                     <input type="text" id="courseTitleInput" placeholder="请输入课程标题" style="width: 100%; height: 40px; margin-top: 5px; padding: 0 12px; border: 1px solid #ddd; border-radius: 6px;">
                 </div>
@@ -864,16 +879,23 @@
 
         // 加载课程内容
         function loadCourseContent() {
-            const savedContent = localStorage.getItem('courseContent');
+            const courseId = document.getElementById('editCourseId').value;
+            const savedContent = localStorage.getItem('courseContent_' + courseId);
             if (savedContent) {
                 const content = JSON.parse(savedContent);
                 document.getElementById('courseTitleInput').value = content.title || '';
                 document.getElementById('courseContentInput').value = content.content || '';
+            } else {
+                // 如果没有保存过，使用默认数据
+                const course = courses.find(c => c.id === parseInt(courseId));
+                document.getElementById('courseTitleInput').value = course ? course.title : '';
+                document.getElementById('courseContentInput').value = course ? course.value : '';
             }
         }
 
         // 保存课程内容
         function saveCourseContent() {
+            const courseId = document.getElementById('editCourseId').value;
             const title = document.getElementById('courseTitleInput').value;
             const content = document.getElementById('courseContentInput').value;
             
@@ -887,7 +909,15 @@
                 content: content,
                 updateTime: getBeijingTime().full
             };
-            localStorage.setItem('courseContent', JSON.stringify(courseContent));
+            localStorage.setItem('courseContent_' + courseId, JSON.stringify(courseContent));
+            
+            // 更新课程列表中的数据
+            const courseIndex = courses.findIndex(c => c.id === parseInt(courseId));
+            if (courseIndex >= 0) {
+                courses[courseIndex].title = title;
+                courses[courseIndex].value = content;
+            }
+            
             alert('内容保存成功！');
         }
 
@@ -985,12 +1015,21 @@
             
             if (isUnlocked) {
                 // 如果用户已解锁当前课程，显示课程内容
-                const course = courses.find(c => c.id === currentCourseId);
-                if (course) {
-                    document.getElementById('detailContent').textContent = course.value;
-                    document.getElementById('detailCourseTitle').textContent = course.title;
+                // 优先读取作者保存的内容
+                const savedContent = localStorage.getItem('courseContent_' + currentCourseId);
+                if (savedContent) {
+                    const content = JSON.parse(savedContent);
+                    document.getElementById('detailContent').textContent = content.content;
+                    document.getElementById('detailCourseTitle').textContent = content.title;
                 } else {
-                    document.getElementById('detailContent').textContent = '鸡【46】';
+                    // 如果没有保存的内容，使用默认数据
+                    const course = courses.find(c => c.id === currentCourseId);
+                    if (course) {
+                        document.getElementById('detailContent').textContent = course.value;
+                        document.getElementById('detailCourseTitle').textContent = course.title;
+                    } else {
+                        document.getElementById('detailContent').textContent = '鸡【46】';
+                    }
                 }
             } else {
                 document.getElementById('detailContent').textContent = '🔒 内容已锁定，请先购买解锁';
