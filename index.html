@@ -169,10 +169,6 @@
         footer .footer-item.active { color: #ff3333; }
         footer .footer-item .icon-wrap { width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; font-size: 20px; }
 
-        /* 右侧悬浮返回按钮 */
-        .float-back-btn { position: fixed; right: 15px; bottom: 180px; width: 25px; height: 25px; background: rgba(0,0,0,0.5); border-radius: 50%; display: flex; align-items: center; justify-content: center; z-index: 9999; }
-        .float-back-btn .back-arrow { color: white; font-size: 14px; font-weight: bold; }
-        
         /* 底部支付栏 */
         .bottom-pay-bar { position: fixed; bottom: 0; left: 0; right: 0; background: white; padding: 10px 15px; display: flex; align-items: center; justify-content: space-between; z-index: 9998; border-top: 1px solid #eee; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); }
         .bottom-pay-bar .pay-price { font-size: 16px; font-weight: 700; color: #ff3333; }
@@ -274,10 +270,7 @@
                 <div class="section-title">往期记录:</div>
                 <div class="history-list" id="detailHistoryList"></div>
             </div>
-            <!-- 右侧悬浮返回按钮 -->
-            <div class="float-back-btn" onclick="goBack()">
-                <div class="back-arrow">←</div>
-            </div>
+
             <!-- 底部支付栏 -->
             <div class="bottom-pay-bar">
                 <div class="pay-price" id="detailPayPrice">¥1699</div>
@@ -358,10 +351,7 @@
                 <div class="tab-item active" onclick="goHistory()">往期更新</div>
             </div>
             <div class="history-update-list" id="historyUpdateList"></div>
-            <!-- 右侧悬浮返回按钮 -->
-            <div class="float-back-btn" onclick="goBack()">
-                <div class="back-arrow">←</div>
-            </div>
+
             <!-- 底部支付栏 -->
             <div class="bottom-pay-bar">
                 <div class="pay-price" id="historyPayPrice">¥1699</div>
@@ -955,11 +945,6 @@
         function showMember() { hideAllPages(); document.getElementById('memberPage').style.display = 'block'; }
         
         // 返回上一页
-        function goBack() {
-            const currentCourseId = parseInt(localStorage.getItem('currentCourseId') || '1');
-            goDetail(currentCourseId);
-        }
-
         // 打开付款弹窗
         function openPayModal() {
             document.getElementById('payModal').style.display = 'flex';
