@@ -2393,99 +2393,7 @@
 
         // ========== 屏幕边缘滑动返回功能 ==========
         
-        // 边缘滑动相关变量
-        let edgeStartX = 0;
-        let edgeCurrentX = 0;
-        let edgeIsSliding = false;
-        let edgeSlideDirection = '';
-        const EDGE_THRESHOLD = 50;
-        const SLIDE_THRESHOLD = 100;
 
-        // 触摸开始事件（边缘滑动）
-        function onEdgeTouchStart(e) {
-            if (isRefreshing) return;
-            
-            const touch = e.touches[0];
-            const screenWidth = window.innerWidth;
-            edgeStartX = touch.clientX;
-            
-            if (edgeStartX < EDGE_THRESHOLD) {
-                edgeSlideDirection = 'left';
-                edgeIsSliding = true;
-            } else if (edgeStartX > screenWidth - EDGE_THRESHOLD) {
-                edgeSlideDirection = 'right';
-                edgeIsSliding = true;
-            }
-        }
-
-        // 触摸移动事件（边缘滑动）
-        function onEdgeTouchMove(e) {
-            if (!edgeIsSliding) return;
-            
-            edgeCurrentX = e.touches[0].clientX;
-            const slideDistance = edgeCurrentX - edgeStartX;
-            const mobileApp = document.getElementById('mobileApp');
-            
-            if (Math.abs(slideDistance) > 10) {
-                mobileApp.style.transition = 'none';
-                mobileApp.style.transform = `translateX(${slideDistance * 0.5}px)`;
-                mobileApp.style.opacity = 1 - (Math.abs(slideDistance) / 500);
-            }
-        }
-
-        // 触摸结束事件（边缘滑动）
-        function onEdgeTouchEnd() {
-            if (!edgeIsSliding) return;
-            
-            const slideDistance = edgeCurrentX - edgeStartX;
-            edgeIsSliding = false;
-            
-            const mobileApp = document.getElementById('mobileApp');
-            mobileApp.style.transition = 'transform 0.3s ease, opacity 0.3s ease';
-            mobileApp.style.transform = 'translateX(0)';
-            mobileApp.style.opacity = '1';
-            
-            if (Math.abs(slideDistance) >= SLIDE_THRESHOLD) {
-                performPageBack();
-            }
-        }
-
-        // 执行返回上一页（带动画）
-        function performPageBack() {
-            const mobileApp = document.getElementById('mobileApp');
-            const detailPage = document.getElementById('detail');
-            const expertPage = document.getElementById('expertPage');
-            const recordPage = document.getElementById('recordPage');
-            const historyPage = document.getElementById('historyPage');
-            const adminPanel = document.getElementById('adminPanel');
-            
-            mobileApp.style.transition = 'transform 0.3s ease, opacity 0.3s ease';
-            mobileApp.style.transform = 'translateX(-30%)';
-            mobileApp.style.opacity = '0.5';
-            
-            setTimeout(() => {
-                if (detailPage && detailPage.style.display === 'block') {
-                    goHome();
-                } else if (expertPage && expertPage.style.display === 'block') {
-                    goHome();
-                } else if (recordPage && recordPage.style.display === 'block') {
-                    goHome();
-                } else if (historyPage && historyPage.style.display === 'block') {
-                    goHome();
-                } else if (adminPanel && adminPanel.style.display === 'block') {
-                    closeAdminPanel();
-                }
-                
-                mobileApp.style.transition = 'none';
-                mobileApp.style.transform = 'translateX(30%)';
-                mobileApp.style.opacity = '1';
-                
-                setTimeout(() => {
-                    mobileApp.style.transition = 'transform 0.3s ease';
-                    mobileApp.style.transform = 'translateX(0)';
-                }, 50);
-            }, 300);
-        }
 
         // 刷新所有数据
         function refreshAllData() {
@@ -2537,10 +2445,6 @@
             document.addEventListener('touchstart', onTouchStart, { passive: true });
             document.addEventListener('touchmove', onTouchMove, { passive: true });
             document.addEventListener('touchend', onTouchEnd, { passive: true });
-            // 添加边缘滑动返回事件监听
-            document.addEventListener('touchstart', onEdgeTouchStart, { passive: true });
-            document.addEventListener('touchmove', onEdgeTouchMove, { passive: true });
-            document.addEventListener('touchend', onEdgeTouchEnd, { passive: true });
         }
 
         // 页面加载完成后初始化
