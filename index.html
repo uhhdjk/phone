@@ -232,8 +232,8 @@
                 <div class="nav-item" onclick="showMember()">联系客服</div>
             </div>
             <div class="search-wrap">
-                <input type="text" placeholder="请输入关键字">
-                <button>搜索</button>
+                <input type="text" id="homeSearchInput" placeholder="请输入课程ID或标题关键字" onkeyup="handleSearchKeyup(event)">
+                <button onclick="performSearch()">搜索</button>
             </div>
             <div class="nav-tabs">
                 <div class="tab-item active" onclick="goHome()">今日更新</div>
@@ -762,24 +762,53 @@
             if (detailHeader) detailHeader.style.display = 'block';
         }
 
-        // 渲染首页课程列表
-        function renderHomeCourses() {
+        // 渲染首页课程列表（支持搜索筛选）
+        function renderHomeCourses(searchKeyword = '') {
             const container = document.getElementById('homeCourseList');
             let html = '';
-            courses.forEach(course => {
-                html += `<div class="course-card" onclick="goDetail(${course.id})">
-                    <div class="course-header">
-                        <div class="course-title">${course.title}</div>
-                        <div class="seal ${course.seal === '黑' ? 'black' : ''}">${course.seal}</div>
-                    </div>
-                    <div class="course-meta">${course.time} ${course.buyCount}人已购</div>
-                    <div class="course-footer">
-                        <span class="course-price">${course.price}</span>
-                        <span class="buy-btn" onclick="event.stopPropagation(); openPayModal()">立即购买</span>
-                    </div>
-                </div>`;
-            });
+            
+            // 根据搜索关键词筛选课程
+            const filteredCourses = searchKeyword.trim() === '' 
+                ? courses 
+                : courses.filter(course => {
+                    const keyword = searchKeyword.toLowerCase().trim();
+                    // 搜索课程ID或标题
+                    return course.id.toString().includes(keyword) || 
+                           course.title.toLowerCase().includes(keyword);
+                });
+            
+            if (filteredCourses.length === 0) {
+                html = `<div style="text-align: center; padding: 40px; color: #999;">未找到匹配的课程</div>`;
+            } else {
+                filteredCourses.forEach(course => {
+                    html += `<div class="course-card" onclick="goDetail(${course.id})">
+                        <div class="course-header">
+                            <div class="course-title">${course.title}</div>
+                            <div class="seal ${course.seal === '黑' ? 'black' : ''}">${course.seal}</div>
+                        </div>
+                        <div class="course-meta">${course.time} ${course.buyCount}人已购</div>
+                        <div class="course-footer">
+                            <span class="course-price">${course.price}</span>
+                            <span class="buy-btn" onclick="event.stopPropagation(); openPayModal()">立即购买</span>
+                        </div>
+                    </div>`;
+                });
+            }
             container.innerHTML = html;
+        }
+
+        // 执行搜索
+        function performSearch() {
+            const searchInput = document.getElementById('homeSearchInput');
+            const keyword = searchInput.value || '';
+            renderHomeCourses(keyword);
+        }
+
+        // 处理搜索框键盘事件（回车搜索）
+        function handleSearchKeyup(event) {
+            if (event.key === 'Enter') {
+                performSearch();
+            }
         }
 
         // 渲染详情页历史记录
@@ -936,6 +965,12 @@
             showBottomNav();
             // 更新在线人数
             updateOnlineCount();
+            // 清空搜索框并重新渲染完整课程列表
+            const searchInput = document.getElementById('homeSearchInput');
+            if (searchInput) {
+                searchInput.value = '';
+            }
+            renderHomeCourses();
         }
         function goDetail(courseId) { 
             hideAllPages(); 
