@@ -721,7 +721,7 @@
         }
 
         // 添加新的购买记录
-        function addPurchaseRecord(title, price) {
+        function addPurchaseRecord(title, price, courseId) {
             const records = getPurchaseRecords();
             const newRecord = {
                 id: Date.now(),
@@ -729,7 +729,8 @@
                 time: getBeijingTime().full,
                 seal: '红',
                 price: price,
-                viewCount: Math.floor(Math.random() * 5000) + 1000
+                viewCount: Math.floor(Math.random() * 5000) + 1000,
+                courseId: courseId || 1
             };
             records.unshift(newRecord);
             savePurchaseRecords(records);
