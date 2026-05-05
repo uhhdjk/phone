@@ -40,7 +40,7 @@
         .search-wrap button { width: 65px; height: 38px; background: #6a79f7; color: white; border: none; border-radius: 19px; font-size: 13px; }
 
         /* 课程列表 */
-        .course-list { padding: 10px; display: flex; flex-direction: column; gap: 10px; }
+        .course-list { padding: 10px; padding-bottom: 70px; display: flex; flex-direction: column; gap: 10px; }
         .course-card { background: white; border-radius: 8px; padding: 12px; position: relative; box-shadow: 0 1px 5px rgba(0,0,0,0.05); }
         .course-card .course-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
         .course-card .course-title { font-size: 15px; font-weight: 600; color: #333; line-height: 1.4; flex: 1; margin-right: 10px; }
@@ -52,12 +52,15 @@
         .course-card .buy-btn { font-size: 14px; color: white; background: #ff3333; padding: 6px 16px; border-radius: 15px; cursor: pointer; }
 
         /* 详情页头部 */
-        .detail-header { background: white; padding: 15px; border-bottom: 1px solid #eee; }
+        .detail-header { position: fixed; top: 0; left: 0; right: 0; background: white; padding: 15px; border-bottom: 1px solid #eee; z-index: 9997; }
         .detail-header .header-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
         .detail-header .back-btn { font-size: 18px; color: #666; cursor: pointer; }
         .detail-header .page-title { font-size: 16px; font-weight: 600; color: #333; }
         .detail-header .course-title { font-size: 16px; font-weight: 600; color: #333; line-height: 1.5; }
         .detail-header .course-meta { font-size: 11px; color: #999; }
+        
+        /* 详情页内容区域（避免被悬浮头部遮挡） */
+        .detail-content-wrap { padding-top: 90px; }
 
         /* 红色声明区域 */
         .red-notice { background: #ff3333; padding: 12px; margin: 10px; border-radius: 8px; }
@@ -237,11 +240,6 @@
                 <div class="tab-item" onclick="showExpert()">专家</div>
             </div>
             <div class="course-list" id="homeCourseList"></div>
-            <footer>
-                <div class="footer-item active" onclick="goHome()"><div class="icon-wrap">🏠</div><span>首页</span></div>
-                <div class="footer-item" onclick="goRecord()"><div class="icon-wrap">🛒</div><span>已购物料</span></div>
-                <div class="footer-item" onclick="showMember()"><div class="icon-wrap">👤</div><span>我的</span></div>
-            </footer>
         </div>
 
         <!-- 详情页 -->
@@ -255,20 +253,22 @@
                 <div class="course-title" id="detailCourseTitle">123期 新&奥 新【金手指】一肖一码中特</div>
                 <div class="course-meta" id="courseMeta">发布于: 北京时间 2026-05-03 17:09:40 226购买</div>
             </div>
-            <div class="detail-tabs">
-                <div class="tab-item active" onclick="goHome()">今日更新</div>
-                <div class="tab-item" onclick="goHistory()">往期更新</div>
-            </div>
-            <div class="red-notice">
-                <p>声明:该文章由作者发布,内容属于知识付费文章,用户购买成功即视为认可作者推荐,并属于个人自愿购买行为,该文章不作任何售后处理,双方产生的交易纠纷与平台无关。</p>
-            </div>
-            <div class="content-detail">
-                <div class="label">内容详情</div>
-                <div class="value" id="detailContent">🔒 内容已锁定，请先购买解锁</div>
-            </div>
-            <div class="history-section">
-                <div class="section-title">往期记录:</div>
-                <div class="history-list" id="detailHistoryList"></div>
+            <div class="detail-content-wrap">
+                <div class="detail-tabs">
+                    <div class="tab-item active" onclick="goHome()">今日更新</div>
+                    <div class="tab-item" onclick="goHistory()">往期更新</div>
+                </div>
+                <div class="red-notice">
+                    <p>声明:该文章由作者发布,内容属于知识付费文章,用户购买成功即视为认可作者推荐,并属于个人自愿购买行为,该文章不作任何售后处理,双方产生的交易纠纷与平台无关。</p>
+                </div>
+                <div class="content-detail">
+                    <div class="label">内容详情</div>
+                    <div class="value" id="detailContent">🔒 内容已锁定，请先购买解锁</div>
+                </div>
+                <div class="history-section">
+                    <div class="section-title">往期记录:</div>
+                    <div class="history-list" id="detailHistoryList"></div>
+                </div>
             </div>
 
             <!-- 底部支付栏 -->
@@ -302,11 +302,6 @@
                 <div class="tab-item active" onclick="showExpert()">专家</div>
             </div>
             <div class="expert-list" id="expertList"></div>
-            <footer>
-                <div class="footer-item" onclick="goHome()"><div class="icon-wrap">🏠</div><span>首页</span></div>
-                <div class="footer-item" onclick="goRecord()"><div class="icon-wrap">🛒</div><span>已购物料</span></div>
-                <div class="footer-item active" onclick="showMember()"><div class="icon-wrap">👤</div><span>我的</span></div>
-            </footer>
         </div>
 
         <!-- 购买记录页 -->
@@ -330,11 +325,6 @@
                 </div>
                 <div class="record-list" id="recordList"></div>
             </div>
-            <footer>
-                <div class="footer-item" onclick="goHome()"><div class="icon-wrap">🏠</div><span>首页</span></div>
-                <div class="footer-item active" onclick="goRecord()"><div class="icon-wrap">🛒</div><span>已购物料</span></div>
-                <div class="footer-item" onclick="showMember()"><div class="icon-wrap">👤</div><span>我的</span></div>
-            </footer>
         </div>
 
         <!-- 往期更新页 -->
@@ -346,11 +336,13 @@
                     <span></span>
                 </div>
             </div>
-            <div class="detail-tabs">
-                <div class="tab-item" onclick="goHome()">今日更新</div>
-                <div class="tab-item active" onclick="goHistory()">往期更新</div>
+            <div class="detail-content-wrap">
+                <div class="detail-tabs">
+                    <div class="tab-item" onclick="goHome()">今日更新</div>
+                    <div class="tab-item active" onclick="goHistory()">往期更新</div>
+                </div>
+                <div class="history-update-list" id="historyUpdateList"></div>
             </div>
-            <div class="history-update-list" id="historyUpdateList"></div>
 
             <!-- 底部支付栏 -->
             <div class="bottom-pay-bar">
@@ -413,11 +405,6 @@
                 </div>
                 <button class="logout-btn" onclick="showLogoutModal()">退出重新登录</button>
             </div>
-            <footer>
-                <div class="footer-item" onclick="goHome()"><div class="icon-wrap">🏠</div><span>首页</span></div>
-                <div class="footer-item" onclick="goRecord()"><div class="icon-wrap">🛒</div><span>已购物料</span></div>
-                <div class="footer-item active" onclick="showMember()"><div class="icon-wrap">👤</div><span>我的</span></div>
-            </footer>
         </div>
     </div>
 
@@ -548,12 +535,14 @@
                 </div>
             </div>
         </div>
-        <footer>
-            <div class="footer-item" onclick="goHome()"><div class="icon-wrap">🏠</div><span>首页</span></div>
-            <div class="footer-item" onclick="goRecord()"><div class="icon-wrap">🛒</div><span>已购物料</span></div>
-            <div class="footer-item active" onclick="showAdminPanel()"><div class="icon-wrap">🔑</div><span>管理</span></div>
-        </footer>
     </div>
+
+    <!-- 全局底部导航栏 -->
+    <footer id="globalFooter">
+        <div class="footer-item active" onclick="goHome()"><div class="icon-wrap">🏠</div><span>首页</span></div>
+        <div class="footer-item" onclick="goRecord()"><div class="icon-wrap">🛒</div><span>已购物料</span></div>
+        <div class="footer-item" onclick="showMember()"><div class="icon-wrap">👤</div><span>我的</span></div>
+    </footer>
 
     <script>
         // 获取当前北京时间
@@ -756,19 +745,22 @@
         }
         
         function showBottomNav() {
-            document.querySelector('footer')?.style.setProperty('display', 'flex', 'important');
+            const footer = document.getElementById('globalFooter');
+            if (footer) footer.style.display = 'flex';
             const payBars = document.querySelectorAll('.bottom-pay-bar');
             payBars.forEach(bar => bar.style.display = 'none');
         }
         
         function hideBottomNav() {
-            document.querySelector('footer')?.style.setProperty('display', 'none', 'important');
+            const footer = document.getElementById('globalFooter');
+            if (footer) footer.style.display = 'none';
             const payBars = document.querySelectorAll('.bottom-pay-bar');
             payBars.forEach(bar => bar.style.display = 'none');
         }
         
         function showPayBar() {
-            document.querySelector('footer')?.style.setProperty('display', 'none', 'important');
+            const footer = document.getElementById('globalFooter');
+            if (footer) footer.style.display = 'none';
             const payBars = document.querySelectorAll('.bottom-pay-bar');
             payBars.forEach(bar => bar.style.display = 'flex');
         }
