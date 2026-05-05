@@ -224,7 +224,7 @@
                 </div>
                 <div class="site-info">
                     <div class="site-title">摇钱树优质料</div>
-                    <div class="online-num">在线人数: 3862</div>
+                    <div class="online-num" id="onlineCount">在线人数: 3862</div>
                 </div>
             </div>
             <div class="sub-nav">
@@ -913,8 +913,30 @@
             return `${month}-${day} ${hours}:${minutes}`;
         }
 
+        // 生成随机在线人数（范围：2998~4998）
+        function generateRandomOnlineCount() {
+            const min = 2998;
+            const max = 4998;
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+
+        // 更新在线人数显示
+        function updateOnlineCount() {
+            const onlineCountEl = document.getElementById('onlineCount');
+            if (onlineCountEl) {
+                const randomCount = generateRandomOnlineCount();
+                onlineCountEl.textContent = '在线人数: ' + randomCount;
+            }
+        }
+
         // 页面跳转函数
-        function goHome() { hideAllPages(); document.getElementById('home').style.display = 'block'; showBottomNav(); }
+        function goHome() { 
+            hideAllPages(); 
+            document.getElementById('home').style.display = 'block'; 
+            showBottomNav();
+            // 更新在线人数
+            updateOnlineCount();
+        }
         function goDetail(courseId) { 
             hideAllPages(); 
             document.getElementById('detail').style.display = 'block'; 
@@ -2459,6 +2481,8 @@
             }
             // 初始化悬浮元素：首页显示底部导航栏
             showBottomNav();
+            // 更新在线人数
+            updateOnlineCount();
             // 更新发布时间为北京时间
             updatePublishTime();
             // 每秒更新北京时间显示
