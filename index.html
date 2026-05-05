@@ -96,7 +96,7 @@
         .expert-card .hit-label { font-size: 11px; color: #999; text-align: right; }
 
         /* 购买记录页 - 新版样式 */
-        .record-page-container { background: #fff; min-height: 100vh; }
+        .record-page-container { background: #fff; min-height: 100vh; padding-bottom: 70px; }
         .record-page-header { background: white; padding: 15px; border-bottom: 1px solid #eee; }
         .record-page-header .header-row { display: flex; align-items: center; justify-content: space-between; }
         .record-page-header .back-btn { font-size: 20px; color: #666; cursor: pointer; }
@@ -126,7 +126,7 @@
         .record-card .view-detail-btn { font-size: 13px; color: white; background: #6a79f7; padding: 6px 20px; border-radius: 15px; cursor: pointer; }
 
         /* 会员中心页 */
-        .member-page-container { background: #f5f5f5; min-height: 100vh; }
+        .member-page-container { background: #f5f5f5; min-height: 100vh; padding-bottom: 70px; }
         .member-header { background: linear-gradient(135deg, #ff3333, #cc0000); padding: 30px 20px; }
         .member-header .user-profile { display: flex; align-items: center; gap: 15px; }
         .member-header .user-avatar { width: 70px; height: 70px; border-radius: 50%; background: white; display: flex; align-items: center; justify-content: center; font-size: 32px; font-weight: 700; color: #667eea; }
@@ -348,6 +348,10 @@
                 <div class="tab-item active" onclick="goHistory()">往期更新</div>
             </div>
             <div class="history-update-list" id="historyUpdateList"></div>
+            <div style="padding: 15px; padding-bottom: 80px;">
+                <div style="text-align: center; color: #ff3333; font-size: 13px; margin-bottom: 15px;">💡 打赏后重新进来就可以查看内容</div>
+                <button class="buy-btn" style="width: 100%; height: 50px; font-size: 16px;" onclick="openPayModal()">微信支付打赏</button>
+            </div>
             <footer>
                 <div class="footer-item" onclick="goHome()"><div class="icon-wrap">🏠</div><span>首页</span></div>
                 <div class="footer-item" onclick="goRecord()"><div class="icon-wrap">🛒</div><span>已购物料</span></div>
@@ -834,20 +838,71 @@
             container.innerHTML = html;
         }
 
-        // 渲染历史更新列表
+        // 渲染历史更新列表（显示当前课程的历史记录）
         function renderHistoryUpdates() {
             const container = document.getElementById('historyUpdateList');
+            const currentCourseId = parseInt(localStorage.getItem('currentCourseId') || '1');
+            const course = courses.find(c => c.id === currentCourseId);
+            
+            if (!course || !course.history || course.history.trim() === '') {
+                container.innerHTML = '<div style="padding: 20px; text-align: center; color: #999;">暂无往期记录</div>';
+                return;
+            }
+            
+            // 解析历史记录
+            const historyLines = course.history.split('\n');
             let html = '';
-            historyCourses.forEach(course => {
+            let currentRecord = { title: '', value: '', result: '' };
+            
+            for (let i = 0; i < historyLines.length; i++) {
+                const line = historyLines[i].trim();
+                if (line === '') continue;
+                
+                // 判断是否是标题行（包含期数信息）
+                if (line.includes('期') && line.includes('中特')) {
+                    // 如果有上一条记录，先输出
+                    if (currentRecord.title) {
+                        html += `<div class="history-update-card">
+                            <div class="card-header">
+                                <div class="history-title">${currentRecord.title}</div>
+                                <div class="seal ${currentRecord.result === '错' ? 'black' : ''}">${currentRecord.result === '错' ? '黑' : '红'}</div>
+                            </div>
+                            <div class="history-time">发布于: ${currentRecord.time}</div>
+                        </div>`;
+                    }
+                    currentRecord = { title: line, value: '', result: '', time: generateHistoryTime(i) };
+                } else if (line.includes('对') || line.includes('错')) {
+                    // 解析结果行
+                    const parts = line.split(' ');
+                    currentRecord.value = parts[0] || '';
+                    currentRecord.result = line.includes('对') ? '对' : '错';
+                }
+            }
+            
+            // 输出最后一条记录
+            if (currentRecord.title) {
                 html += `<div class="history-update-card">
                     <div class="card-header">
-                        <div class="history-title">${course.title}</div>
-                        <div class="seal ${course.seal === '黑' ? 'black' : ''}">${course.seal}</div>
+                        <div class="history-title">${currentRecord.title}</div>
+                        <div class="seal ${currentRecord.result === '错' ? 'black' : ''}">${currentRecord.result === '错' ? '黑' : '红'}</div>
                     </div>
-                    <div class="history-time">发布于: ${course.time}</div>
+                    <div class="history-time">发布于: ${currentRecord.time}</div>
                 </div>`;
-            });
+            }
+            
             container.innerHTML = html;
+        }
+        
+        // 生成历史记录时间（模拟递减的时间）
+        function generateHistoryTime(index) {
+            const now = new Date();
+            const daysAgo = index * 1;
+            const pastDate = new Date(now.getTime() - daysAgo * 24 * 60 * 60 * 1000);
+            const month = String(pastDate.getMonth() + 1).padStart(2, '0');
+            const day = String(pastDate.getDate()).padStart(2, '0');
+            const hours = String(Math.floor(Math.random() * 12) + 10).padStart(2, '0');
+            const minutes = String(Math.floor(Math.random() * 60)).padStart(2, '0');
+            return `${month}-${day} ${hours}:${minutes}`;
         }
 
         // 页面跳转函数
