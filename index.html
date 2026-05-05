@@ -16,7 +16,7 @@
         #pcTip .qrcode-box img { width: 200px; height: 200px; }
 
         /* 页面容器 */
-        .page-container { display: none; min-height: 100vh; padding-bottom: 70px; }
+        .page-container { display: none; min-height: 100vh; padding-bottom: 80px; }
         .page-container.active { display: block; }
 
         /* 头部标题栏 - 红色背景 */
@@ -169,6 +169,15 @@
         footer .footer-item.active { color: #ff3333; }
         footer .footer-item .icon-wrap { width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; font-size: 20px; }
 
+        /* 右侧悬浮返回按钮 */
+        .float-back-btn { position: fixed; right: 15px; bottom: 180px; width: 50px; height: 50px; background: rgba(0,0,0,0.5); border-radius: 50%; display: flex; align-items: center; justify-content: center; z-index: 9999; }
+        .float-back-btn .back-arrow { color: white; font-size: 24px; font-weight: bold; transform: rotate(270deg); }
+        
+        /* 底部支付栏 */
+        .bottom-pay-bar { position: fixed; bottom: 0; left: 0; right: 0; background: white; padding: 10px 15px; display: flex; align-items: center; justify-content: space-between; z-index: 9998; border-top: 1px solid #eee; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); }
+        .bottom-pay-bar .pay-price { font-size: 24px; font-weight: 700; color: #ff3333; }
+        .bottom-pay-bar .pay-button { background: #00a859; color: white; border: none; padding: 12px 40px; border-radius: 4px; font-size: 16px; font-weight: 600; }
+
         /* 首页导航标签 */
         .nav-tabs { display: flex; background: white; border-bottom: 1px solid #eee; }
         .nav-tabs .tab-item { flex: 1; padding: 12px 0; text-align: center; font-size: 14px; color: #666; position: relative; cursor: pointer; }
@@ -265,14 +274,15 @@
                 <div class="section-title">往期记录:</div>
                 <div class="history-list" id="detailHistoryList"></div>
             </div>
-            <div style="padding: 15px;">
-                <button class="buy-btn" style="width: 100%; height: 45px; font-size: 16px;" onclick="openPayModal()">立即购买</button>
+            <!-- 右侧悬浮返回按钮 -->
+            <div class="float-back-btn" onclick="goBack()">
+                <div class="back-arrow">←</div>
             </div>
-            <footer>
-                <div class="footer-item" onclick="goHome()"><div class="icon-wrap">🏠</div><span>首页</span></div>
-                <div class="footer-item" onclick="goRecord()"><div class="icon-wrap">🛒</div><span>已购物料</span></div>
-                <div class="footer-item" onclick="showMember()"><div class="icon-wrap">👤</div><span>我的</span></div>
-            </footer>
+            <!-- 底部支付栏 -->
+            <div class="bottom-pay-bar">
+                <div class="pay-price" id="detailPayPrice">¥1699</div>
+                <button class="pay-button" onclick="openPayModal()">微信打赏</button>
+            </div>
         </div>
 
         <!-- 专家页 -->
@@ -348,15 +358,15 @@
                 <div class="tab-item active" onclick="goHistory()">往期更新</div>
             </div>
             <div class="history-update-list" id="historyUpdateList"></div>
-            <div style="padding: 15px; padding-bottom: 80px;">
-                <div style="text-align: center; color: #ff3333; font-size: 13px; margin-bottom: 15px;">💡 打赏后重新进来就可以查看内容</div>
-                <button class="buy-btn" style="width: 100%; height: 50px; font-size: 16px;" onclick="openPayModal()">微信支付打赏</button>
+            <!-- 右侧悬浮返回按钮 -->
+            <div class="float-back-btn" onclick="goBack()">
+                <div class="back-arrow">←</div>
             </div>
-            <footer>
-                <div class="footer-item" onclick="goHome()"><div class="icon-wrap">🏠</div><span>首页</span></div>
-                <div class="footer-item" onclick="goRecord()"><div class="icon-wrap">🛒</div><span>已购物料</span></div>
-                <div class="footer-item" onclick="showMember()"><div class="icon-wrap">👤</div><span>我的</span></div>
-            </footer>
+            <!-- 底部支付栏 -->
+            <div class="bottom-pay-bar">
+                <div class="pay-price" id="historyPayPrice">¥1699</div>
+                <button class="pay-button" onclick="openPayModal()">微信打赏</button>
+            </div>
         </div>
 
         <!-- 会员中心页 -->
@@ -916,6 +926,11 @@
             const course = courses.find(c => c.id === courseId);
             if (course) {
                 document.getElementById('detailCourseTitle').textContent = course.title;
+                // 更新支付栏价格
+                const priceEl = document.getElementById('detailPayPrice');
+                if (priceEl) {
+                    priceEl.textContent = course.price || '¥0';
+                }
             }
             renderDetailHistory(); 
             // 检查是否已解锁
@@ -923,8 +938,27 @@
         }
         function showExpert() { hideAllPages(); document.getElementById('expertPage').style.display = 'block'; }
         function goRecord() { hideAllPages(); document.getElementById('recordPage').style.display = 'block'; }
-        function goHistory() { hideAllPages(); document.getElementById('historyPage').style.display = 'block'; renderHistoryUpdates(); }
+        function goHistory() { 
+            hideAllPages(); 
+            document.getElementById('historyPage').style.display = 'block'; 
+            renderHistoryUpdates(); 
+            // 更新往期更新页面的价格
+            const currentCourseId = parseInt(localStorage.getItem('currentCourseId') || '1');
+            const course = courses.find(c => c.id === currentCourseId);
+            if (course) {
+                const priceEl = document.getElementById('historyPayPrice');
+                if (priceEl) {
+                    priceEl.textContent = course.price || '¥0';
+                }
+            }
+        }
         function showMember() { hideAllPages(); document.getElementById('memberPage').style.display = 'block'; }
+        
+        // 返回上一页
+        function goBack() {
+            const currentCourseId = parseInt(localStorage.getItem('currentCourseId') || '1');
+            goDetail(currentCourseId);
+        }
 
         // 打开付款弹窗
         function openPayModal() {
