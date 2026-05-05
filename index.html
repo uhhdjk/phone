@@ -271,11 +271,6 @@
                 </div>
             </div>
 
-            <!-- 底部支付栏 -->
-            <div class="bottom-pay-bar">
-                <div class="pay-price" id="detailPayPrice">¥1699</div>
-                <button class="pay-button" onclick="openPayModal()">微信打赏</button>
-            </div>
         </div>
 
         <!-- 专家页 -->
@@ -344,11 +339,6 @@
                 <div class="history-update-list" id="historyUpdateList"></div>
             </div>
 
-            <!-- 底部支付栏 -->
-            <div class="bottom-pay-bar">
-                <div class="pay-price" id="historyPayPrice">¥1699</div>
-                <button class="pay-button" onclick="openPayModal()">微信打赏</button>
-            </div>
         </div>
 
         <!-- 会员中心页 -->
@@ -543,6 +533,12 @@
         <div class="footer-item" onclick="goRecord()"><div class="icon-wrap">🛒</div><span>已购物料</span></div>
         <div class="footer-item" onclick="showMember()"><div class="icon-wrap">👤</div><span>我的</span></div>
     </footer>
+
+    <!-- 全局底部支付栏 -->
+    <div id="globalPayBar" class="bottom-pay-bar" style="display: none;">
+        <div class="pay-price" id="globalPayPrice">¥1699</div>
+        <button class="pay-button" onclick="openPayModal()">微信打赏</button>
+    </div>
 
     <script>
         // 获取当前北京时间
@@ -747,22 +743,22 @@
         function showBottomNav() {
             const footer = document.getElementById('globalFooter');
             if (footer) footer.style.display = 'flex';
-            const payBars = document.querySelectorAll('.bottom-pay-bar');
-            payBars.forEach(bar => bar.style.display = 'none');
+            const payBar = document.getElementById('globalPayBar');
+            if (payBar) payBar.style.display = 'none';
         }
         
         function hideBottomNav() {
             const footer = document.getElementById('globalFooter');
             if (footer) footer.style.display = 'none';
-            const payBars = document.querySelectorAll('.bottom-pay-bar');
-            payBars.forEach(bar => bar.style.display = 'none');
+            const payBar = document.getElementById('globalPayBar');
+            if (payBar) payBar.style.display = 'none';
         }
         
         function showPayBar() {
             const footer = document.getElementById('globalFooter');
             if (footer) footer.style.display = 'none';
-            const payBars = document.querySelectorAll('.bottom-pay-bar');
-            payBars.forEach(bar => bar.style.display = 'flex');
+            const payBar = document.getElementById('globalPayBar');
+            if (payBar) payBar.style.display = 'flex';
         }
 
         // 渲染首页课程列表
@@ -928,8 +924,8 @@
             const course = courses.find(c => c.id === courseId);
             if (course) {
                 document.getElementById('detailCourseTitle').textContent = course.title;
-                // 更新支付栏价格
-                const priceEl = document.getElementById('detailPayPrice');
+                // 更新全局支付栏价格
+                const priceEl = document.getElementById('globalPayPrice');
                 if (priceEl) {
                     priceEl.textContent = course.price || '¥0';
                 }
@@ -945,11 +941,11 @@
             document.getElementById('historyPage').style.display = 'block'; 
             showPayBar();
             renderHistoryUpdates(); 
-            // 更新往期更新页面的价格
+            // 更新全局支付栏价格
             const currentCourseId = parseInt(localStorage.getItem('currentCourseId') || '1');
             const course = courses.find(c => c.id === currentCourseId);
             if (course) {
-                const priceEl = document.getElementById('historyPayPrice');
+                const priceEl = document.getElementById('globalPayPrice');
                 if (priceEl) {
                     priceEl.textContent = course.price || '¥0';
                 }
