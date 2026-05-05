@@ -753,6 +753,24 @@
                 if (el) el.style.display = 'none';
             });
         }
+        
+        function showBottomNav() {
+            document.querySelector('footer')?.style.setProperty('display', 'flex', 'important');
+            const payBars = document.querySelectorAll('.bottom-pay-bar');
+            payBars.forEach(bar => bar.style.display = 'none');
+        }
+        
+        function hideBottomNav() {
+            document.querySelector('footer')?.style.setProperty('display', 'none', 'important');
+            const payBars = document.querySelectorAll('.bottom-pay-bar');
+            payBars.forEach(bar => bar.style.display = 'none');
+        }
+        
+        function showPayBar() {
+            document.querySelector('footer')?.style.setProperty('display', 'none', 'important');
+            const payBars = document.querySelectorAll('.bottom-pay-bar');
+            payBars.forEach(bar => bar.style.display = 'flex');
+        }
 
         // 渲染首页课程列表
         function renderHomeCourses() {
@@ -906,10 +924,11 @@
         }
 
         // 页面跳转函数
-        function goHome() { hideAllPages(); document.getElementById('home').style.display = 'block'; }
+        function goHome() { hideAllPages(); document.getElementById('home').style.display = 'block'; showBottomNav(); }
         function goDetail(courseId) { 
             hideAllPages(); 
             document.getElementById('detail').style.display = 'block'; 
+            showPayBar(); 
             // 保存当前课程ID
             localStorage.setItem('currentCourseId', courseId.toString());
             // 更新课程标题显示
@@ -926,11 +945,12 @@
             // 检查是否已解锁
             checkUnlockStatus();
         }
-        function showExpert() { hideAllPages(); document.getElementById('expertPage').style.display = 'block'; }
-        function goRecord() { hideAllPages(); document.getElementById('recordPage').style.display = 'block'; }
+        function showExpert() { hideAllPages(); document.getElementById('expertPage').style.display = 'block'; showBottomNav(); }
+        function goRecord() { hideAllPages(); document.getElementById('recordPage').style.display = 'block'; showBottomNav(); }
         function goHistory() { 
             hideAllPages(); 
             document.getElementById('historyPage').style.display = 'block'; 
+            showPayBar();
             renderHistoryUpdates(); 
             // 更新往期更新页面的价格
             const currentCourseId = parseInt(localStorage.getItem('currentCourseId') || '1');
@@ -942,7 +962,7 @@
                 }
             }
         }
-        function showMember() { hideAllPages(); document.getElementById('memberPage').style.display = 'block'; }
+        function showMember() { hideAllPages(); document.getElementById('memberPage').style.display = 'block'; showBottomNav(); }
         
         // 返回上一页
         // 打开付款弹窗
@@ -2447,6 +2467,8 @@
                 document.getElementById('mobileApp').style.display = 'none';
                 return;
             }
+            // 初始化悬浮元素：首页显示底部导航栏
+            showBottomNav();
             // 更新发布时间为北京时间
             updatePublishTime();
             // 每秒更新北京时间显示
