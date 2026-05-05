@@ -244,15 +244,6 @@
 
         <!-- 详情页 -->
         <div id="detail" class="page-container">
-            <div class="detail-header">
-                <div class="header-row">
-                    <span class="back-btn" onclick="goHome()">←</span>
-                    <span class="page-title">详情</span>
-                    <span></span>
-                </div>
-                <div class="course-title" id="detailCourseTitle">123期 新&奥 新【金手指】一肖一码中特</div>
-                <div class="course-meta" id="courseMeta">发布于: 北京时间 2026-05-03 17:09:40 226购买</div>
-            </div>
             <div class="detail-content-wrap">
                 <div class="detail-tabs">
                     <div class="tab-item active" onclick="goHome()">今日更新</div>
@@ -324,13 +315,6 @@
 
         <!-- 往期更新页 -->
         <div id="historyPage" class="page-container">
-            <div class="detail-header">
-                <div class="header-row">
-                    <span class="back-btn" onclick="goHome()">←</span>
-                    <span class="page-title">详情</span>
-                    <span></span>
-                </div>
-            </div>
             <div class="detail-content-wrap">
                 <div class="detail-tabs">
                     <div class="tab-item" onclick="goHome()">今日更新</div>
@@ -525,6 +509,17 @@
                 </div>
             </div>
         </div>
+    </div>
+
+    <!-- 全局顶部详情栏 -->
+    <div id="globalDetailHeader" class="detail-header" style="display: none;">
+        <div class="header-row">
+            <span class="back-btn" onclick="goHome()">←</span>
+            <span class="page-title">详情</span>
+            <span></span>
+        </div>
+        <div class="course-title" id="detailCourseTitle">123期 新&奥 新【金手指】一肖一码中特</div>
+        <div class="course-meta" id="courseMeta">发布于: 北京时间 2026-05-03 17:09:40 226购买</div>
     </div>
 
     <!-- 全局底部导航栏 -->
@@ -745,6 +740,8 @@
             if (footer) footer.style.display = 'flex';
             const payBar = document.getElementById('globalPayBar');
             if (payBar) payBar.style.display = 'none';
+            const detailHeader = document.getElementById('globalDetailHeader');
+            if (detailHeader) detailHeader.style.display = 'none';
         }
         
         function hideBottomNav() {
@@ -752,6 +749,8 @@
             if (footer) footer.style.display = 'none';
             const payBar = document.getElementById('globalPayBar');
             if (payBar) payBar.style.display = 'none';
+            const detailHeader = document.getElementById('globalDetailHeader');
+            if (detailHeader) detailHeader.style.display = 'none';
         }
         
         function showPayBar() {
@@ -759,6 +758,8 @@
             if (footer) footer.style.display = 'none';
             const payBar = document.getElementById('globalPayBar');
             if (payBar) payBar.style.display = 'flex';
+            const detailHeader = document.getElementById('globalDetailHeader');
+            if (detailHeader) detailHeader.style.display = 'block';
         }
 
         // 渲染首页课程列表
