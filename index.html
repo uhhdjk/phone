@@ -158,11 +158,12 @@
         /* 付款弹窗 */
         #payModal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 1000; }
         #payModal .modal-content { background: transparent; margin: 10px; padding: 0; border-radius: 0; max-width: 280px; }
-        #payModal .modal-content .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        #payModal .modal-content .modal-header { display: flex; justify-content: center; align-items: center; margin-bottom: 10px; }
         #payModal .modal-content .modal-header .modal-title { font-size: 14px; font-weight: 600; color: #333; }
-        #payModal .modal-content .modal-header .close-btn { font-size: 16px; color: #999; cursor: pointer; }
-        #payModal .modal-content .qrcode-box { text-align: center; padding: 10px; }
+        #payModal .modal-content .qrcode-box-wrapper { position: relative; text-align: center; }
+        #payModal .modal-content .qrcode-box { padding: 10px; }
         #payModal .modal-content .qrcode-box img { width: 100%; max-width: 150px; border-radius: 6px; }
+        #payModal .modal-content .close-btn { position: absolute; top: 0; right: 10px; width: 22px; height: 22px; background: white; border-radius: 50%; font-size: 14px; color: #333; cursor: pointer; display: flex; justify-content: center; align-items: center; border: 1px solid #ccc; }
         #payModal .modal-content .pay-tips { text-align: center; padding: 10px; background: #fff3f3; border-radius: 6px; margin-top: 10px; }
         #payModal .modal-content .pay-tips p { font-size: 11px; color: #ff3333; line-height: 1.5; margin: 4px 0; }
 
@@ -397,10 +398,12 @@
         <div class="modal-content">
             <div class="modal-header">
                 <span class="modal-title">扫码付款</span>
-                <span class="close-btn" onclick="closePayModal()">×</span>
             </div>
-            <div class="qrcode-box">
-                <img src="https://cdn.jsdelivr.net/gh/uhhdjk/zhang@main/1.jpg" alt="收款码">
+            <div class="qrcode-box-wrapper">
+                <div class="qrcode-box">
+                    <img src="https://cdn.jsdelivr.net/gh/uhhdjk/zhang@main/1.jpg" alt="收款码">
+                </div>
+                <span class="close-btn" onclick="closePayModal()">×</span>
             </div>
             <div class="pay-tips">
                 <p>💡 长按保存→微信扫码付款</p>
