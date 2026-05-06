@@ -2367,7 +2367,7 @@
             }
         }
 
-        // 执行刷新
+        // 执行刷新（强制从服务器重新加载数据）
         function doRefresh() {
             isRefreshing = true;
             
@@ -2376,22 +2376,10 @@
             document.getElementById('refreshIcon').textContent = '🔄';
             document.getElementById('mobileApp').style.transform = `translateY(${PULL_THRESHOLD}px)`;
             
-            // 模拟网络请求延迟
+            // 强制清除缓存并从服务器重新加载
             setTimeout(() => {
-                // 重新加载数据
-                refreshAllData();
-                
-                // 刷新完成
-                document.getElementById('refreshText').textContent = '刷新完成';
-                document.getElementById('refreshIcon').textContent = '✓';
-                
-                // 延迟收起
-                setTimeout(() => {
-                    document.getElementById('pullRefresh').style.display = 'none';
-                    document.getElementById('mobileApp').style.transform = 'translateY(0)';
-                    isRefreshing = false;
-                }, 500);
-            }, 1500);
+                refreshDataFromServer();
+            }, 500);
         }
 
         // ========== 屏幕边缘滑动返回功能 ==========
