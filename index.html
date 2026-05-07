@@ -636,7 +636,7 @@
         }
 
         // 数据版本号（每次更新数据时增加版本号）
-        const DATA_VERSION = '20260508014';
+        const DATA_VERSION = '20260508015';
 
         // 默认课程数据（服务器端数据，更新时修改这里）
         const defaultCourses = [
@@ -686,15 +686,34 @@
             // 如果服务器版本更新，使用新数据
             if (localVersion !== DATA_VERSION) {
                 localStorage.setItem('dataVersion', DATA_VERSION);
-                // 为每个课程生成随机密码和12小时过期时间
-                const coursesWithPasswords = defaultCourses.map(course => ({
-                    ...course,
-                    password: Math.floor(100000 + Math.random() * 900000).toString(),
-                    expireTime: Date.now() + 12 * 60 * 60 * 1000
-                }));
+                
+                // 先获取已有的课程数据（保留已有密码）
+                const existingCourses = localStorage.getItem('courses');
+                let existingPasswords = {};
+                if (existingCourses) {
+                    try {
+                        JSON.parse(existingCourses).forEach(c => {
+                            if (c.password) {
+                                existingPasswords[c.id] = {
+                                    password: c.password,
+                                    expireTime: c.expireTime
+                                };
+                            }
+                        });
+                    } catch (e) {}
+                }
+                
+                // 使用新数据，但保留已有的密码
+                const coursesWithPasswords = defaultCourses.map(course => {
+                    const existing = existingPasswords[course.id];
+                    return {
+                        ...course,
+                        password: existing ? existing.password : Math.floor(100000 + Math.random() * 900000).toString(),
+                        expireTime: existing ? existing.expireTime : Date.now() + 12 * 60 * 60 * 1000
+                    };
+                });
+                
                 localStorage.setItem('courses', JSON.stringify(coursesWithPasswords));
-                // 清除旧的课程内容缓存和解锁记录
-                localStorage.removeItem('unlockedCourses');
                 return true; // 返回true表示有更新
             }
             return false;
@@ -1196,19 +1215,50 @@
             return Date.now() + 12 * 60 * 60 * 1000;
         }
 
-        // 检查解锁状态（按课程）
+        // 生成当天的密码有效期（从现在到当天23:59:59）
+        function generateDailyExpireTime() {
+            const now = new Date();
+            const endOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59, 999);
+            return endOfDay.getTime();
+        }
+
+        // 获取当前期数（从标题中提取）
+        function getCurrentPeriod(courseTitle) {
+            const match = courseTitle.match(/(\d+)期/);
+            return match ? match[1] : '127';
+        }
+
+        // 检查解锁状态（按课程+期数，过期自动失效）
         function checkUnlockStatus() {
             const currentCourseId = parseInt(localStorage.getItem('currentCourseId') || '1');
             const course = courses.find(c => c.id === currentCourseId);
             
-            // 检查该课程是否已解锁
-            const unlockedCourses = localStorage.getItem('unlockedCourses') ? JSON.parse(localStorage.getItem('unlockedCourses')) : {};
-            const isUnlocked = unlockedCourses[currentCourseId] === true;
+            if (!course) {
+                document.getElementById('detailContent').textContent = '🔒 内容已锁定，请输入密码解锁';
+                return;
+            }
             
-            if (isUnlocked && course) {
+            // 获取当前期数
+            const period = getCurrentPeriod(course.title);
+            const unlockKey = `${currentCourseId}_${period}`;
+            
+            // 检查该课程当前期数是否已解锁且未过期
+            const unlockedRecords = localStorage.getItem('unlockedRecords') ? JSON.parse(localStorage.getItem('unlockedRecords')) : {};
+            const unlockRecord = unlockedRecords[unlockKey];
+            
+            // 验证解锁记录是否有效（存在且未过期）
+            const isUnlocked = unlockRecord && unlockRecord.expireTime && Date.now() < unlockRecord.expireTime;
+            
+            if (isUnlocked) {
                 document.getElementById('detailContent').textContent = course.value;
             } else {
-                document.getElementById('detailContent').textContent = '🔒 内容已锁定，请输入密码解锁';
+                // 检查密码是否已过期
+                const passwordExpired = course.expireTime && Date.now() > course.expireTime;
+                if (passwordExpired) {
+                    document.getElementById('detailContent').textContent = '🔒 内容已锁定（密码已过期），请联系客服获取新密码';
+                } else {
+                    document.getElementById('detailContent').textContent = '🔒 内容已锁定，请输入密码解锁';
+                }
             }
         }
 
@@ -1224,7 +1274,7 @@
             document.getElementById('passwordError').style.display = 'none';
         }
 
-        // 验证密码
+        // 验证密码（每个课程独立密码，过期自动失效）
         function verifyPassword() {
             const currentCourseId = parseInt(localStorage.getItem('currentCourseId') || '1');
             const course = courses.find(c => c.id === currentCourseId);
@@ -1264,12 +1314,20 @@
                 return;
             }
             
-            // 验证密码
+            // 验证密码（每个课程有独立密码，互不通用）
             if (inputPassword === course.password) {
-                // 解锁该课程
-                const unlockedCourses = localStorage.getItem('unlockedCourses') ? JSON.parse(localStorage.getItem('unlockedCourses')) : {};
-                unlockedCourses[currentCourseId] = true;
-                localStorage.setItem('unlockedCourses', JSON.stringify(unlockedCourses));
+                // 获取当前期数，确保解锁记录与期数绑定
+                const period = getCurrentPeriod(course.title);
+                
+                // 解锁记录格式：{ "课程ID_期数": { unlockedAt: 时间戳, expireTime: 过期时间 } }
+                const unlockedRecords = localStorage.getItem('unlockedRecords') ? JSON.parse(localStorage.getItem('unlockedRecords')) : {};
+                const unlockKey = `${currentCourseId}_${period}`;
+                
+                unlockedRecords[unlockKey] = {
+                    unlockedAt: Date.now(),
+                    expireTime: course.expireTime
+                };
+                localStorage.setItem('unlockedRecords', JSON.stringify(unlockedRecords));
                 
                 // 显示内容
                 document.getElementById('detailContent').textContent = course.value;
@@ -1302,7 +1360,7 @@
             if (!course) return;
             
             course.password = generatePassword();
-            course.expireTime = generateExpireTime();
+            course.expireTime = generateDailyExpireTime(); // 有效期到当天23:59
             
             // 保存到localStorage
             saveCourses(courses);
@@ -1312,13 +1370,19 @@
 
         // 批量为所有课程生成新密码（作者使用，每天自动生成）
         function generateAllPasswords() {
+            const expireTime = generateDailyExpireTime(); // 统一有效期到当天23:59
+            
             courses.forEach(course => {
                 course.password = generatePassword();
-                course.expireTime = generateExpireTime();
+                course.expireTime = expireTime;
             });
             saveCourses(courses);
+            
+            // 清理过期的解锁记录
+            cleanExpiredUnlocks();
+            
             renderPasswordList();
-            alert('已为所有课程生成新密码！');
+            alert('已为所有课程生成新密码！\n\n所有密码有效期至今日23:59。');
         }
 
         // 为单个课程生成新密码
@@ -1331,10 +1395,25 @@
             }
             
             course.password = generatePassword();
-            course.expireTime = generateExpireTime();
+            course.expireTime = generateDailyExpireTime(); // 有效期到当天23:59
             saveCourses(courses);
             renderPasswordList();
-            alert(`已为课程 "${course.title}" 生成新密码！`);
+            alert(`已为课程 "${course.title}" 生成新密码！\n\n有效期至今日23:59。`);
+        }
+
+        // 清理过期的解锁记录
+        function cleanExpiredUnlocks() {
+            const unlockedRecords = localStorage.getItem('unlockedRecords') ? JSON.parse(localStorage.getItem('unlockedRecords')) : {};
+            const now = Date.now();
+            
+            // 删除过期的解锁记录
+            Object.keys(unlockedRecords).forEach(key => {
+                if (unlockedRecords[key].expireTime && now > unlockedRecords[key].expireTime) {
+                    delete unlockedRecords[key];
+                }
+            });
+            
+            localStorage.setItem('unlockedRecords', JSON.stringify(unlockedRecords));
         }
 
         // 渲染密码列表
@@ -1427,6 +1506,7 @@
                 
                 // 更新课程数据
                 let updateCount = 0;
+                let newCourseCount = 0;
                 importData.courses.forEach(importedCourse => {
                     const courseIndex = courses.findIndex(c => c.id === importedCourse.id);
                     if (courseIndex >= 0) {
@@ -1441,6 +1521,22 @@
                             courses[courseIndex].value = importedCourse.value;
                         }
                         updateCount++;
+                    } else {
+                        // 添加新课程
+                        courses.push({
+                            id: importedCourse.id,
+                            title: importedCourse.title,
+                            password: importedCourse.password || Math.floor(100000 + Math.random() * 900000).toString(),
+                            expireTime: importedCourse.expireTime || Date.now() + 12 * 60 * 60 * 1000,
+                            value: importedCourse.value || '',
+                            time: '未知',
+                            price: '¥0',
+                            buyCount: 0,
+                            seal: '红',
+                            result: '对',
+                            history: ''
+                        });
+                        newCourseCount++;
                     }
                 });
                 
@@ -1454,7 +1550,7 @@
                 // 重新渲染密码列表
                 renderPasswordList();
                 
-                alert(`✅ 数据导入成功！\n\n已更新 ${updateCount} 个课程的数据。`);
+                alert(`✅ 数据导入成功！\n\n已更新 ${updateCount} 个课程的数据\n已添加 ${newCourseCount} 个新课程\n\n建议刷新页面确保数据完全生效。`);
                 
             } catch (e) {
                 alert('❌ 数据格式错误，请检查导入的数据！\n\n' + e.message);
