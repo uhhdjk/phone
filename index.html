@@ -562,6 +562,24 @@
                 <div id="passwordList" style="max-height: 300px; overflow-y: auto;">
                     <div style="text-align: center; color: #999; padding: 20px;">暂无密码数据</div>
                 </div>
+                
+                <!-- 数据同步 -->
+                <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #eee;">
+                    <div style="font-size: 13px; font-weight: 600; color: #666; margin-bottom: 10px;">📤 数据同步</div>
+                    <div style="display: flex; gap: 10px;">
+                        <button onclick="exportData()" style="flex: 1; height: 40px; background: #2196f3; color: white; border: none; border-radius: 6px; font-size: 14px;">导出数据</button>
+                        <button onclick="importData()" style="flex: 1; height: 40px; background: #4caf50; color: white; border: none; border-radius: 6px; font-size: 14px;">导入数据</button>
+                    </div>
+                    <div style="margin-top: 10px;">
+                        <textarea id="dataTextarea" placeholder="在此粘贴数据进行导入..." rows="4" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; resize: none; font-size: 11px; font-family: monospace; box-sizing: border-box;"></textarea>
+                    </div>
+                    <div style="margin-top: 8px; font-size: 11px; color: #999;">
+                        <div>💡 使用说明：</div>
+                        <div>1. 作者在电脑上点击「导出数据」复制数据</div>
+                        <div>2. 在作者手机上点击「导入数据」粘贴数据</div>
+                        <div>3. 这样两台设备的密码就保持一致了</div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -1365,6 +1383,82 @@
                 const course = courses.find(c => c.id === courseId);
                 alert(`课程: ${course ? course.title : '未知'}\n密码: ${password}\n\n请手动复制密码`);
             });
+        }
+
+        // 导出数据
+        function exportData() {
+            const exportData = {
+                version: '1.0',
+                exportTime: new Date().toLocaleString('zh-CN'),
+                courses: courses.map(c => ({
+                    id: c.id,
+                    title: c.title,
+                    password: c.password,
+                    expireTime: c.expireTime,
+                    value: c.value
+                }))
+            };
+            
+            const jsonString = JSON.stringify(exportData, null, 2);
+            document.getElementById('dataTextarea').value = jsonString;
+            
+            // 自动复制到剪贴板
+            navigator.clipboard.writeText(jsonString).then(() => {
+                alert('✅ 数据已导出并复制到剪贴板！\n\n请在另一台设备的作者管理面板中粘贴导入。');
+            }).catch(err => {
+                alert('✅ 数据已导出！\n\n请手动复制下面的文本框内容。');
+            });
+        }
+
+        // 导入数据
+        function importData() {
+            const dataText = document.getElementById('dataTextarea').value.trim();
+            if (!dataText) {
+                alert('请先粘贴要导入的数据！');
+                return;
+            }
+            
+            try {
+                const importData = JSON.parse(dataText);
+                if (!importData.courses || !Array.isArray(importData.courses)) {
+                    alert('数据格式不正确！');
+                    return;
+                }
+                
+                // 更新课程数据
+                let updateCount = 0;
+                importData.courses.forEach(importedCourse => {
+                    const courseIndex = courses.findIndex(c => c.id === importedCourse.id);
+                    if (courseIndex >= 0) {
+                        // 更新已有课程的密码和内容
+                        if (importedCourse.password) {
+                            courses[courseIndex].password = importedCourse.password;
+                        }
+                        if (importedCourse.expireTime) {
+                            courses[courseIndex].expireTime = importedCourse.expireTime;
+                        }
+                        if (importedCourse.value) {
+                            courses[courseIndex].value = importedCourse.value;
+                        }
+                        updateCount++;
+                    }
+                });
+                
+                // 保存到localStorage
+                saveCourses(courses);
+                localStorage.setItem('dataVersion', DATA_VERSION);
+                
+                // 清空文本框
+                document.getElementById('dataTextarea').value = '';
+                
+                // 重新渲染密码列表
+                renderPasswordList();
+                
+                alert(`✅ 数据导入成功！\n\n已更新 ${updateCount} 个课程的数据。`);
+                
+            } catch (e) {
+                alert('❌ 数据格式错误，请检查导入的数据！\n\n' + e.message);
+            }
         }
 
         // ========== 作者管理系统 ==========
