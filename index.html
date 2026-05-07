@@ -566,7 +566,7 @@
         }
 
         // 数据版本号（每次更新数据时增加版本号）
-        const DATA_VERSION = '20260508003';
+        const DATA_VERSION = '20260508004';
 
         // 默认课程数据（服务器端数据，更新时修改这里）
         const defaultCourses = [
@@ -817,18 +817,58 @@
         // 渲染详情页历史记录
         function renderDetailHistory() {
             const container = document.getElementById('detailHistoryList');
+            const currentCourseId = parseInt(localStorage.getItem('currentCourseId') || '1');
+            const course = courses.find(c => c.id === currentCourseId);
+            
+            if (!course || !course.history || course.history.trim() === '') {
+                container.innerHTML = '<div style="padding: 20px; text-align: center; color: #999;">暂无往期记录</div>';
+                return;
+            }
+            
+            // 解析历史记录
+            const historyLines = course.history.split('\n');
             let html = '';
-            historyCourses.slice(0, 5).forEach(course => {
-                const resultClass = course.result === '对' ? 'correct' : 'wrong';
-                const resultIcon = course.result === '对' ? '✓' : '✕';
+            let currentRecord = { title: '', value: '', result: '' };
+            let count = 0;
+            const maxCount = 5;
+            
+            for (let i = 0; i < historyLines.length && count < maxCount; i++) {
+                const line = historyLines[i].trim();
+                if (line === '') continue;
+                
+                if (line.includes('期') && line.includes('中特')) {
+                    if (currentRecord.title) {
+                        const resultClass = currentRecord.result === '对' ? 'correct' : 'wrong';
+                        const resultIcon = currentRecord.result === '对' ? '✓' : '✕';
+                        html += `<div class="history-item">
+                            <div class="history-info">
+                                <div class="history-title">${currentRecord.title}</div>
+                                <div class="history-value">${currentRecord.value}</div>
+                            </div>
+                            <div class="result-badge ${resultClass}">${resultIcon}</div>
+                        </div>`;
+                        count++;
+                    }
+                    currentRecord = { title: line, value: '', result: '' };
+                } else if (line.includes('对') || line.includes('错')) {
+                    const parts = line.split(' ');
+                    currentRecord.value = parts[0] || '';
+                    currentRecord.result = line.includes('对') ? '对' : '错';
+                }
+            }
+            
+            if (currentRecord.title && count < maxCount) {
+                const resultClass = currentRecord.result === '对' ? 'correct' : 'wrong';
+                const resultIcon = currentRecord.result === '对' ? '✓' : '✕';
                 html += `<div class="history-item">
                     <div class="history-info">
-                        <div class="history-title">${course.title}</div>
-                        <div class="history-value">${course.value}</div>
+                        <div class="history-title">${currentRecord.title}</div>
+                        <div class="history-value">${currentRecord.value}</div>
                     </div>
                     <div class="result-badge ${resultClass}">${resultIcon}</div>
                 </div>`;
-            });
+            }
+            
             container.innerHTML = html;
         }
 
