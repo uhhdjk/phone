@@ -256,6 +256,7 @@
                 <div class="content-detail">
                     <div class="label">内容详情</div>
                     <div class="value" id="detailContent">🔒 内容已锁定，请先购买解锁</div>
+                    <button id="unlockBtn" onclick="openPasswordModal()" style="width: 100%; height: 45px; margin-top: 15px; background: #ff9800; color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: 600;">输入密码解锁内容</button>
                 </div>
                 <div class="history-section">
                     <div class="section-title">往期记录:</div>
@@ -416,6 +417,22 @@
         </div>
     </div>
 
+    <!-- 密码输入弹窗 -->
+    <div id="passwordModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 1000;" onclick="closePasswordModal()">
+        <div style="background: white; margin: 20px; padding: 30px; border-radius: 12px; text-align: center; width: 100%; max-width: 320px; position: relative;" onclick="event.stopPropagation()">
+            <span onclick="closePasswordModal()" style="position: absolute; top: 10px; right: 15px; font-size: 24px; color: #999; cursor: pointer;">×</span>
+            <div style="width: 80px; height: 80px; border-radius: 50%; background: #ff9800; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; font-size: 40px; color: white;">🔐</div>
+            <div style="font-size: 18px; font-weight: 600; color: #333; margin-bottom: 10px;">输入解锁密码</div>
+            <div style="font-size: 12px; color: #999; margin-bottom: 20px;">密码12小时内有效，请联系客服获取</div>
+            <input type="password" id="coursePassword" placeholder="请输入6位数字密码" maxlength="6" style="width: 100%; height: 45px; margin-bottom: 15px; padding: 0 15px; border: 1px solid #ddd; border-radius: 8px; font-size: 20px; text-align: center; box-sizing: border-box;">
+            <div style="font-size: 12px; color: #ff3333; margin-bottom: 15px; display: none;" id="passwordError">密码错误，请重试</div>
+            <button onclick="verifyPassword()" style="width: 100%; height: 45px; background: #ff9800; color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: 600;">解锁内容</button>
+            <div style="margin-top: 10px; font-size: 12px; color: #999;">
+                <span onclick="openPayModal(); closePasswordModal();" style="color: #6a79f7; cursor: pointer;">联系客服获取密码</span>
+            </div>
+        </div>
+    </div>
+
     <!-- 作者登录弹窗 -->
     <div id="adminLoginModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 1000;">
         <div style="background: white; margin: 20px; padding: 30px; border-radius: 12px; text-align: center; width: 100%; max-width: 320px;">
@@ -569,7 +586,7 @@
         }
 
         // 数据版本号（每次更新数据时增加版本号）
-        const DATA_VERSION = '20260508013';
+        const DATA_VERSION = '20260508014';
 
         // 默认课程数据（服务器端数据，更新时修改这里）
         const defaultCourses = [
@@ -619,11 +636,15 @@
             // 如果服务器版本更新，使用新数据
             if (localVersion !== DATA_VERSION) {
                 localStorage.setItem('dataVersion', DATA_VERSION);
-                localStorage.setItem('courses', JSON.stringify(defaultCourses));
-                // 清除旧的课程内容缓存
-                courses.forEach(course => {
-                    localStorage.removeItem('courseContent_' + course.id);
-                });
+                // 为每个课程生成随机密码和12小时过期时间
+                const coursesWithPasswords = defaultCourses.map(course => ({
+                    ...course,
+                    password: Math.floor(100000 + Math.random() * 900000).toString(),
+                    expireTime: Date.now() + 12 * 60 * 60 * 1000
+                }));
+                localStorage.setItem('courses', JSON.stringify(coursesWithPasswords));
+                // 清除旧的课程内容缓存和解锁记录
+                localStorage.removeItem('unlockedCourses');
                 return true; // 返回true表示有更新
             }
             return false;
@@ -1115,21 +1136,114 @@
             showMember();
         }
 
-        // 检查解锁状态
+        // 生成6位随机数字密码
+        function generatePassword() {
+            return Math.floor(100000 + Math.random() * 900000).toString();
+        }
+
+        // 生成12小时后的失效时间戳
+        function generateExpireTime() {
+            return Date.now() + 12 * 60 * 60 * 1000;
+        }
+
+        // 检查解锁状态（按课程）
         function checkUnlockStatus() {
-            const isUnlocked = localStorage.getItem('contentUnlocked') === 'true';
-            if (isUnlocked) {
-                document.getElementById('detailContent').textContent = '鸡【46】';
+            const currentCourseId = parseInt(localStorage.getItem('currentCourseId') || '1');
+            const course = courses.find(c => c.id === currentCourseId);
+            
+            // 检查该课程是否已解锁
+            const unlockedCourses = localStorage.getItem('unlockedCourses') ? JSON.parse(localStorage.getItem('unlockedCourses')) : {};
+            const isUnlocked = unlockedCourses[currentCourseId] === true;
+            
+            if (isUnlocked && course) {
+                document.getElementById('detailContent').textContent = course.value;
             } else {
-                document.getElementById('detailContent').textContent = '🔒 内容已锁定，请先购买解锁';
+                document.getElementById('detailContent').textContent = '🔒 内容已锁定，请输入密码解锁';
             }
         }
 
-        // 解锁内容（客服使用）
+        // 打开密码输入弹窗
+        function openPasswordModal() {
+            document.getElementById('passwordModal').style.display = 'flex';
+        }
+
+        // 关闭密码输入弹窗
+        function closePasswordModal() {
+            document.getElementById('passwordModal').style.display = 'none';
+            document.getElementById('coursePassword').value = '';
+            document.getElementById('passwordError').style.display = 'none';
+        }
+
+        // 验证密码
+        function verifyPassword() {
+            const currentCourseId = parseInt(localStorage.getItem('currentCourseId') || '1');
+            const course = courses.find(c => c.id === currentCourseId);
+            const inputPassword = document.getElementById('coursePassword').value;
+            
+            if (!course || !course.password) {
+                alert('该课程暂未设置密码，请联系客服');
+                return;
+            }
+            
+            // 检查密码是否过期
+            if (course.expireTime && Date.now() > course.expireTime) {
+                alert('密码已过期，请联系客服获取新密码');
+                return;
+            }
+            
+            // 验证密码
+            if (inputPassword === course.password) {
+                // 解锁该课程
+                const unlockedCourses = localStorage.getItem('unlockedCourses') ? JSON.parse(localStorage.getItem('unlockedCourses')) : {};
+                unlockedCourses[currentCourseId] = true;
+                localStorage.setItem('unlockedCourses', JSON.stringify(unlockedCourses));
+                
+                // 显示内容
+                document.getElementById('detailContent').textContent = course.value;
+                closePasswordModal();
+                alert('解锁成功！');
+            } else {
+                document.getElementById('passwordError').style.display = 'block';
+            }
+        }
+
+        // 解锁内容（作者使用，无需密码）
         function unlockContent() {
-            localStorage.setItem('contentUnlocked', 'true');
-            document.getElementById('detailContent').textContent = '鸡【46】';
+            const currentCourseId = parseInt(localStorage.getItem('currentCourseId') || '1');
+            const course = courses.find(c => c.id === currentCourseId);
+            
+            const unlockedCourses = localStorage.getItem('unlockedCourses') ? JSON.parse(localStorage.getItem('unlockedCourses')) : {};
+            unlockedCourses[currentCourseId] = true;
+            localStorage.setItem('unlockedCourses', JSON.stringify(unlockedCourses));
+            
+            if (course) {
+                document.getElementById('detailContent').textContent = course.value;
+            }
             alert('内容已解锁！');
+        }
+
+        // 为课程生成新密码（作者使用）
+        function generateNewPassword(courseId) {
+            const course = courses.find(c => c.id === courseId);
+            if (!course) return;
+            
+            course.password = generatePassword();
+            course.expireTime = generateExpireTime();
+            
+            // 保存到localStorage
+            saveCourses(courses);
+            
+            return course.password;
+        }
+
+        // 批量为所有课程生成新密码（作者使用，每天自动生成）
+        function generateAllPasswords() {
+            courses.forEach(course => {
+                course.password = generatePassword();
+                course.expireTime = generateExpireTime();
+            });
+            saveCourses(courses);
+            alert('已为所有课程生成新密码！');
         }
 
         // ========== 作者管理系统 ==========
