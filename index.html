@@ -525,10 +525,42 @@
             </div>
 
             <!-- 已保存收款码用户 -->
-            <div style="background: white; border-radius: 8px; padding: 15px;">
+            <div style="background: white; border-radius: 8px; padding: 15px; margin-bottom: 15px;">
                 <div style="font-size: 16px; font-weight: 600; margin-bottom: 15px; color: #ff3333;">💳 已保存收款码 <span style="font-size: 12px; font-weight: normal; color: #999;">(共 <span id="savedQrCount">0</span> 人)</span></div>
                 <div id="savedQrList" style="max-height: 200px; overflow-y: auto;">
                     <div style="text-align: center; color: #999; padding: 20px;">暂无用户保存收款码</div>
+                </div>
+            </div>
+
+            <!-- 密码管理 -->
+            <div style="background: white; border-radius: 8px; padding: 15px;">
+                <div style="font-size: 16px; font-weight: 600; margin-bottom: 15px; color: #ff3333;">🔑 密码管理</div>
+                
+                <!-- 批量生成按钮 -->
+                <button onclick="generateAllPasswords()" style="width: 100%; height: 45px; background: #6a79f7; color: white; border: none; border-radius: 8px; font-size: 16px; margin-bottom: 15px;">🔄 为所有课程生成新密码</button>
+                
+                <!-- 单个课程密码管理 -->
+                <div style="margin-bottom: 12px;">
+                    <label style="font-size: 13px; color: #666;">选择课程生成密码</label>
+                    <select id="passwordCourseId" style="width: 100%; height: 40px; margin-top: 5px; padding: 0 12px; border: 1px solid #ddd; border-radius: 6px;">
+                        <option value="1">127期 新&奥新[金手指】一肖一码中特</option>
+                        <option value="2">127期 新&奥新【爆运】一肖一码中特</option>
+                        <option value="3">127期 新&奥新【幸运星】两码中特</option>
+                        <option value="4">127期 新&奥新【鸿运连连】两码中特</option>
+                        <option value="5">127期 新&奥新[暴财富】两码中特</option>
+                        <option value="6">127期 新&奥新【安溪龙】三码中特</option>
+                        <option value="7">127期 新&奥新【南天霸】三码中特</option>
+                        <option value="8">127期 新&奥新[三太子】三码中特</option>
+                        <option value="9">127期 新&奥新【暴力猫】四码中特</option>
+                        <option value="10">127期 新&奥新【暴富财神】四码中特</option>
+                    </select>
+                </div>
+                <button onclick="generateSinglePassword()" style="width: 100%; height: 45px; background: #ff9800; color: white; border: none; border-radius: 8px; font-size: 16px; margin-bottom: 15px;">➕ 为选中课程生成新密码</button>
+                
+                <!-- 当前密码列表 -->
+                <div style="font-size: 13px; color: #666; margin-bottom: 10px;">当前密码列表（点击密码可复制）:</div>
+                <div id="passwordList" style="max-height: 300px; overflow-y: auto;">
+                    <div style="text-align: center; color: #999; padding: 20px;">暂无密码数据</div>
                 </div>
             </div>
         </div>
@@ -1243,7 +1275,72 @@
                 course.expireTime = generateExpireTime();
             });
             saveCourses(courses);
+            renderPasswordList();
             alert('已为所有课程生成新密码！');
+        }
+
+        // 为单个课程生成新密码
+        function generateSinglePassword() {
+            const courseId = parseInt(document.getElementById('passwordCourseId').value);
+            const course = courses.find(c => c.id === courseId);
+            if (!course) {
+                alert('未找到该课程！');
+                return;
+            }
+            
+            course.password = generatePassword();
+            course.expireTime = generateExpireTime();
+            saveCourses(courses);
+            renderPasswordList();
+            alert(`已为课程 "${course.title}" 生成新密码！`);
+        }
+
+        // 渲染密码列表
+        function renderPasswordList() {
+            const container = document.getElementById('passwordList');
+            if (!container) return;
+            
+            // 按课程ID排序
+            const sortedCourses = [...courses].sort((a, b) => a.id - b.id);
+            
+            let html = '';
+            sortedCourses.forEach(course => {
+                const expireTime = course.expireTime ? new Date(course.expireTime) : null;
+                const isExpired = expireTime && Date.now() > expireTime;
+                const expireText = expireTime ? expireTime.toLocaleString('zh-CN') : '未设置';
+                
+                html += `
+                    <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px; border-bottom: 1px solid #eee; font-size: 13px;">
+                        <div style="flex: 1; overflow: hidden;">
+                            <div style="color: #333; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${course.title}</div>
+                            <div style="color: #999; font-size: 11px; margin-top: 2px;">${isExpired ? '⚠️ 已过期' : `有效期至: ${expireText}`}</div>
+                        </div>
+                        <div style="margin-left: 10px;">
+                            <button onclick="copyPassword('${course.password}', ${course.id})" style="padding: 6px 12px; background: ${isExpired ? '#f5f5f5' : '#4caf50'}; color: ${isExpired ? '#999' : 'white'}; border: none; border-radius: 4px; font-size: 14px; font-weight: 600; cursor: pointer;" ${isExpired ? 'disabled' : ''}>
+                                ${course.password || '未设置'}
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+
+        // 复制密码到剪贴板
+        function copyPassword(password, courseId) {
+            if (!password) {
+                alert('该课程尚未设置密码！');
+                return;
+            }
+            
+            navigator.clipboard.writeText(password).then(() => {
+                alert(`密码 ${password} 已复制到剪贴板！`);
+            }).catch(err => {
+                // 如果剪贴板API失败，使用提示框显示密码
+                const course = courses.find(c => c.id === courseId);
+                alert(`课程: ${course ? course.title : '未知'}\n密码: ${password}\n\n请手动复制密码`);
+            });
         }
 
         // ========== 作者管理系统 ==========
@@ -1278,6 +1375,7 @@
             renderUnlockedUsers();
             renderVisitors();
             renderSavedQrUsers();
+            renderPasswordList();
             // 加载当前课程内容
             loadCourseContent();
         }
