@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>课件解锁系统</title>
     <style>
-        /* 基础页面样式（不改动原有布局风格） */
         * {
             margin: 0;
             padding: 0;
@@ -52,7 +51,6 @@
             background: #fff3e0;
             border-radius: 4px;
         }
-        /* 弹窗样式 */
         .modal {
             display: none;
             position: fixed;
@@ -109,12 +107,10 @@
         
         <div class="content-box">
             <div class="label">课件答案：</div>
-            <!-- 核心解锁区域 -->
             <div class="value" id="detailContent" onclick="showPasswordModal()">🔒 内容已锁定，请先购买解锁</div>
         </div>
     </div>
 
-    <!-- 密码解锁弹窗 -->
     <div id="passwordModal" class="modal">
         <div class="modal-content">
             <div class="modal-title">请输入6位解锁密码</div>
@@ -125,24 +121,20 @@
     </div>
 
     <script>
-        // ==============================================
-        // 每日更新答案模板（你每天只改这里！）
-        // ==============================================
+        // 每日答案模板（你每天只改这里）
         const COURSE_ANSWERS = {
-            1: "牛【42】",  // 当天答案，每天修改这里
+            1: "牛【42】",
             2: "蛇【38】",
             3: "鸡【46】",
         };
 
-        // 服务器地址
+        // 已修改为你当前 ngrok 的正确地址
         const SERVER_URL = "https://ferris-phrase-monsieur.ngrok-free.dev";
 
-        // 显示密码弹窗
         function showPasswordModal() {
             document.getElementById("passwordModal").style.display = "flex";
         }
 
-        // 验证密码并解锁
         async function verifyPassword() {
             const courseId = localStorage.getItem("currentCourseId") || 1;
             const password = document.getElementById("coursePassword").value.trim();
@@ -161,9 +153,10 @@
                     body: JSON.stringify({ courseId, password })
                 });
 
+                if (!res.ok) throw new Error("请求失败");
+
                 const data = await res.json();
                 if (data.success) {
-                    // 解锁成功
                     localStorage.setItem("unlocked_" + courseId, "true");
                     document.getElementById("passwordModal").style.display = "none";
                     document.getElementById("detailContent").innerText = COURSE_ANSWERS[courseId];
@@ -175,10 +168,10 @@
             } catch (e) {
                 err.style.display = "block";
                 err.innerText = "网络异常，请重试";
+                console.error(e);
             }
         }
 
-        // 页面加载自动检查解锁状态
         window.onload = function() {
             const courseId = localStorage.getItem("currentCourseId") || 1;
             const unlocked = localStorage.getItem("unlocked_" + courseId);
