@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>课程解锁验证</title>
+    <script src="config.js"></script>
     <style>
         body { font-family: "微软雅黑", sans-serif; max-width: 500px; margin: 50px auto; padding: 0 20px; }
         .container { background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 0 15px rgba(0,0,0,0.1); }
@@ -12,82 +13,63 @@
         label { display: block; margin-bottom: 8px; color: #555; }
         select, input { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 16px; }
         button { width: 100%; padding: 12px; background: #2563eb; color: #fff; border: none; border-radius: 8px; font-size: 16px; cursor: pointer; }
-        button:disabled { background: #94a3b8; cursor: not-allowed; }
-        .status { margin-top: 20px; text-align: center; font-weight: bold; }
         .success { color: #06b46c; }
         .error { color: #ef4444; }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>课程解锁验证</h1>
+        <h1>🔐 课程解锁验证</h1>
         <div class="form-group">
-            <label for="courseId">选择课程</label>
+            <label>选择课程</label>
             <select id="courseId">
-                <!-- 这里我先给你写几个示例，你可以按需求扩展到37门 -->
-                <option value="1">课程1</option>
-                <option value="2">课程2</option>
-                <option value="27">课程27</option>
-                <option value="28">课程28</option>
+                <option value="1">课程1</option><option value="2">课程2</option><option value="3">课程3</option>
+                <option value="4">课程4</option><option value="5">课程5</option><option value="6">课程6</option>
+                <option value="7">课程7</option><option value="8">课程8</option><option value="9">课程9</option>
+                <option value="10">课程10</option><option value="11">课程11</option><option value="12">课程12</option>
+                <option value="13">课程13</option><option value="14">课程14</option><option value="15">课程15</option>
+                <option value="16">课程16</option><option value="17">课程17</option><option value="18">课程18</option>
+                <option value="19">课程19</option><option value="20">课程20</option><option value="21">课程21</option>
+                <option value="22">课程22</option><option value="23">课程23</option><option value="24">课程24</option>
+                <option value="25">课程25</option><option value="26">课程26</option><option value="27">课程27</option>
+                <option value="28">课程28</option><option value="29">课程29</option><option value="30">课程30</option>
+                <option value="31">课程31</option><option value="32">课程32</option><option value="33">课程33</option>
+                <option value="34">课程34</option><option value="35">课程35</option><option value="36">课程36</option>
+                <option value="37">课程37</option>
             </select>
         </div>
         <div class="form-group">
-            <label for="password">输入课程密码</label>
-            <input type="text" id="password" placeholder="请输入6位课程密码">
+            <label>输入6位密码</label>
+            <input type="text" id="pwd" placeholder="请输入课程密码">
         </div>
-        <button id="verifyBtn">验证并解锁</button>
-        <div class="status" id="status"></div>
+        <button onclick="checkPwd()">✅ 验证解锁</button>
+        <div id="msg" style="margin-top:20px;text-align:center;font-weight:bold;"></div>
     </div>
 
     <script>
-        // 这里填写你当前的ngrok地址（每次重启ngrok要更新这个）
-        const API_BASE = "https://ferris-phrase-monsieur.ngrok-free.dev";
-
-        const verifyBtn = document.getElementById("verifyBtn");
-        const statusEl = document.getElementById("status");
-
-        verifyBtn.addEventListener("click", async () => {
-            const courseId = document.getElementById("courseId").value;
-            const password = document.getElementById("password").value.trim();
-
-            if (!password || password.length !== 6) {
-                statusEl.className = "status error";
-                statusEl.textContent = "请输入正确的6位密码";
-                return;
-            }
-
-            verifyBtn.disabled = true;
-            statusEl.className = "status";
-            statusEl.textContent = "正在验证中...";
-
-            try {
-                const res = await fetch(`${API_BASE}/api/verify`, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ courseId, password })
+        const API_BASE = NGROK_BASE_URL;
+        async function checkPwd(){
+            let c = document.getElementById("courseId").value;
+            let p = document.getElementById("pwd").value.trim();
+            let m = document.getElementById("msg");
+            if(p.length!==6){m.className="error";m.innerText="⚠️ 必须输入6位密码";return;}
+            m.innerText="验证中...";
+            try{
+                let res = await fetch(API_BASE+"/api/verify",{
+                    method:"POST",headers:{"Content-Type":"application/json"},
+                    body:JSON.stringify({courseId:c,password:p})
                 });
-
-                const data = await res.json();
-
-                if (data.success) {
-                    statusEl.className = "status success";
-                    statusEl.textContent = "✅ 验证成功，课件即将解锁！";
-                    // 验证成功后，跳转到课件地址（你可以在这里写你的课件链接）
-                    setTimeout(() => {
-                        alert("课程解锁成功！\n你可以在这里跳转到课件页面。");
-                        // window.location.href = "你的课件地址.html";
-                    }, 1500);
-                } else {
-                    statusEl.className = "status error";
-                    statusEl.textContent = "❌ 验证失败：" + data.message;
+                let d=await res.json();
+                if(d.success){
+                    m.className="success";m.innerText="✅ 解锁成功！";
+                    //window.location.href="你的课件地址.html";
+                }else{
+                    m.className="error";m.innerText="❌ "+d.message;
                 }
-            } catch (err) {
-                statusEl.className = "status error";
-                statusEl.textContent = "网络错误，请稍后重试";
-            } finally {
-                verifyBtn.disabled = false;
+            }catch{
+                m.className="error";m.innerText="❌ 服务器未开启";
             }
-        });
+        }
     </script>
 </body>
 </html>
