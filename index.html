@@ -1482,19 +1482,7 @@
 
         // 批量为所有课程生成新密码（作者使用，每天自动生成）
         async function generateAllPasswords() {
-            const expireTime = generateDailyExpireTime(); // 统一有效期到当天23:59
-            
-            // 生成本地密码
-            courses.forEach(course => {
-                course.password = generatePassword();
-                course.expireTime = expireTime;
-            });
-            saveCourses(courses);
-            
-            // 清理过期的解锁记录
-            cleanExpiredUnlocks();
-            
-            // 如果服务器可用，同步密码到服务器
+            // 优先使用服务器生成密码，确保所有设备密码一致
             if (serverAvailable) {
                 try {
                     const response = await fetch(`${SERVER_URL}/api/generate-all`, {
@@ -1509,14 +1497,42 @@
                     
                     const data = await response.json();
                     if (data.success) {
+                        // 从服务器获取生成的密码
+                        const serverPasswords = await fetch(`${SERVER_URL}/api/passwords`);
+                        const serverData = await serverPasswords.json();
+                        
+                        // 更新本地课程密码
+                        if (serverData.success && serverData.courses) {
+                            serverData.courses.forEach(serverCourse => {
+                                const course = courses.find(c => c.id === serverCourse.id);
+                                if (course) {
+                                    course.password = serverCourse.password;
+                                    course.expireTime = serverCourse.expireTime;
+                                }
+                            });
+                            saveCourses(courses);
+                        }
+                        
+                        // 清理过期的解锁记录
+                        cleanExpiredUnlocks();
+                        
                         alert(`✅ 已为所有课程生成新密码！\n\n所有密码有效期至今日23:59。\n\n✅ 已同步到服务器！`);
                     } else {
-                        alert(`⚠️ 已生成本地密码，但服务器同步失败。\n\n请检查服务器连接后手动同步。`);
+                        alert(`⚠️ 服务器生成密码失败: ${data.message || '未知错误'}`);
                     }
                 } catch (err) {
-                    alert(`⚠️ 已生成本地密码，但无法连接到服务器。\n\n请确保服务器正在运行后同步。`);
+                    alert(`⚠️ 无法连接到服务器。\n\n错误: ${err.message}\n\n请确保服务器正在运行。`);
+                    return;
                 }
             } else {
+                // 服务器不可用时，生成本地密码
+                const expireTime = generateDailyExpireTime();
+                courses.forEach(course => {
+                    course.password = generatePassword();
+                    course.expireTime = expireTime;
+                });
+                saveCourses(courses);
+                cleanExpiredUnlocks();
                 alert('⚠️ 已生成本地密码，但服务器不可用。\n\n请确保服务器正在运行后同步密码。');
             }
             
@@ -1524,7 +1540,7 @@
         }
 
         // 为单个课程生成新密码
-        function generateSinglePassword() {
+        async function generateSinglePassword() {
             const courseId = parseInt(document.getElementById('passwordCourseId').value);
             const course = courses.find(c => c.id === courseId);
             if (!course) {
@@ -1532,11 +1548,42 @@
                 return;
             }
             
-            course.password = generatePassword();
-            course.expireTime = generateDailyExpireTime(); // 有效期到当天23:59
+            const newPassword = generatePassword();
+            const expireTime = generateDailyExpireTime();
+            
+            // 如果服务器可用，先更新服务器
+            if (serverAvailable) {
+                try {
+                    const response = await fetch(`${SERVER_URL}/api/password`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            courseId: courseId,
+                            title: course.title,
+                            password: newPassword,
+                            expireTime: expireTime
+                        })
+                    });
+                    
+                    const data = await response.json();
+                    if (!data.success) {
+                        alert(`⚠️ 服务器更新失败: ${data.message || '未知错误'}`);
+                        return;
+                    }
+                } catch (err) {
+                    alert(`⚠️ 无法连接到服务器: ${err.message}`);
+                    return;
+                }
+            }
+            
+            // 更新本地密码
+            course.password = newPassword;
+            course.expireTime = expireTime;
             saveCourses(courses);
             renderPasswordList();
-            alert(`已为课程 "${course.title}" 生成新密码！\n\n有效期至今日23:59。`);
+            alert(`已为课程 "${course.title}" 生成新密码！\n\n有效期至今日23:59。${serverAvailable ? '\n\n✅ 已同步到服务器！' : ''}`);
         }
 
         // 清理过期的解锁记录
@@ -2729,38 +2776,6 @@
             container.innerHTML = html;
         }
 
-        // 检查当前用户是否已解锁当前课程
-        function checkUnlockStatus() {
-            const userId = localStorage.getItem('userId') || generateUserId();
-            const currentCourseId = parseInt(localStorage.getItem('currentCourseId') || '1');
-            const unlockedRecords = getUnlockedRecords();
-            
-            // 检查该用户是否已解锁当前课程
-            const isUnlocked = unlockedRecords.some(r => r.userId === userId && r.courseId === currentCourseId);
-            
-            if (isUnlocked) {
-                // 如果用户已解锁当前课程，显示课程内容
-                // 优先读取作者保存的内容
-                const savedContent = localStorage.getItem('courseContent_' + currentCourseId);
-                if (savedContent) {
-                    const content = JSON.parse(savedContent);
-                    document.getElementById('detailContent').textContent = content.content;
-                    document.getElementById('detailCourseTitle').textContent = content.title;
-                } else {
-                    // 如果没有保存的内容，使用默认数据
-                    const course = courses.find(c => c.id === currentCourseId);
-                    if (course) {
-                        document.getElementById('detailContent').textContent = course.value;
-                        document.getElementById('detailCourseTitle').textContent = course.title;
-                    } else {
-                        document.getElementById('detailContent').textContent = '鸡【46】';
-                    }
-                }
-            } else {
-                document.getElementById('detailContent').textContent = '🔒 内容已锁定，请先购买解锁';
-            }
-        }
-
         // ========== 访客记录系统 ==========
 
         // 获取访客记录
@@ -3064,6 +3079,8 @@
             document.getElementById('userId').textContent = '用户ID: ' + userId;
             // 添加访客记录
             addVisitor();
+            // 检测服务器是否可用
+            checkServerStatus();
             // 渲染所有列表
             renderHomeCourses();
             renderExperts();
