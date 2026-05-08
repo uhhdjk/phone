@@ -637,6 +637,12 @@
 
         // 数据版本号（每次更新数据时增加版本号）
         const DATA_VERSION = '20260508015';
+        
+        // 服务器配置（作者电脑作为服务器）
+        const SERVER_URL = '192.168.1.104'; // 修改为作者电脑的IP地址
+        
+        // 检测是否可以连接到服务器
+        let serverAvailable = false;
 
         // 默认课程数据（服务器端数据，更新时修改这里）
         const defaultCourses = [
@@ -1228,8 +1234,26 @@
             return match ? match[1] : '127';
         }
 
-        // 检查解锁状态（按课程+期数，过期自动失效）
-        function checkUnlockStatus() {
+        // 检测服务器是否可用
+        async function checkServerStatus() {
+            try {
+                const response = await fetch(`${SERVER_URL}/api/status`);
+                if (response.ok) {
+                    serverAvailable = true;
+                    console.log('✅ 服务器连接成功');
+                } else {
+                    serverAvailable = false;
+                    console.log('❌ 服务器连接失败');
+                }
+            } catch (err) {
+                serverAvailable = false;
+                console.log('❌ 无法连接到服务器:', err.message);
+            }
+            return serverAvailable;
+        }
+
+        // 检查解锁状态（优先使用服务器验证）
+        async function checkUnlockStatus() {
             const currentCourseId = parseInt(localStorage.getItem('currentCourseId') || '1');
             const course = courses.find(c => c.id === currentCourseId);
             
@@ -1242,6 +1266,43 @@
             const period = getCurrentPeriod(course.title);
             const unlockKey = `${currentCourseId}_${period}`;
             
+            // 优先尝试服务器验证
+            if (serverAvailable) {
+                try {
+                    const response = await fetch(`${SERVER_URL}/api/password?courseId=${currentCourseId}`);
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        if (data.isExpired) {
+                            document.getElementById('detailContent').textContent = '🔒 内容已锁定（密码已过期），请联系客服获取新密码';
+                        } else {
+                            // 检查本地解锁记录
+                            const unlockedRecords = localStorage.getItem('unlockedRecords') ? JSON.parse(localStorage.getItem('unlockedRecords')) : {};
+                            const unlockRecord = unlockedRecords[unlockKey];
+                            const isUnlocked = unlockRecord && unlockRecord.expireTime && Date.now() < unlockRecord.expireTime;
+                            
+                            if (isUnlocked) {
+                                document.getElementById('detailContent').textContent = course.value;
+                            } else {
+                                document.getElementById('detailContent').textContent = '🔒 内容已锁定，请输入密码解锁';
+                            }
+                        }
+                    } else {
+                        document.getElementById('detailContent').textContent = '🔒 内容已锁定，请输入密码解锁';
+                    }
+                } catch (err) {
+                    serverAvailable = false;
+                    // 回退到本地验证
+                    checkUnlockStatusLocal(course, currentCourseId, period, unlockKey);
+                }
+            } else {
+                // 本地验证
+                checkUnlockStatusLocal(course, currentCourseId, period, unlockKey);
+            }
+        }
+
+        // 本地检查解锁状态
+        function checkUnlockStatusLocal(course, currentCourseId, period, unlockKey) {
             // 检查该课程当前期数是否已解锁且未过期
             const unlockedRecords = localStorage.getItem('unlockedRecords') ? JSON.parse(localStorage.getItem('unlockedRecords')) : {};
             const unlockRecord = unlockedRecords[unlockKey];
@@ -1274,11 +1335,11 @@
             document.getElementById('passwordError').style.display = 'none';
         }
 
-        // 验证密码（每个课程独立密码，过期自动失效）
-        function verifyPassword() {
+        // 验证密码（优先使用服务器验证）
+        async function verifyPassword() {
             const currentCourseId = parseInt(localStorage.getItem('currentCourseId') || '1');
             const course = courses.find(c => c.id === currentCourseId);
-            const inputPassword = document.getElementById('coursePassword').value.trim(); // 去除前后空格
+            const inputPassword = document.getElementById('coursePassword').value.trim();
             
             // 检查输入是否为空
             if (!inputPassword) {
@@ -1301,6 +1362,57 @@
                 return;
             }
             
+            // 优先使用服务器验证
+            if (serverAvailable) {
+                try {
+                    const response = await fetch(`${SERVER_URL}/api/verify`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            courseId: currentCourseId,
+                            password: inputPassword
+                        })
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        // 验证成功，记录解锁状态
+                        const period = getCurrentPeriod(course ? course.title : '');
+                        const unlockedRecords = localStorage.getItem('unlockedRecords') ? JSON.parse(localStorage.getItem('unlockedRecords')) : {};
+                        const unlockKey = `${currentCourseId}_${period}`;
+                        
+                        unlockedRecords[unlockKey] = {
+                            unlockedAt: Date.now(),
+                            expireTime: data.expireTime
+                        };
+                        localStorage.setItem('unlockedRecords', JSON.stringify(unlockedRecords));
+                        
+                        // 显示内容
+                        if (course) {
+                            document.getElementById('detailContent').textContent = course.value;
+                        }
+                        closePasswordModal();
+                        alert('✅ 解锁成功！');
+                    } else {
+                        if (data.isExpired) {
+                            document.getElementById('passwordError').textContent = '密码已过期，请联系客服获取新密码';
+                        } else {
+                            document.getElementById('passwordError').textContent = '密码错误，请重试';
+                        }
+                        document.getElementById('passwordError').style.display = 'block';
+                    }
+                    return;
+                } catch (err) {
+                    serverAvailable = false;
+                    // 服务器连接失败，回退到本地验证
+                    console.log('服务器验证失败，回退到本地验证:', err.message);
+                }
+            }
+            
+            // 本地验证（备用方案）
             if (!course || !course.password) {
                 document.getElementById('passwordError').textContent = '该课程暂未设置密码，请联系客服';
                 document.getElementById('passwordError').style.display = 'block';
@@ -1332,9 +1444,9 @@
                 // 显示内容
                 document.getElementById('detailContent').textContent = course.value;
                 closePasswordModal();
-                alert('解锁成功！');
+                alert('✅ 解锁成功！');
             } else {
-                document.getElementById('passwordError').textContent = '密码错误，请重试（注意区分大小写和空格）';
+                document.getElementById('passwordError').textContent = '密码错误，请重试';
                 document.getElementById('passwordError').style.display = 'block';
             }
         }
@@ -1369,9 +1481,10 @@
         }
 
         // 批量为所有课程生成新密码（作者使用，每天自动生成）
-        function generateAllPasswords() {
+        async function generateAllPasswords() {
             const expireTime = generateDailyExpireTime(); // 统一有效期到当天23:59
             
+            // 生成本地密码
             courses.forEach(course => {
                 course.password = generatePassword();
                 course.expireTime = expireTime;
@@ -1381,8 +1494,33 @@
             // 清理过期的解锁记录
             cleanExpiredUnlocks();
             
+            // 如果服务器可用，同步密码到服务器
+            if (serverAvailable) {
+                try {
+                    const response = await fetch(`${SERVER_URL}/api/generate-all`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            courses: courses.map(c => ({ id: c.id, title: c.title }))
+                        })
+                    });
+                    
+                    const data = await response.json();
+                    if (data.success) {
+                        alert(`✅ 已为所有课程生成新密码！\n\n所有密码有效期至今日23:59。\n\n✅ 已同步到服务器！`);
+                    } else {
+                        alert(`⚠️ 已生成本地密码，但服务器同步失败。\n\n请检查服务器连接后手动同步。`);
+                    }
+                } catch (err) {
+                    alert(`⚠️ 已生成本地密码，但无法连接到服务器。\n\n请确保服务器正在运行后同步。`);
+                }
+            } else {
+                alert('⚠️ 已生成本地密码，但服务器不可用。\n\n请确保服务器正在运行后同步密码。');
+            }
+            
             renderPasswordList();
-            alert('已为所有课程生成新密码！\n\n所有密码有效期至今日23:59。');
         }
 
         // 为单个课程生成新密码
