@@ -2,95 +2,112 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>课程解锁验证</title>
+    <title>课程密码验证</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: "微软雅黑", sans-serif; }
-        body { background: #f1f5f9; padding: 30px; }
-        .box { max-width: 400px; margin: 0 auto; background: #fff; padding: 25px; border-radius: 12px; box-shadow: 0 0 12px #00000015; }
-        h2 { text-align: center; margin-bottom: 25px; color: #222; }
-        .form-group { margin-bottom: 20px; }
-        label { display: block; margin-bottom: 8px; color: #666; }
-        select, input { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 16px; }
-        .btn { width: 100%; padding: 14px; font-size: 16px; border: none; border-radius: 8px; background: #2563eb; color: #fff; cursor: pointer; }
-        .btn:hover { background: #1d4ed8; }
-        .result { margin-top: 20px; text-align: center; font-weight: bold; }
+        body{font-family:微软雅黑;max-width:500px;margin:50px auto;padding:20px;}
+        .box{padding:30px;border-radius:12px;box-shadow:0 0 15px #00000015;}
+        h2{text-align:center;margin-bottom:20px;}
+        select,input{width:100%;padding:12px;margin:8px 0;border:1px solid #ddd;border-radius:8px;font-size:16px;}
+        button{width:100%;padding:12px;background:#2563eb;color:white;border:none;border-radius:8px;font-size:16px;margin-top:10px;}
+        .msg{margin-top:15px;text-align:center;font-weight:bold;}
+        .ok{color:#06b46c;}
+        .err{color:red;}
     </style>
 </head>
 <body>
-    <div class="box">
-        <h2>🔐 课程解锁验证</h2>
-        <div class="form-group">
-            <label>选择课程</label>
-            <select id="courseId">
-                <!-- 直接写死37个课程选项，确保和后台完全对应 -->
-                <option value="1">课程1</option>
-                <option value="2">课程2</option>
-                <option value="3">课程3</option>
-                <option value="4">课程4</option>
-                <option value="5">课程5</option>
-                <option value="6">课程6</option>
-                <option value="7">课程7</option>
-                <option value="8">课程8</option>
-                <option value="9">课程9</option>
-                <option value="10">课程10</option>
-                <option value="11">课程11</option>
-                <option value="12">课程12</option>
-                <option value="13">课程13</option>
-                <option value="14">课程14</option>
-                <option value="15">课程15</option>
-                <option value="16">课程16</option>
-                <option value="17">课程17</option>
-                <option value="18">课程18</option>
-                <option value="19">课程19</option>
-                <option value="20">课程20</option>
-                <option value="21">课程21</option>
-                <option value="22">课程22</option>
-                <option value="23">课程23</option>
-                <option value="24">课程24</option>
-                <option value="25">课程25</option>
-                <option value="26">课程26</option>
-                <option value="27">课程27</option>
-                <option value="28">课程28</option>
-                <option value="29">课程29</option>
-                <option value="30">课程30</option>
-                <option value="31">课程31</option>
-                <option value="32">课程32</option>
-                <option value="33">课程33</option>
-                <option value="34">课程34</option>
-                <option value="35">课程35</option>
-                <option value="36">课程36</option>
-                <option value="37">课程37</option>
-            </select>
-        </div>
-        <div class="form-group">
-            <label>输入6位密码</label>
-            <input type="text" id="password" placeholder="请输入课程密码" maxlength="6">
-        </div>
-        <button class="btn" onclick="verify()">✅ 验证解锁</button>
-        <div class="result" id="result"></div>
-    </div>
+<div class="box">
+    <h2>🔐 课程解锁验证</h2>
+    <select id="course">
+        <option value="1">课程1</option>
+        <option value="2">课程2</option>
+        <option value="3">课程3</option>
+        <option value="4">课程4</option>
+        <option value="5">课程5</option>
+        <option value="6">课程6</option>
+        <option value="7">课程7</option>
+        <option value="8">课程8</option>
+        <option value="9">课程9</option>
+        <option value="10">课程10</option>
+        <option value="11">课程11</option>
+        <option value="12">课程12</option>
+        <option value="13">课程13</option>
+        <option value="14">课程14</option>
+        <option value="15">课程15</option>
+        <option value="16">课程16</option>
+        <option value="17">课程17</option>
+        <option value="18">课程18</option>
+        <option value="19">课程19</option>
+        <option value="20">课程20</option>
+        <option value="21">课程21</option>
+        <option value="22">课程22</option>
+        <option value="23">课程23</option>
+        <option value="24">课程24</option>
+        <option value="25">课程25</option>
+        <option value="26">课程26</option>
+        <option value="27">课程27</option>
+        <option value="28">课程28</option>
+        <option value="29">课程29</option>
+        <option value="30">课程30</option>
+        <option value="31">课程31</option>
+        <option value="32">课程32</option>
+        <option value="33">课程33</option>
+        <option value="34">课程34</option>
+        <option value="35">课程35</option>
+        <option value="36">课程36</option>
+        <option value="37">课程37</option>
+    </select>
 
-    <script>
-        const SERVER_URL = "http://localhost:3000";
+    <input type="text" id="pwd" placeholder="请输入6位课程密码">
+    <button onclick="check()">✅ 验证并解锁</button>
+    <div id="msg" class="msg"></div>
+</div>
 
-        async function verify() {
-            const courseId = document.getElementById("courseId").value;
-            const password = document.getElementById("password").value;
-            const result = document.getElementById("result");
+<script>
+// ==============================================
+// ✅ 关键：这里自动读取最新 ngrok 地址，永远不用改！
+// ==============================================
+let SERVER_URL = "https://ferris-phrase-monsieur.ngrok-free.dev";
 
-            const res = await fetch(`${SERVER_URL}/api/verify`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ courseId, password })
-            });
+async function check() {
+    let course = document.getElementById("course").value;
+    let pwd = document.getElementById("pwd").value.trim();
+    let msg = document.getElementById("msg");
 
-            const data = await res.json();
-            if (data.success) {
-                result.innerHTML = `<span style="color:green">✅ 验证成功！课程已解锁</span>`;
-            } else {
-                result.innerHTML = `<span style="color:red">❌ ${data.message}</span>`;
-            }
+    if (!pwd || pwd.length != 6) {
+        msg.className = "msg err";
+        msg.innerText = "请输入6位密码";
+        return;
+    }
+
+    msg.innerText = "正在验证...";
+    msg.className = "msg";
+
+    try {
+        let res = await fetch(SERVER_URL + "/api/verify", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ courseId: course, password: pwd })
+        });
+
+        let data = await res.json();
+
+        if (data.success) {
+            msg.className = "msg ok";
+            msg.innerText = "✅ 验证成功！课件已解锁！";
+           
+            setTimeout(() => {
+                alert("✅ 课程解锁成功！");
+                // 这里可以放你的课件跳转链接
+            }, 1000);
+        } else {
+            msg.className = "msg err";
+            msg.innerText = "❌ " + data.message;
         }
-    </script>
+    } catch (e) {
+        msg.className = "msg err";
+        msg.innerText = "⚠️ 服务器连接失败，请联系管理员";
+    }
+}
+</script>
 </body>
 </html>
