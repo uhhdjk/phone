@@ -2252,12 +2252,15 @@
         // 获取已解锁记录列表（包含用户ID和课程ID）
         function getUnlockedRecords() {
             const saved = localStorage.getItem('unlockedRecords');
-            return saved ? JSON.parse(saved) : [];
+            const records = saved ? JSON.parse(saved) : [];
+            console.log('从localStorage读取的解锁记录:', records);
+            return records;
         }
 
         // 保存已解锁记录列表
         function saveUnlockedRecords(records) {
             localStorage.setItem('unlockedRecords', JSON.stringify(records));
+            console.log('已保存解锁记录到localStorage:', records);
         }
 
         // 解锁指定用户的指定课程
