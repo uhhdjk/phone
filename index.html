@@ -366,7 +366,6 @@
                 </div>
                 <div class="detail-tabs">
                     <div class="tab-item active" onclick="goHome()">今日更新</div>
-                    <div class="tab-item" onclick="goHistory()">往期更新</div>
                 </div>
                 <div class="red-notice">
                     <p>声明:该文章由作者发布,内容属于知识付费文章,用户购买成功即视为认可作者推荐,并属于个人自愿购买行为,该文章不作任何售后处理,双方产生的交易纠纷与平台无关。</p>
@@ -432,17 +431,7 @@
             </div>
         </div>
 
-        <!-- 往期更新页 -->
-        <div id="historyPage" class="page-container">
-            <div class="detail-content-wrap">
-                <div class="detail-tabs">
-                    <div class="tab-item" onclick="goHome()">今日更新</div>
-                    <div class="tab-item active" onclick="goHistory()">往期更新</div>
-                </div>
-                <div class="history-update-list" id="historyUpdateList"></div>
-            </div>
 
-        </div>
 
         <!-- 会员中心页 -->
         <div id="memberPage" class="page-container">
@@ -834,8 +823,8 @@
             if (localVersion !== DATA_VERSION) {
                 localStorage.setItem('dataVersion', DATA_VERSION);
                 localStorage.setItem('courses', JSON.stringify(defaultCourses));
-                // 清除旧的课程内容缓存
-                courses.forEach(course => {
+                // 清除旧的课程内容缓存（使用defaultCourses，因为courses此时可能还未初始化）
+                defaultCourses.forEach(course => {
                     localStorage.removeItem('courseContent_' + course.id);
                 });
                 return true; // 返回true表示有更新
@@ -977,7 +966,7 @@
 
         // 隐藏所有页面
         function hideAllPages() {
-            ['home', 'detail', 'expertPage', 'recordPage', 'historyPage', 'memberPage'].forEach(id => {
+            ['home', 'detail', 'expertPage', 'recordPage', 'memberPage'].forEach(id => {
                 const el = document.getElementById(id);
                 if (el) el.style.display = 'none';
             });
@@ -1193,77 +1182,6 @@
             container.innerHTML = html;
         }
 
-        // 渲染历史更新列表（显示当前课程的历史记录）
-        function renderHistoryUpdates() {
-            const container = document.getElementById('historyUpdateList');
-            const currentCourseId = parseInt(localStorage.getItem('currentCourseId') || '1');
-            const course = courses.find(c => c.id === currentCourseId);
-            
-            if (!course || !course.history || course.history.trim() === '') {
-                container.innerHTML = '<div style="padding: 20px; text-align: center; color: #999;">暂无往期记录</div>';
-                return;
-            }
-            
-            // 解析历史记录
-            const historyLines = course.history.split('\n');
-            let html = '';
-            let currentRecord = { title: '', value: '', result: '' };
-            
-            for (let i = 0; i < historyLines.length; i++) {
-                const line = historyLines[i].trim();
-                if (line === '') continue;
-                
-                // 判断是否是标题行（包含期数信息）
-                if (line.includes('期') && (line.includes('中特') || line.includes('三中三') || line.includes('两肖') || line.includes('十码') || line.includes('一肖') || line.includes('一码'))) {
-                    // 如果有上一条记录，先输出
-                    if (currentRecord.title) {
-                        html += `<div class="history-update-card">
-                            <div class="card-header">
-                                <div class="history-title">${currentRecord.title}</div>
-                                <div class="seal ${currentRecord.result === '错' ? 'black' : ''}">${currentRecord.result === '错' ? '黑' : '红'}</div>
-                            </div>
-                            <div class="history-time">发布于: ${currentRecord.time}</div>
-                        </div>`;
-                    }
-                    currentRecord = { title: line, value: '', result: '', time: generateHistoryTime(i) };
-                } else if (line.includes('对') || line.includes('错')) {
-                    // 解析结果行
-                    const parts = line.split(' ');
-                    const resultIndex = parts.findIndex(p => p === '对' || p === '错');
-                    if (resultIndex > 0) {
-                        currentRecord.value = parts.slice(0, resultIndex).join(' ');
-                    } else {
-                        currentRecord.value = line.replace('对', '').replace('错', '').trim();
-                    }
-                    currentRecord.result = line.includes('对') ? '对' : '错';
-                }
-            }
-            
-            // 输出最后一条记录
-            if (currentRecord.title) {
-                html += `<div class="history-update-card">
-                    <div class="card-header">
-                        <div class="history-title">${currentRecord.title}</div>
-                        <div class="seal ${currentRecord.result === '错' ? 'black' : ''}">${currentRecord.result === '错' ? '黑' : '红'}</div>
-                    </div>
-                    <div class="history-time">发布于: ${currentRecord.time}</div>
-                </div>`;
-            }
-            
-            container.innerHTML = html;
-        }
-        
-        // 生成历史记录时间（模拟递减的时间）
-        function generateHistoryTime(index) {
-            const now = new Date();
-            const daysAgo = index * 1;
-            const pastDate = new Date(now.getTime() - daysAgo * 24 * 60 * 60 * 1000);
-            const month = String(pastDate.getMonth() + 1).padStart(2, '0');
-            const day = String(pastDate.getDate()).padStart(2, '0');
-            const hours = String(Math.floor(Math.random() * 12) + 10).padStart(2, '0');
-            const minutes = String(Math.floor(Math.random() * 60)).padStart(2, '0');
-            return `${month}-${day} ${hours}:${minutes}`;
-        }
 
         // 生成随机在线人数（范围：2998~4998）
         function generateRandomOnlineCount() {
@@ -1317,21 +1235,7 @@
         }
         function showExpert() { hideAllPages(); document.getElementById('expertPage').style.display = 'block'; showBottomNav(); }
         function goRecord() { hideAllPages(); document.getElementById('recordPage').style.display = 'block'; showBottomNav(); }
-        function goHistory() { 
-            hideAllPages(); 
-            document.getElementById('historyPage').style.display = 'block'; 
-            showPayBar();
-            renderHistoryUpdates(); 
-            // 更新全局支付栏价格
-            const currentCourseId = parseInt(localStorage.getItem('currentCourseId') || '1');
-            const course = courses.find(c => c.id === currentCourseId);
-            if (course) {
-                const priceEl = document.getElementById('globalPayPrice');
-                if (priceEl) {
-                    priceEl.textContent = course.price || '¥0';
-                }
-            }
-        }
+
         function showMember() { hideAllPages(); document.getElementById('memberPage').style.display = 'block'; showBottomNav(); }
         
         // 返回上一页
@@ -2983,8 +2887,6 @@
                 goHome();
             } else if (document.getElementById('memberPage').style.display === 'block') {
                 goHome();
-            } else if (document.getElementById('historyPage').style.display === 'block') {
-                goHome();
             }
         }
         
@@ -3012,7 +2914,6 @@
             renderExperts();
             renderRecords();
             renderDetailHistory();
-            renderHistoryUpdates();
             
             // 如果当前在详情页，检查解锁状态
             if (document.getElementById('detail').style.display === 'block') {
@@ -3047,7 +2948,6 @@
             renderExperts();
             renderRecords();
             renderDetailHistory();
-            renderHistoryUpdates();
             // 添加下拉刷新事件监听
             document.addEventListener('touchstart', onTouchStart, { passive: true });
             document.addEventListener('touchmove', onTouchMove, { passive: true });
