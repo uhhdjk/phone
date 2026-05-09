@@ -1042,25 +1042,40 @@
             container.innerHTML = html;
         }
 
-        // 渲染购买记录
+        // 渲染解锁记录（只显示已成功解锁的课程）
         function renderRecords() {
             const container = document.getElementById('recordList');
-            const purchaseRecords = getPurchaseRecords();
+            const unlockedRecords = getUnlockedRecords();
+            const courses = getCourses();
             let html = '';
-            purchaseRecords.forEach(record => {
-                html += `<div class="record-card">
-                    <div class="record-header">
-                        <span class="record-time">${record.time}</span>
-                        <span class="record-status">已支付</span>
-                    </div>
-                    <div class="record-title">${record.title}<div class="seal ${record.seal === '黑' ? 'black' : ''}">${record.seal}</div></div>
-                    <div style="font-size: 11px; color: #999; margin-bottom: 10px;">👁 ${record.viewCount}</div>
-                    <div class="record-footer">
-                        <span class="record-price">${record.price}</span>
-                        <span class="view-detail-btn" onclick="goDetail()">查看详情</span>
-                    </div>
-                </div>`;
+            
+            unlockedRecords.forEach(record => {
+                const course = courses.find(c => c.id == record.courseId);
+                if (course) {
+                    html += `<div class="record-card">
+                        <div class="record-header">
+                            <span class="record-time">解锁时间: ${record.unlockTime}</span>
+                            <span class="record-status">已解锁</span>
+                        </div>
+                        <div class="record-title">${course.title}</div>
+                        <div style="font-size: 14px; color: #ff3333; margin-bottom: 10px; font-weight: 600;">${course.value}</div>
+                        <div class="record-footer">
+                            <span class="record-price">${course.price}</span>
+                            <span class="view-detail-btn" onclick="goDetail(${course.id})">查看详情</span>
+                        </div>
+                    </div>`;
+                }
             });
+            
+            // 如果没有解锁记录，显示提示
+            if (html === '') {
+                html = `<div style="text-align: center; padding: 40px 20px; color: #999;">
+                    <div style="font-size: 40px; margin-bottom: 15px;">🔒</div>
+                    <div>暂无已解锁课程</div>
+                    <div style="font-size: 12px; margin-top: 5px;">购买课程后输入正确密码即可解锁</div>
+                </div>`;
+            }
+            
             container.innerHTML = html;
         }
 
