@@ -1151,8 +1151,12 @@
             const userId = localStorage.getItem('userId') || generateUserId();
             let html = '';
             
+            console.log('当前用户ID:', userId);
+            console.log('所有解锁记录:', unlockedRecords);
+            
             // 只显示当前用户的解锁记录
             const userRecords = unlockedRecords.filter(record => record.userId === userId);
+            console.log('当前用户的解锁记录:', userRecords);
             
             userRecords.forEach(record => {
                 const course = courses.find(c => c.id == record.courseId);
@@ -1236,7 +1240,7 @@
             checkUnlockStatus();
         }
         function showExpert() { hideAllPages(); document.getElementById('expertPage').style.display = 'block'; showBottomNav(); }
-        function goRecord() { hideAllPages(); document.getElementById('recordPage').style.display = 'block'; showBottomNav(); }
+        function goRecord() { hideAllPages(); document.getElementById('recordPage').style.display = 'block'; showBottomNav(); renderRecords(); }
 
         function showMember() { hideAllPages(); document.getElementById('memberPage').style.display = 'block'; showBottomNav(); }
         
