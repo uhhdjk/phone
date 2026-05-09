@@ -1145,20 +1145,24 @@
             container.innerHTML = html;
         }
 
-        // 渲染解锁记录（只显示已成功解锁的课程）
+        // 渲染解锁记录（只显示当前用户已成功解锁/购买的课程）
         function renderRecords() {
             const container = document.getElementById('recordList');
             const unlockedRecords = getUnlockedRecords();
             const courses = getCourses();
+            const userId = localStorage.getItem('userId') || generateUserId();
             let html = '';
             
-            unlockedRecords.forEach(record => {
+            // 只显示当前用户的解锁记录
+            const userRecords = unlockedRecords.filter(record => record.userId === userId);
+            
+            userRecords.forEach(record => {
                 const course = courses.find(c => c.id == record.courseId);
                 if (course) {
                     html += `<div class="record-card">
                         <div class="record-header">
-                            <span class="record-time">解锁时间: ${record.unlockTime}</span>
-                            <span class="record-status">已解锁</span>
+                            <span class="record-time">购买时间: ${record.unlockTime}</span>
+                            <span class="record-status">已购买</span>
                         </div>
                         <div class="record-title">${course.title}</div>
                         <div style="font-size: 14px; color: #ff3333; margin-bottom: 10px; font-weight: 600;">${course.value}</div>
@@ -1170,12 +1174,12 @@
                 }
             });
             
-            // 如果没有解锁记录，显示提示
+            // 如果没有购买记录，显示提示
             if (html === '') {
                 html = `<div style="text-align: center; padding: 40px 20px; color: #999;">
-                    <div style="font-size: 40px; margin-bottom: 15px;">🔒</div>
-                    <div>暂无已解锁课程</div>
-                    <div style="font-size: 12px; margin-top: 5px;">购买课程后输入正确密码即可解锁</div>
+                    <div style="font-size: 40px; margin-bottom: 15px;">🛒</div>
+                    <div>暂无已购买课程</div>
+                    <div style="font-size: 12px; margin-top: 5px;">购买课程后输入正确密码即可解锁查看</div>
                 </div>`;
             }
             
