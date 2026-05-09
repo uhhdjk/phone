@@ -2490,9 +2490,10 @@
                         document.getElementById('passwordModal').style.display = 'none';
                         // 清除密码输入
                         document.getElementById('coursePassword').value = '';
-                        // 显示课程内容
+                        // 显示课程内容（包含完整信息：id、title、value）
                         if (course && course.value) {
-                            document.getElementById('detailContent').textContent = course.value;
+                            const content = `📌 课程ID: ${course.id}\n\n📖 ${course.title}\n\n🔑 ${course.value}`;
+                            document.getElementById('detailContent').textContent = content;
                         } else {
                             document.getElementById('detailContent').textContent = '⚠️ 课程内容为空，请联系客服';
                         }
@@ -2537,9 +2538,10 @@
                 document.getElementById('passwordModal').style.display = 'none';
                 // 清除密码输入
                 document.getElementById('coursePassword').value = '';
-                // 显示课程内容
+                // 显示课程内容（包含完整信息：id、title、value）
                 if (course && course.value) {
-                    document.getElementById('detailContent').textContent = course.value;
+                    const content = `📌 课程ID: ${course.id}\n\n📖 ${course.title}\n\n🔑 ${course.value}`;
+                    document.getElementById('detailContent').textContent = content;
                 } else {
                     document.getElementById('detailContent').textContent = '⚠️ 课程内容为空，请联系客服';
                 }
