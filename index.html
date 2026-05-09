@@ -2484,12 +2484,18 @@
                             saveUnlockedRecords(unlockedRecords);
                         }
                         
-                        // 显示内容
-                        if (course) {
-                            document.getElementById('detailContent').textContent = course.value;
-                        }
+                        // 清除错误提示
+                        document.getElementById('passwordError').style.display = 'none';
+                        // 关闭密码弹窗
                         document.getElementById('passwordModal').style.display = 'none';
+                        // 清除密码输入
                         document.getElementById('coursePassword').value = '';
+                        // 显示课程内容
+                        if (course && course.value) {
+                            document.getElementById('detailContent').textContent = course.value;
+                        } else {
+                            document.getElementById('detailContent').textContent = '⚠️ 课程内容为空，请联系客服';
+                        }
                         alert('✅ 解锁成功！');
                     } else {
                         if (data.isExpired) {
@@ -2525,11 +2531,18 @@
                     saveUnlockedRecords(unlockedRecords);
                 }
                 
-                if (course) {
-                    document.getElementById('detailContent').textContent = course.value;
-                }
+                // 清除错误提示
+                document.getElementById('passwordError').style.display = 'none';
+                // 关闭密码弹窗
                 document.getElementById('passwordModal').style.display = 'none';
+                // 清除密码输入
                 document.getElementById('coursePassword').value = '';
+                // 显示课程内容
+                if (course && course.value) {
+                    document.getElementById('detailContent').textContent = course.value;
+                } else {
+                    document.getElementById('detailContent').textContent = '⚠️ 课程内容为空，请联系客服';
+                }
                 alert('✅ 解锁成功！');
             } else {
                 // 密码错误
