@@ -2975,6 +2975,38 @@
         document.addEventListener('DOMContentLoaded', initPage);
     </script>
 
+ <!-- 购买按钮（免登录版） --> 
+ <div style="margin: 50px auto; text-align: center;"> 
+   <button onclick="buyCourse()" style="padding: 15px 40px; font-size: 20px; background: #2563eb; color: white; border: none; border-radius: 10px; cursor: pointer;"> 
+     购买课程（订单直接存到你电脑） 
+   </button> 
+ </div> 
+ 
+ <script> 
+ function buyCourse() { 
+   if (confirm('确认购买【发财树资料课】，价格¥199？')) { 
+     fetch('/api/createOrder', { 
+       method: 'POST', 
+       headers: { 'Content-Type': 'application/json' }, 
+       body: JSON.stringify({ 
+         course_id: 'c001', 
+         course_name: '发财树资料课', 
+         price: 199 
+       }) 
+     }) 
+     .then(res => res.json()) 
+     .then(data => { 
+       if (data.code === 0) { 
+         alert(data.msg); 
+         window.location.href = '/admin.html'; 
+       } else { 
+         alert('❌ 失败：' + data.msg); 
+       } 
+     }); 
+   } 
+ } 
+ </script>
+
  <!-- 微信登录按钮（可以自己调整位置和样式） --> 
  <div style="margin: 20px auto; text-align: center;"> 
    <button onclick="window.location.href='/wxlogin'" style="padding: 12px 30px; font-size: 18px; background: #07c160; color: white; border: none; border-radius: 8px; cursor: pointer;"> 
