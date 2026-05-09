@@ -2511,9 +2511,16 @@
 
         // 验证密码（优先使用服务器验证）
         async function verifyPassword() {
+            console.log('verifyPassword 函数被调用');
+            
             const currentCourseId = parseInt(localStorage.getItem('currentCourseId') || '1');
+            console.log('当前课程ID:', currentCourseId);
+            
             const course = courses.find(c => c.id === currentCourseId);
+            console.log('找到的课程:', course);
+            
             const inputPassword = document.getElementById('coursePassword').value.trim();
+            console.log('用户输入的密码:', inputPassword);
             
             // 检查输入是否为空
             if (!inputPassword) {
@@ -2600,6 +2607,9 @@
             // 本地验证（备用方案）- 使用算法生成密码进行验证
             // 服务器不可用时，使用日期+课程ID算法验证密码
             const expectedPassword = generatePassword(currentCourseId);
+            console.log('服务器可用状态:', serverAvailable);
+            console.log('期望密码（算法生成）:', expectedPassword);
+            console.log('密码比较结果:', inputPassword === expectedPassword);
             
             if (inputPassword === expectedPassword) {
                 // 算法验证成功
