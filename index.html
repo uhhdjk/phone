@@ -98,7 +98,12 @@
         .detail-header .course-meta { font-size: 11px; color: #999; padding: 0 15px 15px 15px; }
         
         /* 详情页内容区域（避免被悬浮头部遮挡） */
-        .detail-content-wrap { padding-top: 0; }
+        .detail-content-wrap { padding-top: 54px; }
+
+        /* 课程标题区域 */
+        .course-title-wrap { background: white; padding: 15px; border-bottom: 1px solid #eee; }
+        .course-title-wrap .course-title { font-size: 16px; font-weight: 600; color: #333; line-height: 1.5; margin-bottom: 5px; }
+        .course-title-wrap .course-meta { font-size: 11px; color: #999; }
 
         /* 红色声明区域 */
         .red-notice { background: #ff3333; padding: 12px; margin: 10px; border-radius: 8px; }
@@ -126,14 +131,71 @@
         /* 专家列表页 */
         .expert-list { padding: 10px; display: flex; flex-direction: column; gap: 10px; }
         .expert-card { background: white; border-radius: 8px; padding: 15px; display: flex; align-items: center; gap: 12px; }
-        .expert-card .rank-badge { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, #ffd700, #ffb700); display: flex; align-items: center; justify-content: center; color: white; font-size: 14px; font-weight: 700; }
-        .expert-card .rank-badge.top3 { background: linear-gradient(135deg, #ff6b6b, #ee5a24); }
-        .expert-card .expert-avatar { width: 50px; height: 50px; border-radius: 50%; background: linear-gradient(135deg, #667eea, #764ba2); display: flex; align-items: center; justify-content: center; color: white; font-size: 22px; font-weight: 700; position: relative; }
-        .expert-card .expert-avatar .cert-badge { position: absolute; bottom: -2px; right: -2px; width: 18px; height: 18px; background: #ff9800; border-radius: 50%; border: 2px solid white; display: flex; align-items: center; justify-content: center; font-size: 9px; }
+        /* 排名奖牌样式 - 金银铜牌 */
+        .expert-card .rank-badge { 
+            width: 36px; 
+            height: 36px; 
+            border-radius: 50%; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            color: white; 
+            font-size: 16px; 
+            font-weight: 700;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+        .expert-card .rank-badge.gold { 
+            background: linear-gradient(135deg, #ffd700, #ffb700, #ff8c00); 
+            border: 2px solid #ffed4e;
+        }
+        .expert-card .rank-badge.silver { 
+            background: linear-gradient(135deg, #e8e8e8, #c0c0c0, #a0a0a0); 
+            border: 2px solid #f0f0f0;
+        }
+        .expert-card .rank-badge.bronze { 
+            background: linear-gradient(135deg, #cd7f32, #b87333, #8b4513); 
+            border: 2px solid #daa520;
+        }
+        .expert-card .rank-badge.normal { 
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24); 
+        }
+        /* 专家头像 - 使用logo */
+        .expert-card .expert-avatar { 
+            width: 50px; 
+            height: 50px; 
+            border-radius: 50%; 
+            overflow: hidden;
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            position: relative;
+            border: 2px solid #f0f0f0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .expert-card .expert-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .expert-card .expert-avatar .cert-badge { 
+            position: absolute; 
+            bottom: -2px; 
+            right: -2px; 
+            width: 18px; 
+            height: 18px; 
+            background: #ff9800; 
+            border-radius: 50%; 
+            border: 2px solid white; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            font-size: 9px;
+            color: white;
+        }
         .expert-card .expert-info { flex: 1; }
         .expert-card .expert-info .expert-name { font-size: 15px; font-weight: 600; color: #333; margin-bottom: 3px; }
         .expert-card .expert-info .expert-cert { font-size: 11px; color: #ff9800; }
-        .expert-card .hit-count { font-size: 18px; font-weight: 700; color: #ff3333; }
+        .expert-card .hit-count { font-size: 20px; font-weight: 700; color: #ff3333; }
         .expert-card .hit-label { font-size: 11px; color: #999; text-align: right; }
 
         /* 购买记录页 - 新版样式 */
@@ -177,7 +239,7 @@
 
         /* 会员中心页 */
         .member-page-container { background: #f5f5f5; min-height: 100vh; padding-bottom: 70px; }
-        .member-header { background: linear-gradient(135deg, #ff3333, #cc0000); padding: 30px 20px; }
+        .member-header { background: linear-gradient(135deg, #ff3333, #cc0000); padding: 30px 20px; margin-top: 54px; }
         .member-header .user-profile { display: flex; align-items: center; gap: 15px; }
         .member-header .user-avatar { width: 70px; height: 70px; border-radius: 50%; background: white; display: flex; align-items: center; justify-content: center; font-size: 32px; font-weight: 700; color: #667eea; }
         .member-header .user-info { flex: 1; color: white; }
@@ -297,6 +359,11 @@
         <!-- 详情页 -->
         <div id="detail" class="page-container">
             <div class="detail-content-wrap">
+                <!-- 课程标题区域 -->
+                <div class="course-title-wrap">
+                    <div class="course-title" id="detailCourseTitle">128期 新&奥新[金手指】一肖一码中特</div>
+                    <div class="course-meta" id="courseMeta">发布于: 北京时间 2026-05-03 17:09:40 226购买</div>
+                </div>
                 <div class="detail-tabs">
                     <div class="tab-item active" onclick="goHome()">今日更新</div>
                     <div class="tab-item" onclick="goHistory()">往期更新</div>
@@ -820,18 +887,46 @@
             { id: 108, title: '115期 新&奥 新【金手指】一肖一码中特', time: '04-25 16:56', seal: '红', value: '牛【02】', result: '对' }
         ];
 
-        const experts = [
-            { id: 1, name: '天天暴富', hits: 16, avatar: '天' },
-            { id: 2, name: '澳门财神', hits: 16, avatar: '财' },
-            { id: 3, name: '吉祥鸟', hits: 16, avatar: '吉' },
-            { id: 4, name: '好运来', hits: 14, avatar: '好' },
-            { id: 5, name: '吉祥符', hits: 13, avatar: '符' },
-            { id: 6, name: '三太子', hits: 10, avatar: '太' },
-            { id: 7, name: '招财宝', hits: 10, avatar: '招' },
-            { id: 8, name: '金手指', hits: 9, avatar: '金' },
-            { id: 9, name: '暴力猫', hits: 9, avatar: '暴' },
-            { id: 10, name: '暴富财神', hits: 9, avatar: '富' }
-        ];
+        // 专家列表数据
+        const expertNames = ['天天暴富', '澳门财神', '吉祥鸟', '好运来', '吉祥符', '三太子', '招财宝', '金手指', '暴力猫', '暴富财神'];
+        
+        // 生成专家列表（带随机排名和连中数）
+        function generateExperts() {
+            // 检查是否需要重新生成（每10天）
+            const lastGenerateTime = localStorage.getItem('expertLastGenerateTime');
+            const now = new Date().getTime();
+            const tenDays = 10 * 24 * 60 * 60 * 1000;
+            
+            // 如果有缓存且未过期，使用缓存
+            const cachedExperts = localStorage.getItem('cachedExperts');
+            if (cachedExperts && lastGenerateTime && (now - parseInt(lastGenerateTime)) < tenDays) {
+                return JSON.parse(cachedExperts);
+            }
+            
+            // 生成连中数字（16~3，允许重复）
+            const hitNumbers = [16, 16, 16, 14, 13, 10, 10, 9, 9, 9];
+            
+            // 创建专家数组
+            let experts = expertNames.map((name, index) => ({
+                id: index + 1,
+                name: name,
+                hits: hitNumbers[index],
+                avatar: name.charAt(0) // 取名字第一个字
+            }));
+            
+            // 随机排序（但保持前3名是连中最高的）
+            // 先按连中数排序
+            experts.sort((a, b) => b.hits - a.hits);
+            
+            // 保存到缓存
+            localStorage.setItem('cachedExperts', JSON.stringify(experts));
+            localStorage.setItem('expertLastGenerateTime', now.toString());
+            
+            return experts;
+        }
+        
+        // 获取专家列表
+        let experts = generateExperts();
 
         // 获取本地存储的购买记录，如果没有则使用默认数据
         function getPurchaseRecords() {
@@ -1031,11 +1126,21 @@
         function renderExperts() {
             const container = document.getElementById('expertList');
             let html = '';
+            
+            // 重新生成专家列表（检查是否需要更新）
+            experts = generateExperts();
+            
             experts.forEach((expert, index) => {
+                // 确定奖牌样式
+                let rankClass = 'normal';
+                if (index === 0) rankClass = 'gold';
+                else if (index === 1) rankClass = 'silver';
+                else if (index === 2) rankClass = 'bronze';
+                
                 html += `<div class="expert-card">
-                    <div class="rank-badge ${index < 3 ? 'top3' : ''}">${index + 1}</div>
+                    <div class="rank-badge ${rankClass}">${index + 1}</div>
                     <div class="expert-avatar">
-                        <span>${expert.avatar}</span>
+                        <img src="https://cdn.jsdelivr.net/gh/uhhdjk/phone@main/微信图片_20260503232606_1087_130.jpg" alt="Logo">
                         <span class="cert-badge">证</span>
                     </div>
                     <div class="expert-info">
@@ -1043,7 +1148,7 @@
                         <div class="expert-cert">认证专家</div>
                     </div>
                     <div style="text-align: right;">
-                        <div class="hit-count">${expert.hits}连中</div>
+                        <div class="hit-count">${expert.hits}</div>
                         <div class="hit-label">连中</div>
                     </div>
                 </div>`;
