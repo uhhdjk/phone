@@ -19,8 +19,34 @@
         .page-container { display: none; min-height: 100vh; padding-bottom: 80px; }
         .page-container.active { display: block; }
 
+        /* 顶部置顶条 - 知识付费 */
+        .top-sticky-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 44px;
+            background: linear-gradient(135deg, #ff3333, #cc0000);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9995;
+        }
+        .top-sticky-bar .sticky-text {
+            font-size: 16px;
+            font-weight: 600;
+            color: white;
+        }
+
         /* 头部标题栏 - 红色背景 */
-        .header-top { background: linear-gradient(135deg, #ff3333, #cc0000); padding: 15px; display: flex; align-items: center; gap: 12px; }
+        .header-top { 
+            background: linear-gradient(135deg, #ff3333, #cc0000); 
+            padding: 15px; 
+            display: flex; 
+            align-items: center; 
+            gap: 12px; 
+            margin-top: 44px;
+        }
         .header-top .logo-wrap { width: 44px; height: 44px; border-radius: 10px; background: white; display: flex; align-items: center; justify-content: center; }
         .header-top .logo-wrap img { width: 36px; height: 36px; border-radius: 8px; }
         .header-top .site-info { flex: 1; }
@@ -231,6 +257,10 @@
     <div id="mobileApp">
         <!-- 首页 -->
         <div id="home" class="page-container" style="display: block;">
+            <!-- 置顶条 - 知识付费 -->
+            <div class="top-sticky-bar">
+                <span class="sticky-text">知识付费</span>
+            </div>
             <div class="header-top">
                 <div class="logo-wrap">
                     <img src="https://cdn.jsdelivr.net/gh/uhhdjk/phone@main/微信图片_20260503232606_1087_130.jpg" alt="Logo">
