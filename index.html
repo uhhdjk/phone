@@ -584,7 +584,11 @@
         }
 
         // 数据版本号（每次更新数据时增加版本号）
-        const DATA_VERSION = '20260508013';
+        const DATA_VERSION = '20260508014';
+
+        // 服务器配置（作者电脑作为服务器）
+        const SERVER_URL = 'http://localhost:3000'; // 修改为ngrok地址或服务器IP
+        let serverAvailable = true;
 
         // 默认课程数据（服务器端数据，更新时修改这里）
         const defaultCourses = [
@@ -605,7 +609,13 @@
             { id: 15, title: '127期 新&奥新【澳门星姐】六码中特', time: '05-04 15:38', price: '¥668', buyCount: 215, seal: '红', value: '04 13 22 31 38 47', result: '对', history: '125期 新&奥新【澳门星姐】六码中特\n04 13 22 31 38 47 对\n124期 新&奥新【澳门星姐】六码中特\n06 15 24 39 40 45 对\n123期 新&奥新【澳门星姐】六码中特\n02 11 19 28 35 42 错\n122期 新&奥新【澳门星姐】六码中特\n07 16 25 32 39 48 错\n121期 新&奥新【澳门星姐】六码中特\n01 10 20 29 36 44 对' },
             { id: 16, title: '127期 新&奥新【爆运财神】六码中特', time: '05-04 15:30', price: '¥658', buyCount: 208, seal: '红', value: '03 12 21 31 37 46', result: '对', history: '125期 新&奥新【爆运财神】六码中特\n03 12 21 31 37 46 对\n124期 新&奥新【爆运财神】六码中特\n05 14 23 32 39 43 对\n123期 新&奥新【爆运财神】六码中特\n01 09 18 27 34 41 错\n122期 新&奥新【爆运财神】六码中特\n08 17 26 35 40 49 错\n121期 新&奥新【爆运财神】六码中特\n02 11 20 29 36 44 对' },
             { id: 17, title: '127期 新&奥新【鸿运来财】六码中特', time: '05-04 15:25', price: '¥628', buyCount: 245, seal: '红', value: '09 18 25 31 41 48', result: '对', history: '125期 新&奥新【鸿运来财】六码中特\n09 18 25 31 41 48 对\n124期 新&奥新【鸿运来财】六码中特\n04 13 22 30 39 45 对\n123期 新&奥新【鸿运来财】六码中特\n02 10 19 28 36 43 错\n122期 新&奥新【鸿运来财】六码中特\n07 15 24 32 39 47 错\n121期 新&奥新【鸿运来财】六码中特\n01 11 20 29 35 44 对' },
-            { id: 24, title: '127期 新&奥新【天天暴富】八码中特', time: '05-04 15:10', price: '¥498', buyCount: 219, seal: '红', value: '02 08 18 22 28 32 38 42', result: '对', history: '125期 新&奥新【天天暴富】八码中特\n03 08 15 21 29 31 42 47 对\n124期 新&奥新【天天暴富】八码中特\n02 10 17 23 31 39 44 49 对\n123期 新&奥新【天天暴富】八码中特\n01 09 16 25 30 36 46 45 对\n122期 新&奥新【天天暴富】八码中特\n05 12 19 27 33 39 43 48 错\n121期 新&奥新【天天暴富】八码中特\n04 11 18 22 28 35 40 44 对' },
+            { id: 18, title: '127期 新&奥新【天天暴富】八码中特', time: '05-04 15:18', price: '¥498', buyCount: 219, seal: '红', value: '02 08 18 22 28 32 38 42', result: '对', history: '125期 新&奥新【天天暴富】八码中特\n03 08 15 21 29 31 42 47 对\n124期 新&奥新【天天暴富】八码中特\n02 10 17 23 31 39 44 49 对\n123期 新&奥新【天天暴富】八码中特\n01 09 16 25 30 36 46 45 对\n122期 新&奥新【天天暴富】八码中特\n05 12 19 27 33 39 43 48 错\n121期 新&奥新【天天暴富】八码中特\n04 11 18 22 28 35 40 44 对' },
+            { id: 19, title: '127期 新&奥新【澳门财神】八码中特', time: '05-04 15:15', price: '¥488', buyCount: 227, seal: '黑', value: '02 08 18 22 28 32 38 46', result: '错', history: '125期 新&奥新【澳门财神】八码中特\n06 12 18 24 31 37 43 49 对\n124期 新&奥新【澳门财神】八码中特\n02 09 15 21 28 39 45 46 对\n123期 新&奥新【澳门财神】八码中特\n01 07 13 19 26 32 39 44 错\n122期 新&奥新【澳门财神】八码中特\n04 10 16 22 29 36 42 48 错\n121期 新&奥新【澳门财神】八码中特\n03 08 14 20 27 33 44 45 对' },
+            { id: 20, title: '127期 新&奥新【吉祥帝国】八码中特', time: '05-04 15:12', price: '¥468', buyCount: 256, seal: '红', value: '02 08 18 22 28 32 38 46', result: '对', history: '' },
+            { id: 21, title: '127期 新&奥新【爆发】三中三一组', time: '05-04 15:08', price: '¥998', buyCount: 203, seal: '黑', value: '18-22-38', result: '错', history: '125期 新&奥新【爆发】三中三一组\n07 19 31 对\n124期 新&奥新【爆发】三中三一组\n12 28 39 对\n123期 新&奥新【爆发】三中三一组\n03 16 29 错\n122期 新&奥新【爆发】三中三一组\n09 22 37 错\n121期 新&奥新【爆发】三中三一组\n05 24 44 对' },
+            { id: 22, title: '127期 新&奥新【小李飞刀】三中三一组', time: '05-04 15:05', price: '¥968', buyCount: 212, seal: '红', value: '28-32-38', result: '对', history: '125期 新&奥新【小李飞刀】三中三一组\n13 26 31 对\n124期 新&奥新【小李飞刀】三中三一组\n08 19 39 对\n123期 新&奥新【小李飞刀】三中三一组\n04 17 31 错\n122期 新&奥新【小李飞刀】三中三一组\n11 23 38 错\n121期 新&奥新【小李飞刀】三中三一组\n06 29 44 对' },
+            { id: 23, title: '127期 新&奥新【天天旺财】三中三两组', time: '05-04 15:02', price: '¥768', buyCount: 238, seal: '红', value: '18-22-38  32-16-02', result: '对', history: '125期 新&奥新【天天旺财】三中三两组\n08-19-31 15-28-44 对\n124期 新&奥新【天天旺财】三中三两组\n06-22-39 11-31-46 对\n123期 新&奥新【天天旺财】三中三两组\n03-17-29 09-25-41 错\n122期 新&奥新【天天旺财】三中三两组\n02-20-33 14-35-48 错\n121期 新&奥新【天天旺财】三中三两组\n05-24-36 10-30-44 对' },
+            { id: 24, title: '127期 新&奥新【荷仙姑】三中三两组', time: '05-04 14:58', price: '¥728', buyCount: 224, seal: '红', value: '18-24-38  32-22-02', result: '对', history: '125期 新&奥新【荷仙姑】三中三两组\n05-21-31 12-29-43 对\n124期 新&奥新【荷仙姑】三中三两组\n07-23-39 16-32-47 对\n123期 新&奥新【荷仙姑】三中三两组\n04-18-26 09-30-41 错\n122期 新&奥新【荷仙姑】三中三两组\n03-19-34 11-27-45 错\n121期 新&奥新【荷仙姑】三中三两组\n03-22-39 14-28-44 对' },
             { id: 25, title: '127期 新&奥新【澳门财神】八码中特', time: '05-04 15:05', price: '¥488', buyCount: 227, seal: '黑', value: '02 08 18 22 28 32 38 46', result: '错', history: '125期 新&奥新【澳门财神】八码中特\n06 12 18 24 31 37 43 49 对\n124期 新&奥新【澳门财神】八码中特\n02 09 15 21 28 39 45 46 对\n123期 新&奥新【澳门财神】八码中特\n01 07 13 19 26 32 39 44 错\n122期 新&奥新【澳门财神】八码中特\n04 10 16 22 29 36 42 48 错\n121期 新&奥新【澳门财神】八码中特\n03 08 14 20 27 33 44 45 对' },
             { id: 26, title: '127期 新&奥新【吉祥帝国】八码中特', time: '05-04 14:58', price: '¥468', buyCount: 256, seal: '红', value: '02 08 18 22 28 32 38 46', result: '对', history: '' },
             { id: 27, title: '127期 新&奥新[爆发】三中三一组', time: '05-04 14:52', price: '¥998', buyCount: 203, seal: '黑', value: '18-22-38', result: '错', history: '125期 新&奥新【爆发】三中三一组\n07 19 31 对\n124期 新&奥新【爆发】三中三一组\n12 28 39 对\n123期 新&奥新【爆发】三中三一组\n03 16 29 错\n122期 新&奥新【爆发】三中三一组\n09 22 37 错\n121期 新&奥新【爆发】三中三一组\n05 24 44 对' },
@@ -1128,16 +1138,6 @@
             const newUserId = generateUserId();
             document.getElementById('userId').textContent = '用户ID: ' + newUserId;
             showMember();
-        }
-
-        // 检查解锁状态
-        function checkUnlockStatus() {
-            const isUnlocked = localStorage.getItem('contentUnlocked') === 'true';
-            if (isUnlocked) {
-                document.getElementById('detailContent').textContent = '鸡【46】';
-            } else {
-                document.getElementById('detailContent').textContent = '🔒 内容已锁定，请先购买解锁';
-            }
         }
 
         // 解锁内容（客服使用）
@@ -2351,6 +2351,107 @@
         }
 
         // ========== 作者管理系统结束 ==========
+
+        // ========== 密码验证系统 ==========
+
+        // 验证密码（优先使用服务器验证）
+        async function verifyPassword() {
+            const currentCourseId = parseInt(localStorage.getItem('currentCourseId') || '1');
+            const course = courses.find(c => c.id === currentCourseId);
+            const inputPassword = document.getElementById('coursePassword').value.trim();
+            
+            // 检查输入是否为空
+            if (!inputPassword) {
+                document.getElementById('passwordError').textContent = '请输入密码';
+                document.getElementById('passwordError').style.display = 'block';
+                return;
+            }
+            
+            // 检查输入长度
+            if (inputPassword.length !== 6) {
+                document.getElementById('passwordError').textContent = '密码必须是6位数字';
+                document.getElementById('passwordError').style.display = 'block';
+                return;
+            }
+            
+            // 检查是否都是数字
+            if (!/^\d{6}$/.test(inputPassword)) {
+                document.getElementById('passwordError').textContent = '密码只能包含数字';
+                document.getElementById('passwordError').style.display = 'block';
+                return;
+            }
+            
+            // 优先使用服务器验证
+            if (serverAvailable) {
+                try {
+                    const response = await fetch(`${SERVER_URL}/api/verify`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            courseId: currentCourseId,
+                            password: inputPassword
+                        })
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        // 验证成功，记录解锁状态
+                        const unlockedRecords = getUnlockedRecords();
+                        const userId = localStorage.getItem('userId') || generateUserId();
+                        
+                        // 检查是否已存在记录
+                        const existingIndex = unlockedRecords.findIndex(r => r.userId === userId && r.courseId === currentCourseId);
+                        if (existingIndex === -1) {
+                            unlockedRecords.push({
+                                userId: userId,
+                                courseId: currentCourseId,
+                                unlockTime: getBeijingTime().full
+                            });
+                            saveUnlockedRecords(unlockedRecords);
+                        }
+                        
+                        // 显示内容
+                        if (course) {
+                            document.getElementById('detailContent').textContent = course.value;
+                        }
+                        document.getElementById('passwordModal').style.display = 'none';
+                        document.getElementById('coursePassword').value = '';
+                        alert('✅ 解锁成功！');
+                    } else {
+                        if (data.isExpired) {
+                            document.getElementById('passwordError').textContent = '密码已过期，请联系客服获取新密码';
+                        } else {
+                            document.getElementById('passwordError').textContent = '密码错误，请重试';
+                        }
+                        document.getElementById('passwordError').style.display = 'block';
+                    }
+                    return;
+                } catch (err) {
+                    serverAvailable = false;
+                    console.log('服务器验证失败，回退到本地验证:', err.message);
+                }
+            }
+            
+            // 本地验证（备用方案）
+            alert('服务器不可用，请稍后重试或联系客服');
+        }
+
+        // 关闭密码弹窗
+        function closePasswordModal() {
+            document.getElementById('passwordModal').style.display = 'none';
+            document.getElementById('coursePassword').value = '';
+            document.getElementById('passwordError').style.display = 'none';
+        }
+
+        // 打开密码弹窗
+        function openPasswordModal() {
+            document.getElementById('passwordError').style.display = 'none';
+            document.getElementById('coursePassword').value = '';
+            document.getElementById('passwordModal').style.display = 'flex';
+        }
 
         // ========== 下拉刷新功能 ==========
         
