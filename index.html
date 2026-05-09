@@ -69,13 +69,13 @@
         .course-list { padding: 10px; padding-bottom: 70px; display: flex; flex-direction: column; gap: 10px; }
         .course-card { background: white; border-radius: 8px; padding: 12px; position: relative; box-shadow: 0 1px 5px rgba(0,0,0,0.05); }
         .course-card .course-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
-        .course-card .course-title { font-size: 15px; font-weight: 600; color: #333; line-height: 1.4; flex: 1; margin-right: 10px; }
-        .course-card .seal { width: 40px; height: 40px; border-radius: 50%; border: 2px solid #ff3333; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: #ff3333; flex-shrink: 0; }
-        .course-card .seal.black { border-color: #666; color: #666; }
+        .course-card .course-title { font-size: 15px; font-weight: 600; color: #333; line-height: 1.4; flex: 1; }
+        .course-card .seal { display: none; }
+        .course-card .seal.black { display: none; }
         .course-card .course-meta { font-size: 11px; color: #999; margin-bottom: 8px; }
         .course-card .course-footer { display: flex; justify-content: space-between; align-items: center; padding-top: 8px; border-top: 1px dashed #eee; }
-        .course-card .course-price { font-size: 18px; font-weight: 700; color: #ff3333; }
-        .course-card .buy-btn { font-size: 14px; color: white; background: #ff3333; padding: 6px 16px; border-radius: 15px; cursor: pointer; }
+        .course-card .course-price { font-size: 12px; font-weight: 700; color: #ff3333; }
+        .course-card .buy-btn { font-size: 9px; color: white; background: #ff3333; padding: 4px 10px; border-radius: 10px; cursor: pointer; }
 
         /* 详情页头部 - 只保留返回按钮和标题置顶 */
         .detail-header { background: white; padding: 0; }
@@ -2871,6 +2871,135 @@
 
         // ========== 屏幕边缘滑动返回功能 ==========
         
+        // 边缘滑动相关变量
+        let edgeStartX = 0;
+        let edgeStartY = 0;
+        let currentEdgeX = 0;
+        let currentEdgeY = 0;
+        let isEdgeSliding = false;
+        let slideFromLeft = false; // 是否从左侧开始滑动
+        let slideFromRight = false; // 是否从右侧开始滑动
+        
+        // 边缘滑动配置
+        const EDGE_THRESHOLD = 30; // 边缘触发区域宽度（像素）
+        const SLIDE_DISTANCE_THRESHOLD = 80; // 触发返回的最小滑动距离
+        const MAX_VERTICAL_DEVIATION = 50; // 允许的最大垂直偏移
+        
+        // 触摸开始事件（边缘滑动检测）
+        function onEdgeTouchStart(e) {
+            const touch = e.touches[0];
+            const screenWidth = window.innerWidth;
+            const touchX = touch.clientX;
+            const touchY = touch.clientY;
+            
+            // 检查是否从左侧边缘开始
+            if (touchX <= EDGE_THRESHOLD) {
+                slideFromLeft = true;
+                slideFromRight = false;
+                isEdgeSliding = true;
+                edgeStartX = touchX;
+                edgeStartY = touchY;
+            }
+            // 检查是否从右侧边缘开始
+            else if (touchX >= screenWidth - EDGE_THRESHOLD) {
+                slideFromRight = true;
+                slideFromLeft = false;
+                isEdgeSliding = true;
+                edgeStartX = touchX;
+                edgeStartY = touchY;
+            }
+        }
+        
+        // 触摸移动事件（边缘滑动）
+        function onEdgeTouchMove(e) {
+            if (!isEdgeSliding) return;
+            
+            const touch = e.touches[0];
+            currentEdgeX = touch.clientX;
+            currentEdgeY = touch.clientY;
+            
+            // 检查垂直偏移是否过大
+            const verticalDeviation = Math.abs(currentEdgeY - edgeStartY);
+            if (verticalDeviation > MAX_VERTICAL_DEVIATION) {
+                isEdgeSliding = false;
+                return;
+            }
+            
+            // 计算水平滑动距离
+            const horizontalDistance = currentEdgeX - edgeStartX;
+            
+            // 根据滑动方向添加视觉反馈（类似于安卓系统的侧滑效果）
+            if (slideFromLeft && horizontalDistance > 0) {
+                // 从左向右滑动
+                const progress = Math.min(horizontalDistance / SLIDE_DISTANCE_THRESHOLD, 1);
+                document.getElementById('mobileApp').style.transform = `translateX(${progress * 50}px)`;
+                document.getElementById('mobileApp').style.opacity = 1 - progress * 0.3;
+            } else if (slideFromRight && horizontalDistance < 0) {
+                // 从右向左滑动
+                const progress = Math.min(Math.abs(horizontalDistance) / SLIDE_DISTANCE_THRESHOLD, 1);
+                document.getElementById('mobileApp').style.transform = `translateX(-${progress * 50}px)`;
+                document.getElementById('mobileApp').style.opacity = 1 - progress * 0.3;
+            }
+        }
+        
+        // 触摸结束事件（边缘滑动）
+        function onEdgeTouchEnd() {
+            if (!isEdgeSliding) return;
+            
+            const horizontalDistance = currentEdgeX - edgeStartX;
+            const verticalDeviation = Math.abs(currentEdgeY - edgeStartY);
+            
+            // 重置状态
+            isEdgeSliding = false;
+            
+            // 重置视觉效果
+            document.getElementById('mobileApp').style.transform = 'translateX(0)';
+            document.getElementById('mobileApp').style.opacity = '1';
+            
+            // 检查是否触发返回
+            // 左侧滑动：向右滑动距离超过阈值
+            // 右侧滑动：向左滑动距离超过阈值（负数）
+            const isLeftSwipe = slideFromLeft && horizontalDistance > SLIDE_DISTANCE_THRESHOLD && verticalDeviation <= MAX_VERTICAL_DEVIATION;
+            const isRightSwipe = slideFromRight && horizontalDistance < -SLIDE_DISTANCE_THRESHOLD && verticalDeviation <= MAX_VERTICAL_DEVIATION;
+            
+            if (isLeftSwipe || isRightSwipe) {
+                // 执行返回上一页
+                goBack();
+            }
+            
+            // 重置标志
+            slideFromLeft = false;
+            slideFromRight = false;
+        }
+        
+        // 返回上一页
+        function goBack() {
+            // 根据当前显示的页面决定返回方向
+            if (document.getElementById('detail').style.display === 'block') {
+                goHome();
+            } else if (document.getElementById('recordPage').style.display === 'block') {
+                goHome();
+            } else if (document.getElementById('expertPage').style.display === 'block') {
+                goHome();
+            } else if (document.getElementById('memberPage').style.display === 'block') {
+                goHome();
+            } else if (document.getElementById('historyPage').style.display === 'block') {
+                goHome();
+            }
+        }
+        
+        // 绑定边缘滑动事件
+        function bindEdgeSwipeEvents() {
+            const mobileApp = document.getElementById('mobileApp');
+            if (mobileApp) {
+                mobileApp.addEventListener('touchstart', onEdgeTouchStart, { passive: true });
+                mobileApp.addEventListener('touchmove', onEdgeTouchMove, { passive: true });
+                mobileApp.addEventListener('touchend', onEdgeTouchEnd, { passive: true });
+            }
+        }
+        
+        // ========== 边缘滑动功能结束 ==========
+        
 
 
         // 刷新所有数据
@@ -2923,6 +3052,8 @@
             document.addEventListener('touchstart', onTouchStart, { passive: true });
             document.addEventListener('touchmove', onTouchMove, { passive: true });
             document.addEventListener('touchend', onTouchEnd, { passive: true });
+            // 添加边缘滑动返回事件监听
+            bindEdgeSwipeEvents();
         }
 
         // 页面加载完成后初始化
