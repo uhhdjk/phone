@@ -255,7 +255,7 @@
                 </div>
                 <div class="content-detail">
                     <div class="label">内容详情</div>
-                    <div class="value" id="detailContent">🔒 内容已锁定，请先购买解锁</div>
+                    <div class="value" id="detailContent" onclick="handleDetailClick()" style="cursor: pointer;">🔒 内容已锁定，请先购买解锁</div>
                 </div>
                 <div class="history-section">
                     <div class="section-title">往期记录:</div>
@@ -2451,6 +2451,18 @@
             document.getElementById('passwordError').style.display = 'none';
             document.getElementById('coursePassword').value = '';
             document.getElementById('passwordModal').style.display = 'flex';
+        }
+
+        // 处理内容详情点击事件
+        function handleDetailClick() {
+            const detailContent = document.getElementById('detailContent');
+            const contentText = detailContent.textContent || '';
+            
+            // 如果内容已锁定，弹出密码输入框
+            if (contentText.includes('🔒') || contentText.includes('内容已锁定')) {
+                openPasswordModal();
+            }
+            // 如果已解锁，不需要做任何操作（内容已经显示）
         }
 
         // ========== 下拉刷新功能 ==========
