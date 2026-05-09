@@ -51,16 +51,28 @@
         .course-card .course-price { font-size: 18px; font-weight: 700; color: #ff3333; }
         .course-card .buy-btn { font-size: 14px; color: white; background: #ff3333; padding: 6px 16px; border-radius: 15px; cursor: pointer; }
 
-        /* 详情页头部 */
-        .detail-header { position: fixed; top: 0; left: 0; right: 0; background: white; padding: 15px; border-bottom: 1px solid #eee; z-index: 9997; }
-        .detail-header .header-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+        /* 详情页头部 - 只保留返回按钮和标题置顶 */
+        .detail-header { background: white; padding: 0; }
+        .detail-header .header-row { 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            right: 0; 
+            background: white; 
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between; 
+            padding: 15px; 
+            border-bottom: 1px solid #eee; 
+            z-index: 9997; 
+        }
         .detail-header .back-btn { font-size: 18px; color: #666; cursor: pointer; }
         .detail-header .page-title { font-size: 16px; font-weight: 600; color: #333; }
-        .detail-header .course-title { font-size: 16px; font-weight: 600; color: #333; line-height: 1.5; }
-        .detail-header .course-meta { font-size: 11px; color: #999; }
+        .detail-header .course-title { font-size: 16px; font-weight: 600; color: #333; line-height: 1.5; padding: 60px 15px 5px 15px; }
+        .detail-header .course-meta { font-size: 11px; color: #999; padding: 0 15px 15px 15px; }
         
         /* 详情页内容区域（避免被悬浮头部遮挡） */
-        .detail-content-wrap { padding-top: 90px; }
+        .detail-content-wrap { padding-top: 0; }
 
         /* 红色声明区域 */
         .red-notice { background: #ff3333; padding: 12px; margin: 10px; border-radius: 8px; }
