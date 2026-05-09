@@ -418,10 +418,12 @@
 
     <!-- 密码输入弹窗 -->
     <div id="passwordModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 1000;">
-        <div style="background: white; margin: 20px; padding: 30px; border-radius: 12px; text-align: center; width: 100%; max-width: 320px;">
+        <div style="background: white; margin: 20px; padding: 30px; border-radius: 12px; text-align: center; width: 100%; max-width: 320px; position: relative;">
+            <!-- 关闭按钮 -->
+            <div onclick="closePasswordModal()" style="position: absolute; top: 10px; right: 15px; width: 30px; height: 30px; border-radius: 50%; background: #f5f5f5; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 16px; color: #666;">❌</div>
             <div style="width: 80px; height: 80px; border-radius: 50%; background: #ff9800; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; font-size: 40px; color: white;">🔐</div>
             <div style="font-size: 18px; font-weight: 600; color: #333; margin-bottom: 10px;">输入解锁密码</div>
-            <div style="font-size: 12px; color: #999; margin-bottom: 20px;">密码12小时内有效，请联系客服获取</div>
+            <div style="font-size: 12px; color: #999; margin-bottom: 20px;">密码当天23:59:59前有效，请联系客服获取</div>
             <input type="password" id="coursePassword" placeholder="请输入6位数字密码" maxlength="6" style="width: 100%; height: 45px; margin-bottom: 15px; padding: 0 15px; border: 1px solid #ddd; border-radius: 8px; font-size: 20px; text-align: center; box-sizing: border-box;">
             <div style="font-size: 12px; color: #ff3333; margin-bottom: 15px; display: none;" id="passwordError">密码错误，请重试</div>
             <button onclick="verifyPassword()" style="width: 100%; height: 45px; background: #ff9800; color: white; border: none; border-radius: 8px; font-size: 16px;">解锁内容</button>
@@ -589,6 +591,65 @@
         // 服务器配置（作者电脑作为服务器）
         const SERVER_URL = 'http://localhost:3000'; // 修改为ngrok地址或服务器IP
         let serverAvailable = true;
+        
+        // 本地备用密码（用于服务器不可用时的验证）
+        let localPasswords = {};
+        
+        // 初始化本地密码（与服务器保持同步）
+        function initLocalPasswords() {
+            // 从localStorage读取密码（如果有）
+            const saved = localStorage.getItem('localPasswords');
+            if (saved) {
+                try {
+                    localPasswords = JSON.parse(saved);
+                } catch (e) {
+                    localPasswords = {};
+                }
+            }
+        }
+        
+        // 保存本地密码
+        function saveLocalPasswords() {
+            localStorage.setItem('localPasswords', JSON.stringify(localPasswords));
+        }
+        
+        // 同步服务器密码到本地
+        async function syncPasswordsFromServer() {
+            try {
+                const response = await fetch(`${SERVER_URL}/api/passwords`);
+                const data = await response.json();
+                if (data.success && data.passwords) {
+                    localPasswords = data.passwords;
+                    saveLocalPasswords();
+                    serverAvailable = true;
+                }
+            } catch (err) {
+                console.log('无法从服务器同步密码:', err.message);
+            }
+        }
+        
+        // 检查服务器可用性
+        async function checkServerStatus() {
+            try {
+                const response = await fetch(`${SERVER_URL}/api/status`);
+                const data = await response.json();
+                if (data.success) {
+                    serverAvailable = true;
+                    await syncPasswordsFromServer();
+                    return true;
+                }
+            } catch (err) {
+                serverAvailable = false;
+                console.log('服务器不可用:', err.message);
+            }
+            return false;
+        }
+        
+        // 页面加载时检查服务器状态
+        document.addEventListener('DOMContentLoaded', () => {
+            initLocalPasswords();
+            checkServerStatus();
+        });
 
         // 默认课程数据（服务器端数据，更新时修改这里）
         const defaultCourses = [
@@ -2436,7 +2497,36 @@
             }
             
             // 本地验证（备用方案）
-            alert('服务器不可用，请稍后重试或联系客服');
+            if (localPasswords[currentCourseId] && inputPassword === localPasswords[currentCourseId]) {
+                // 本地验证成功
+                const unlockedRecords = getUnlockedRecords();
+                const userId = localStorage.getItem('userId') || generateUserId();
+                
+                const existingIndex = unlockedRecords.findIndex(r => r.userId === userId && r.courseId === currentCourseId);
+                if (existingIndex === -1) {
+                    unlockedRecords.push({
+                        userId: userId,
+                        courseId: currentCourseId,
+                        unlockTime: getBeijingTime().full
+                    });
+                    saveUnlockedRecords(unlockedRecords);
+                }
+                
+                if (course) {
+                    document.getElementById('detailContent').textContent = course.value;
+                }
+                document.getElementById('passwordModal').style.display = 'none';
+                document.getElementById('coursePassword').value = '';
+                alert('✅ 解锁成功！');
+            } else {
+                // 本地密码也不对或没有本地密码
+                if (!localPasswords[currentCourseId]) {
+                    document.getElementById('passwordError').textContent = '服务器不可用，请联系客服获取密码';
+                } else {
+                    document.getElementById('passwordError').textContent = '密码错误，请重试';
+                }
+                document.getElementById('passwordError').style.display = 'block';
+            }
         }
 
         // 关闭密码弹窗
