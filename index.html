@@ -2736,6 +2736,12 @@
                 pressTimer = null;
             }
             
+            // 处理边缘滑动返回（优先级更高）
+            if (isEdgeSliding) {
+                onEdgeTouchEnd();
+                return;
+            }
+            
             if (!isPulling || isRefreshing) {
                 isPulling = false;
                 isLongPress = false;
