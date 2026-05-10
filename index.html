@@ -786,7 +786,14 @@
             // 如果有缓存且未过期，使用缓存
             const cachedExperts = localStorage.getItem('cachedExperts');
             if (cachedExperts && lastGenerateTime && (now - parseInt(lastGenerateTime)) < tenDays) {
-                return JSON.parse(cachedExperts);
+                try {
+                    const parsed = JSON.parse(cachedExperts);
+                    if (parsed && parsed.length > 0) {
+                        return parsed;
+                    }
+                } catch (e) {
+                    console.error('解析缓存失败:', e);
+                }
             }
             
             // 生成连中数字（16~3，允许重复）
@@ -800,8 +807,7 @@
                 avatar: name.charAt(0) // 取名字第一个字
             }));
             
-            // 随机排序（但保持前3名是连中最高的）
-            // 先按连中数排序
+            // 按连中数排序
             experts.sort((a, b) => b.hits - a.hits);
             
             // 保存到缓存
@@ -1182,7 +1188,7 @@
             // 检查是否已解锁
             checkUnlockStatus();
         }
-        function showExpert() { hideAllPages(); document.getElementById('expertPage').style.display = 'block'; showBottomNav(); }
+        function showExpert() { hideAllPages(); document.getElementById('expertPage').style.display = 'block'; showBottomNav(); renderExperts(); }
         function goRecord() { hideAllPages(); document.getElementById('recordPage').style.display = 'block'; showBottomNav(); renderRecords(); }
 
         function showMember() { hideAllPages(); document.getElementById('memberPage').style.display = 'block'; showBottomNav(); }
