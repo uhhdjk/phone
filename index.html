@@ -75,6 +75,7 @@
         .course-card .course-meta { font-size: 11px; color: #999; margin-bottom: 8px; }
         .course-card .course-footer { display: flex; justify-content: space-between; align-items: center; padding-top: 8px; border-top: 1px dashed #eee; }
         .course-card .course-price { font-size: 12px; font-weight: 700; color: #ff3333; }
+        .course-card .buy-count { font-size: 12px; color: #3b82f6; margin-right: auto; margin-left: 8px; }
         .course-card .buy-btn { font-size: 9px; color: white; background: #ff3333; padding: 4px 10px; border-radius: 10px; cursor: pointer; }
 
         /* 详情页头部 - 只保留返回按钮和标题置顶 */
@@ -937,6 +938,7 @@
                         <div class="course-meta">${course.time} ${course.buyCount}人已购</div>
                         <div class="course-footer">
                             <span class="course-price">${course.price}</span>
+                            <span class="buy-count">🛒 ${Math.floor(Math.random() * 69) + 121}</span>
                             <span class="buy-btn" onclick="event.stopPropagation(); openPayModal()">立即购买</span>
                         </div>
                     </div>`;
