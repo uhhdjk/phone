@@ -234,6 +234,7 @@
         .record-card .record-title .seal { position: absolute; right: 0; top: 0; width: 40px; height: 40px; border-radius: 50%; border: 2px solid #ff3333; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: #ff3333; }
         .record-card .record-title .seal.black { border-color: #666; color: #666; }
         .record-card .record-footer { display: flex; justify-content: space-between; align-items: center; padding-top: 10px; border-top: 1px dashed #eee; }
+        .record-card .record-cart { font-size: 13px; color: #3b82f6; display: flex; align-items: center; gap: 4px; }
         .record-card .record-price { font-size: 16px; font-weight: 700; color: #ff3333; }
         .record-card .view-detail-btn { font-size: 13px; color: white; background: #6a79f7; padding: 6px 20px; border-radius: 15px; cursor: pointer; }
         .record-card .record-meta { font-size: 12px; color: #999; margin-bottom: 10px; }
@@ -1177,6 +1178,7 @@
                         <span class="record-view">👁️ ${record.viewCount}人已查看</span>
                     </div>
                     <div class="record-footer">
+                        <span class="record-cart">🛒 ${record.viewCount}人已购</span>
                         <span class="record-price">${record.price}</span>
                         <span class="view-detail-btn" onclick="goDetail(${record.courseId || 1})">查看详情</span>
                     </div>
@@ -1225,6 +1227,7 @@
                             <span class="record-view">👁️ ${record.viewCount}人已查看</span>
                         </div>
                         <div class="record-footer">
+                            <span class="record-cart">🛒 ${record.viewCount}人已购</span>
                             <span class="record-price">${record.price}</span>
                             <span class="view-detail-btn" onclick="goDetail(${record.courseId || 1})">查看详情</span>
                         </div>
