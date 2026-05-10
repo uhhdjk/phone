@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
@@ -774,6 +774,43 @@
             { id: 108, title: '115期 新&奥 新【金手指】一肖一码中特', time: '04-25 16:56', seal: '红', value: '牛【02】', result: '对' }
         ];
 
+        // 购买计数管理
+        function getBuyCount(courseId) {
+            const key = 'buyCount_' + courseId;
+            const stored = localStorage.getItem(key);
+            
+            let count, lastUpdate;
+            
+            if (stored) {
+                const data = JSON.parse(stored);
+                count = data.count;
+                lastUpdate = data.lastUpdate;
+            } else {
+                // 第一次访问，生成初始随机数 121~189
+                count = Math.floor(Math.random() * 69) + 121;
+                lastUpdate = new Date().getTime();
+                localStorage.setItem(key, JSON.stringify({ count, lastUpdate }));
+            }
+            
+            // 计算从上次更新到现在经过了多少个10分钟周期
+            const now = new Date().getTime();
+            const minutesPassed = Math.floor((now - lastUpdate) / (1000 * 60));
+            const tenMinuteCycles = Math.floor(minutesPassed / 10);
+            
+            if (tenMinuteCycles > 0) {
+                // 每10分钟随机增加1~3
+                let totalIncrease = 0;
+                for (let i = 0; i < tenMinuteCycles; i++) {
+                    totalIncrease += Math.floor(Math.random() * 3) + 1; // 1, 2, 或 3
+                }
+                count += totalIncrease;
+                lastUpdate = now;
+                localStorage.setItem(key, JSON.stringify({ count, lastUpdate }));
+            }
+            
+            return count;
+        }
+
         // 专家列表数据
         const expertNames = ['天天暴富', '澳门财神', '吉祥鸟', '好运来', '吉祥符', '三太子', '招财宝', '金手指', '暴力猫', '暴富财神'];
         
@@ -935,10 +972,10 @@
                             <div class="course-title">${course.title}</div>
                             <div class="seal ${course.seal === '黑' ? 'black' : ''}">${course.seal}</div>
                         </div>
-                        <div class="course-meta">${course.time} ${course.buyCount}人已购</div>
+                        <div class="course-meta">${course.time}</div>
                         <div class="course-footer">
                             <span class="course-price">${course.price}</span>
-                            <span class="buy-count">🛒 ${Math.floor(Math.random() * 69) + 121}</span>
+                            <span class="buy-count">🛒 ${getBuyCount(course.id)}</span>
                             <span class="buy-btn" onclick="event.stopPropagation(); openPayModal()">立即购买</span>
                         </div>
                     </div>`;
