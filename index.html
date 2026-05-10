@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
@@ -236,6 +236,10 @@
         .record-card .record-footer { display: flex; justify-content: space-between; align-items: center; padding-top: 10px; border-top: 1px dashed #eee; }
         .record-card .record-price { font-size: 16px; font-weight: 700; color: #ff3333; }
         .record-card .view-detail-btn { font-size: 13px; color: white; background: #6a79f7; padding: 6px 20px; border-radius: 15px; cursor: pointer; }
+        .record-card .record-meta { font-size: 12px; color: #999; margin-bottom: 10px; }
+        .record-card .record-view { margin-right: 15px; }
+        .record-card .seal-red { color: #ff3333; }
+        .record-card .seal-black { color: #666; }
 
         /* 会员中心页 */
         .member-page-container { background: #f5f5f5; min-height: 100vh; padding-bottom: 70px; }
@@ -420,8 +424,8 @@
                 </div>
                 <div class="record-search-wrap">
                     <div class="search-input-wrap">
-                        <input type="text" placeholder="请输入关键字">
-                        <button>搜索</button>
+                        <input type="text" id="recordSearchInput" placeholder="请输入关键字搜索课程" oninput="searchRecords()">
+                        <button onclick="searchRecords()">搜索</button>
                     </div>
                 </div>
                 <div class="record-tab-bar">
@@ -921,12 +925,12 @@
             if (storedRecords) {
                 return JSON.parse(storedRecords);
             }
-            // 默认购买记录
+            // 默认购买记录（首次访问显示示例数据）
             return [
-                { id: 1, title: '121期 新&奥 新【运金财来】一码中特', time: '2026-05-01 20:30:41', seal: '红', price: '¥788', viewCount: 11095 },
-                { id: 2, title: '120期 新&奥 新【金手指】一肖一码中特', time: '2026-04-30 15:45:32', seal: '红', price: '¥1699', viewCount: 8956 },
-                { id: 3, title: '119期 新&奥 新【金手指】一肖一码中特', time: '2026-04-29 15:56:18', seal: '红', price: '¥1699', viewCount: 7823 },
-                { id: 4, title: '116期 新&奥 新【天天暴富】八码中特', time: '2026-04-26 15:51:15', seal: '红', price: '¥888', viewCount: 6543 }
+                { id: 1, title: '121期 新&奥 新【运金财来】一码中特', time: '2026-05-01 20:30:41', seal: '红', price: '¥788', viewCount: 11095, courseId: 1 },
+                { id: 2, title: '120期 新&奥 新【金手指】一肖一码中特', time: '2026-04-30 15:45:32', seal: '红', price: '¥1699', viewCount: 8956, courseId: 2 },
+                { id: 3, title: '119期 新&奥 新【金手指】一肖一码中特', time: '2026-04-29 15:56:18', seal: '红', price: '¥1699', viewCount: 7823, courseId: 3 },
+                { id: 4, title: '116期 新&奥 新【天天暴富】八码中特', time: '2026-04-26 15:51:15', seal: '红', price: '¥888', viewCount: 6543, courseId: 4 }
             ];
         }
 
@@ -936,16 +940,24 @@
         }
 
         // 添加新的购买记录
-        function addPurchaseRecord(title, price, courseId) {
+        function addPurchaseRecord(course) {
             const records = getPurchaseRecords();
+            
+            // 检查是否已存在相同课程的购买记录
+            const existingRecord = records.find(r => r.courseId === course.id);
+            if (existingRecord) {
+                console.log('该课程已在购买记录中');
+                return;
+            }
+            
             const newRecord = {
                 id: Date.now(),
-                title: title,
+                title: course.title,
                 time: getBeijingTime().full,
-                seal: '红',
-                price: price,
+                seal: course.seal || '红',
+                price: course.price,
                 viewCount: Math.floor(Math.random() * 5000) + 1000,
-                courseId: courseId || 1
+                courseId: course.id
             };
             records.unshift(newRecord);
             savePurchaseRecords(records);
@@ -1146,34 +1158,29 @@
         // 渲染解锁记录（只显示当前用户已成功解锁/购买的课程）
         function renderRecords() {
             const container = document.getElementById('recordList');
-            const unlockedRecords = getUnlockedRecords();
+            const purchaseRecords = getPurchaseRecords();
             const courses = getCourses();
-            const userId = localStorage.getItem('userId') || generateUserId();
             let html = '';
             
-            console.log('当前用户ID:', userId);
-            console.log('所有解锁记录:', unlockedRecords);
+            console.log('购买记录:', purchaseRecords);
             
-            // 只显示当前用户的解锁记录
-            const userRecords = unlockedRecords.filter(record => record.userId === userId);
-            console.log('当前用户的解锁记录:', userRecords);
-            
-            userRecords.forEach(record => {
+            // 显示所有购买记录（按时间倒序）
+            purchaseRecords.forEach(record => {
                 const course = courses.find(c => c.id == record.courseId);
-                if (course) {
-                    html += `<div class="record-card">
-                        <div class="record-header">
-                            <span class="record-time">购买时间: ${record.unlockTime}</span>
-                            <span class="record-status">已购买</span>
-                        </div>
-                        <div class="record-title">${course.title}</div>
-                        <div style="font-size: 14px; color: #ff3333; margin-bottom: 10px; font-weight: 600;">${course.value}</div>
-                        <div class="record-footer">
-                            <span class="record-price">${course.price}</span>
-                            <span class="view-detail-btn" onclick="goDetail(${course.id})">查看详情</span>
-                        </div>
-                    </div>`;
-                }
+                html += `<div class="record-card">
+                    <div class="record-header">
+                        <span class="record-time">📅 ${record.time}</span>
+                        <span class="record-status ${record.seal === '红' ? 'seal-red' : 'seal-black'}">${record.seal}封</span>
+                    </div>
+                    <div class="record-title">${record.title}</div>
+                    <div class="record-meta">
+                        <span class="record-view">👁️ ${record.viewCount}人已查看</span>
+                    </div>
+                    <div class="record-footer">
+                        <span class="record-price">${record.price}</span>
+                        <span class="view-detail-btn" onclick="goDetail(${record.courseId || 1})">查看详情</span>
+                    </div>
+                </div>`;
             });
             
             // 如果没有购买记录，显示提示
@@ -1188,6 +1195,45 @@
             container.innerHTML = html;
         }
 
+        // 搜索购买记录
+        function searchRecords() {
+            const keyword = document.getElementById('recordSearchInput').value.trim().toLowerCase();
+            const container = document.getElementById('recordList');
+            const purchaseRecords = getPurchaseRecords();
+            let html = '';
+            
+            // 过滤匹配的记录
+            const filteredRecords = purchaseRecords.filter(record => 
+                record.title.toLowerCase().includes(keyword)
+            );
+            
+            if (filteredRecords.length === 0) {
+                html = `<div style="text-align: center; padding: 40px 20px; color: #999;">
+                    <div style="font-size: 40px; margin-bottom: 15px;">🔍</div>
+                    <div>未找到匹配的课程</div>
+                    <div style="font-size: 12px; margin-top: 5px;">请尝试其他关键词</div>
+                </div>`;
+            } else {
+                filteredRecords.forEach(record => {
+                    html += `<div class="record-card">
+                        <div class="record-header">
+                            <span class="record-time">📅 ${record.time}</span>
+                            <span class="record-status ${record.seal === '红' ? 'seal-red' : 'seal-black'}">${record.seal}封</span>
+                        </div>
+                        <div class="record-title">${record.title}</div>
+                        <div class="record-meta">
+                            <span class="record-view">👁️ ${record.viewCount}人已查看</span>
+                        </div>
+                        <div class="record-footer">
+                            <span class="record-price">${record.price}</span>
+                            <span class="view-detail-btn" onclick="goDetail(${record.courseId || 1})">查看详情</span>
+                        </div>
+                    </div>`;
+                });
+            }
+            
+            container.innerHTML = html;
+        }
 
         // 生成随机在线人数（范围：2998~4998）
         function generateRandomOnlineCount() {
@@ -2573,6 +2619,11 @@
                                 unlockTime: getBeijingTime().full
                             });
                             saveUnlockedRecords(unlockedRecords);
+                            
+                            // 添加到购买记录
+                            if (course) {
+                                addPurchaseRecord(course);
+                            }
                         }
                         
                         // 清除错误提示
@@ -2624,6 +2675,11 @@
                         unlockTime: getBeijingTime().full
                     });
                     saveUnlockedRecords(unlockedRecords);
+                    
+                    // 添加到购买记录
+                    if (course) {
+                        addPurchaseRecord(course);
+                    }
                 }
                 
                 // 清除错误提示
